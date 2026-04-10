@@ -1,17 +1,17 @@
 <div>
 
     <section class="relative container mx-auto px-6 py-32 text-center">
-        <div class="inline-block bg-gray-900 border border-gray-700 rounded-full px-4 py-1 text-xs font-semibold tracking-widest mb-6">
+        <div class="inline-block bg-gray-600 border border-gray-700 rounded-full px-7 py-4 text-xl font-semibold tracking-widest mb-6">
             PROJETO SOCIAL
         </div>
 
-        <h1 class="text-5xl md:test-7xl font-extrabold uppercase mb-6">Heróis do Tatame</h1>
-        <p class="text-grey-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+        <h1 class="text-5xl md:text-7xl font-extrabold uppercase mb-6">Heróis do Tatame</h1>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
             Moldando o caráter, disciplina e futuro de crianças e adolescentes de 8 a 17 anos através das Artes Marciais.
         </p>
 
         <div class="flex flex-col md:flex-row justify-center gap-4">
-            <button class="bg-gray-800 hover:bg-gray-700 px-8 py-3 rounded-md font-medium flex items-center justify-center gap-2 transition">
+            <button class="bg-white hover:bg-gray-300 text-black px-8 py-3 rounded-md font-medium flex items-center justify-center gap-2 transition">
                 Inscrever Aluno Agora
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </button>
@@ -28,24 +28,24 @@
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
-                <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></div>
+            <div class="bg-gray-200 text-black border border-gray-800 hover:bg-gray-300 hover:border-gray-500 p-8 rounded-xl">
+                <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></div>
                 <h3 class="text-xl font-bold mb-2">Para Que É?</h3>
-                <p class="text-gray-400 text-sm">
+                <p class="text-gray-900 text-sm">
                     Destinado a crianças e adolecentes com idade entre 8 e 17 anos, que precisam de um responsável para matrícula.
                 </p>
             </div>
-            <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
-                <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
+            <div class="bg-gray-200 text-black border border-gray-800 hover:bg-gray-300 hover:border-gray-500 p-8 rounded-xl">
+                <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
                 <h3 class="text-xl font-bold mb-2">Disciplina e Respeito</h3>
-                <p class="text-gray-400 text-sm">
+                <p class="text-gray-900 text-sm">
                     Mais do que golpes, ensinamos valores que preparam nossos jovens para os desafios da vida.
                 </p>
             </div>
-            <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
-                <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></div>
+            <div class="bg-gray-200 text-black border border-gray-800 hover:bg-gray-300 hover:border-gray-500 p-8 rounded-xl">
+                <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></div>
                 <h3 class="text-xl font-bold mb-2">Saúde e Bem-estar</h3>
-                <p class="text-gray-400 text-sm">
+                <p class="text-gray-900 text-sm">
                     Atividades físicas constantes ajudam na coordenação, previnem problemas de saúde e melhoram o humor.
                 </p>
             </div>
@@ -55,21 +55,21 @@
     <section class="container mx-auto px-6 py-20 text-center">
         <h2 class="text-3xl font-bold mb-10 uppercase">Modalidades Oferecidas</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-left">
-            <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-gray-600 transition">
+            <div class="bg-gray-200 text-black border border-gray-800 hover:bg-gray-300 hover:border-gray-500 p-6 rounded-xl">
                 <h3 class="text-xl font-bold mb-2">Jiu Jitsu</h3>
-                <p class="text-gray-400 text-sm">Foco em imobilizações, defesa pessoal e disciplina.</p>
+                <p class="text-gray-900 text-sm">Foco em imobilizações, defesa pessoal e disciplina.</p>
             </div>
-            <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-gray-600 transition">
+            <div class="bg-gray-200 text-black border border-gray-800 hover:bg-gray-300 hover:border-gray-500 p-6 rounded-xl">
                 <h3 class="text-xl font-bold mb-2">Muay Thai</h3>
-                <p class="text-gray-400 text-sm">Trabalha corpo e mente, ideal para coordenação e agilidade.</p>
+                <p class="text-gray-900 text-sm">Trabalha corpo e mente, ideal para coordenação e agilidade.</p>
             </div>
-            <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-gray-600 transition">
+            <div class="bg-gray-200 text-black border border-gray-800 hover:bg-gray-300 hover:border-gray-500 p-6 rounded-xl">
                 <h3 class="text-xl font-bold mb-2">Taekwondo</h3>
-                <p class="text-gray-400 text-sm">Arte marcial focada em chutes dinâmicos, respeito e autocontrole.</p>
+                <p class="text-gray-900 text-sm">Arte marcial focada em chutes dinâmicos, respeito e autocontrole.</p>
             </div>
-            <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-gray-600 transition">
+            <div class="bg-gray-200 text-black border border-gray-800 hover:bg-gray-300 hover:border-gray-500 p-6 rounded-xl">
                 <h3 class="text-xl font-bold mb-2">Boxe</h3>
-                <p class="text-gray-400 text-sm">Ensina ritmo, força e técnica, aumentando a autoconfiança.</p>
+                <p class="text-gray-900 text-sm">Ensina ritmo, força e técnica, aumentando a autoconfiança.</p>
             </div>
         </div>
     </section>

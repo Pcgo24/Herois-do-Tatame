@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 
-// Detecta automaticamente a URL do GitHub Codespace
-const host = process.env.CODESPACE_NAME
+// Verifica se está rodando no GitHub Codespaces
+const isCodespace = !!process.env.CODESPACE_NAME;
+
+const host = isCodespace
     ? `${process.env.CODESPACE_NAME}-5173.app.github.dev`
     : 'localhost';
 
@@ -14,12 +16,13 @@ export default defineConfig({
         }),
     ],
     server: {
-        host: '0.0.0.0', // Permite conexões externas
+        host: '0.0.0.0', // Permite conexões do Docker para o Windows
         port: 5173,
         hmr: {
             host: host,
-            clientPort: 443,
-            protocol: 'wss', // Usa websocket seguro na nuvem
+            // Se for Codespace usa 443/wss, se for local usa 5173/ws
+            clientPort: isCodespace ? 443 : 5173,
+            protocol: isCodespace ? 'wss' : 'ws',
         },
     },
 });

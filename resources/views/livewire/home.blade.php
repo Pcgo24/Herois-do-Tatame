@@ -1,11 +1,12 @@
 <div>
+
     <section class="relative container mx-auto px-6 py-32 text-center">
         <div class="inline-block bg-gray-900 border border-gray-700 rounded-full px-4 py-1 text-xs font-semibold tracking-widest mb-6">
             PROJETO SOCIAL
         </div>
 
-        <h1 class="text-5xl md:text-7xl font-extrabold uppercase mb-6">Heróis do Tatame</h1>
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+        <h1 class="text-5xl md:test-7xl font-extrabold uppercase mb-6">Heróis do Tatame</h1>
+        <p class="text-grey-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
             Moldando o caráter, disciplina e futuro de crianças e adolescentes de 8 a 17 anos através das Artes Marciais.
         </p>
 
@@ -22,25 +23,31 @@
 
     <section class="container mx-auto px-6 py-20 text-center border-t border-gray-900">
         <h2 class="text-3xl font-bold mb-4 uppercase">Sobre o Projeto</h2>
-        <p class="text-gray-400 max-w-3xl mx-auto mb-16">
+        <p class="text-gray-400 max-w-3x1 mx-auto mb-16">
             O Heróis do Tatame é uma iniciativa mantida pelo Centro de Treinamento Marcial, com objetivo de democratizar o acesso ao esporte.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
                 <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></div>
-                <h3 class="text-xl font-bold mb-2">Para Quem É?</h3>
-                <p class="text-gray-400 text-sm">Destinado a crianças e adolescentes com idades entre 8 e 17 anos, que precisam de um responsável para matrícula.</p>
+                <h3 class="text-xl font-bold mb-2">Para Que É?</h3>
+                <p class="text-gray-400 text-sm">
+                    Destinado a crianças e adolecentes com idade entre 8 e 17 anos, que precisam de um responsável para matrícula.
+                </p>
             </div>
             <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
                 <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
                 <h3 class="text-xl font-bold mb-2">Disciplina e Respeito</h3>
-                <p class="text-gray-400 text-sm">Mais do que golpes, ensinamos valores que preparam nossos jovens para os desafios da vida.</p>
+                <p class="text-gray-400 text-sm">
+                    Mais do que golpes, ensinamos valores que preparam nossos jovens para os desafios da vida.
+                </p>
             </div>
             <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
                 <div class="flex justify-center mb-4"><svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></div>
                 <h3 class="text-xl font-bold mb-2">Saúde e Bem-estar</h3>
-                <p class="text-gray-400 text-sm">Atividades físicas constantes ajudam na coordenação, previnem problemas de saúde e melhoram o humor.</p>
+                <p class="text-gray-400 text-sm">
+                    Atividades físicas constantes ajudam na coordenação, previnem problemas de saúde e melhoram o humor.
+                </p>
             </div>
         </div>
     </section>
@@ -150,4 +157,5 @@
             &copy; 2026 Centro de Treinamento Marcial. Todos os direitos reservados.
         </div>
     </footer>
+
 </div>

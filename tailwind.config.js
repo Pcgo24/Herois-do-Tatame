@@ -4,6 +4,7 @@ export default {
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
+    "./app/Livewire/**/*.php",
     "./vendor/livewire/livewire/src/resources/views/**/*.blade.php",
   ],
   theme: {

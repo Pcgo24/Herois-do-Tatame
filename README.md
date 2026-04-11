@@ -11,7 +11,7 @@ Dica: o GitHub renderiza HTML dentro do README.md.
   <hr/>
 
   <p>
-    A CTM oferece <strong>aulas gratuitas</strong> para a comunidade carente e também para <strong>PCDs</strong> (Pessoas com Deficiência), com foco em disciplina, inclusão e desenvolvimento por meio das artes marciais.
+    O CTM oferece <strong>aulas gratuitas</strong> para a comunidade carente e também para <strong>PCDs</strong> (Pessoas com Deficiência), com foco em disciplina, inclusão e desenvolvimento por meio das artes marciais.
   </p>
 
 </div>

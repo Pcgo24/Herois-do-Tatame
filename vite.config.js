@@ -1,28 +1,30 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import laravel from 'laravel-vite-plugin';
 
-// Verifica se está rodando no GitHub Codespaces
-const isCodespace = !!process.env.CODESPACE_NAME;
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), '');
+    const codespacesHost = env.VITE_CODESPACES_HOST;
 
-const host = isCodespace
-    ? `${process.env.CODESPACE_NAME}-5173.app.github.dev`
-    : 'localhost';
-
-export default defineConfig({
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: true,
-        }),
-    ],
-    server: {
-        host: '0.0.0.0', // Permite conexões do Docker para o Windows
-        port: 5173,
-        hmr: {
-            host: host,
-            // Se for Codespace usa 443/wss, se for local usa 5173/ws
-            clientPort: isCodespace ? 443 : 5173,
-            protocol: isCodespace ? 'wss' : 'ws',
+    return {
+        plugins: [
+            laravel({
+                input: ['resources/css/app.css', 'resources/js/app.js'],
+                refresh: true,
+            }),
+        ],
+        server: {
+            host: '0.0.0.0',
+            port: 5173,
+            strictPort: true,
+            cors: true,
+            ...(codespacesHost ? {
+                origin: `https://${codespacesHost}`,
+                hmr: {
+                    host: codespacesHost,
+                    protocol: 'wss',
+                    clientPort: 443
+                }
+            } : {})
         },
-    },
+    };
 });

@@ -24,3 +24,7 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+/cypress/downloads/

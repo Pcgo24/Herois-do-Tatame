@@ -1,58 +1,62 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<!--
+README inicial (em HTML) — Projeto: Heróis no Tatame
+Dica: o GitHub renderiza HTML dentro do README.md.
+-->
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<div align="center">
+
+  <h1>Heróis no Tatame</h1>
+  <p><strong>Plataforma web para divulgação e triagem de alunos</strong> do projeto social <em>"Heróis no Tatame"</em>, promovido pelo <strong>Centro de Treinamento Marcial (CTM)</strong>.</p>
+
+  <hr/>
+
+  <p>
+    A CTM oferece <strong>aulas gratuitas</strong> para a comunidade carente e também para <strong>PCDs</strong> (Pessoas com Deficiência), com foco em disciplina, inclusão e desenvolvimento por meio das artes marciais.
+  </p>
+
+</div>
+
+<h2>Contexto</h2>
+<p>
+  Atualmente, o maior desafio do projeto é a <strong>divulgação</strong> das atividades e o <strong>controle/triagem</strong> de alunos que realmente não possuem condições financeiras para custear aulas.
+  Esta plataforma nasce para apoiar esses pontos com uma presença digital clara, simples e acessível.
 </p>
 
-## About Laravel
+<h2>Objetivo do MVP</h2>
+<ul>
+  <li><strong>Divulgar</strong> o projeto social (propósito, funcionamento e informações principais).</li>
+  <li><strong>Orientar</strong> visitantes sobre como participar.</li>
+  <li><strong>Triar</strong> candidatos elegíveis por meio de cadastro para análise.</li>
+</ul>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<h2>Status do projeto</h2>
+<ul>
+  <li>✅ <strong>Landing page</strong> (recém commitada): página inicial de apresentação do projeto.</li>
+  <li>🔜 <strong>Em breve</strong>: cadastro de alunos para triagem.</li>
+  <li>🔜 <strong>Em breve</strong>: painel/fluxo de análise e aprovação.</li>
+  <li>🔜 <strong>Em breve</strong>: controle e gestão básica de alunos.</li>
+</ul>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<h2>Landing page</h2>
+<p>
+  A landing page tem como foco <strong>apresentar o projeto</strong>, comunicar sua missão e facilitar o entendimento de como a iniciativa funciona.
+  Ela é o primeiro passo do MVP e serve como base para as próximas funcionalidades.
+</p>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<h2>Entidade beneficiada</h2>
+<p><strong>Centro de Treinamento Marcial LTDA (CTM)</strong></p>
+<p>
+  Organização que promove aulas gratuitas em Prudentópolis, atendendo <strong>crianças carentes</strong> e <strong>PCDs</strong>,
+  incentivando disciplina, inclusão e aprendizado por meio das artes marciais.
+</p>
 
-## Learning Laravel
+<h2>Time de desenvolvimento</h2>
+<ul>
+  <li><strong>Desenvolvimento:</strong> Vitor Bobato; Paulo Cesar Cardoso Domingues</li>
+</ul>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+<hr/>
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<div align="center">
+  <p><strong>Heróis no Tatame</strong> — tecnologia a favor da inclusão e do impacto social.</p>
+</div>

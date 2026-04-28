@@ -20,8 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->environment('local')) {
-            URL::forceScheme('https');
-        }
+        $scheme = parse_url(config('app.url'), PHP_URL_SCHEME) ?? 'http';
+        URL::forceScheme($scheme);
     }
 }

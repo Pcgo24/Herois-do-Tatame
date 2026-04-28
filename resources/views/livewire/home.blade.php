@@ -14,11 +14,11 @@
         </p>
 
         <div class="flex flex-col md:flex-row justify-center gap-4">
-            <!-- <button class="bg-neutral-800 hover:bg-neutral-700 text-white px-8 py-3 rounded-md font-medium flex items-center justify-center gap-2 transition">
+            <a href="{{ route('enrollment') }}" data-cy="hero-enrollment-btn" class="bg-neutral-800 hover:bg-neutral-700 text-white px-8 py-3 rounded-md font-medium flex items-center justify-center gap-2 transition">
                 Inscrever Aluno Agora
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </button> -->
-            <a href=#sobre class="border border-neutral-600 hover:bg-neutral-500 flex-col md:flex-row px-8 py-3 rounded-md font-medium transition">
+            </a>
+            <a href="#sobre" class="border border-neutral-600 hover:bg-neutral-500 flex-col md:flex-row px-8 py-3 rounded-md font-medium transition">
                 Conheça o Projeto
             </a>
         </div>
@@ -220,9 +220,8 @@
             <div>
                 <h4 class="font-bold mb-4">Links Rápidos</h4>
                 <ul class="text-neutral-500 text-sm space-y-2">
-                    <li><a href="#" class="hover:text-white transition">Início</a></li>
-                    <!-- <li><a href="#" class="hover:text-white transition">Inscrever Aluno</a></li>
-                    <li><a href="#" class="hover:text-white transition">Acesso Restrito</a></li> -->
+                    <li><a href="{{ route('home') }}" class="hover:text-white transition">Início</a></li>
+                    <li><a href="{{ route('enrollment') }}" class="hover:text-white transition">Inscrever Aluno</a></li>
                 </ul>
             </div>
 

@@ -24,7 +24,11 @@ export default defineConfig(({ mode }) => {
                     protocol: 'wss',
                     clientPort: 443
                 }
-            } : {})
+            } : {
+                hmr: {
+                    host: 'localhost'
+                }
+            })
         },
     };
 });

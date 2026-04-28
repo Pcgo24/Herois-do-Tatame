@@ -20,7 +20,8 @@
             </div>
 
             <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-400 items-center">
-                <a href="#" class="text-white border-b-2 border-white pb-1">Início</a>
+                <a href="{{ route('home') }}" class="hover:text-white transition">Início</a>
+                <a href="{{ route('enrollment') }}" data-cy="enrollment-btn" class="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-md transition">Matricule-se</a>
             </nav>
 
             <button @click="menuAberto = !menuAberto" class="md:hidden text-neutral-300 hover:text-white focus:outline-none transition">
@@ -43,9 +44,10 @@
             x-cloak
         >
             <nav class="flex flex-col px-6 py-6 gap-4">
-                <a href="#" @click="menuAberto = false" class="text-white text-lg font-medium border-b border-neutral-800 pb-3">Início</a>
+                <a href="{{ route('home') }}" @click="menuAberto = false" class="text-white text-lg font-medium border-b border-neutral-800 pb-3">Início</a>
                 <a href="#sobre" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Sobre o Projeto</a>
                 <a href="#modalidades" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Modalidades</a>
+                <a href="{{ route('enrollment') }}" @click="menuAberto = false" data-cy="enrollment-btn-mobile" class="bg-neutral-800 hover:bg-neutral-700 text-white text-lg font-medium px-4 py-2 rounded-md transition text-center">Matricule-se</a>
             </nav>
         </div>
 

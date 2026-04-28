@@ -15,13 +15,13 @@ class StoreEnrollmentRequest extends FormRequest
     public static function enrollmentRules(): array
     {
         return [
-            'responsible_name' => ['required', 'string', 'max:80'],
-            'responsible_phone_number' => ['required', 'string', 'regex:/^\d{11}$/'],
+            'responsible_name' => ['required', 'string', 'max:80', 'regex:/^[\pL\pN\s\'\-]+$/u'],
+            'responsible_phone_number' => ['required', 'string', 'regex:/^\d{10,11}$/'],
             'responsible_cpf' => ['required', 'string', 'regex:/^\d{11}$/', 'unique:responsibles,cpf'],
             'responsible_email' => ['required', 'email', 'max:255'],
             'responsible_birth_date' => ['required', 'date', 'before:'.Carbon::now()->subYears(18)->format('Y-m-d')],
             'responsible_address' => ['required', 'string', 'max:150'],
-            'student_name' => ['required', 'string', 'max:80'],
+            'student_name' => ['required', 'string', 'max:80', 'regex:/^[\pL\pN\s\'\-]+$/u'],
             'student_cpf' => ['required', 'string', 'regex:/^\d{11}$/', 'unique:students,cpf'],
             'student_rg' => ['nullable', 'string', 'max:20'],
             'student_birth_date' => [
@@ -44,8 +44,9 @@ class StoreEnrollmentRequest extends FormRequest
         return [
             'responsible_name.required' => 'O nome do responsável é obrigatório.',
             'responsible_name.max' => 'O nome do responsável não pode ter mais de 80 caracteres.',
+            'responsible_name.regex' => 'O nome do responsável só pode conter letras, números, espaços, hífens e apóstrofos.',
             'responsible_phone_number.required' => 'O telefone do responsável é obrigatório.',
-            'responsible_phone_number.regex' => 'O telefone deve conter exatamente 11 dígitos (ex: 11999999999).',
+            'responsible_phone_number.regex' => 'O telefone deve conter 10 ou 11 dígitos (ex: (42) 9999-9999 ou (42) 9 9999-9999).',
             'responsible_cpf.required' => 'O CPF do responsável é obrigatório.',
             'responsible_cpf.regex' => 'O CPF deve conter exatamente 11 dígitos numéricos, sem pontos ou traços.',
             'responsible_cpf.unique' => 'Já existe um cadastro com este CPF de responsável.',
@@ -57,6 +58,7 @@ class StoreEnrollmentRequest extends FormRequest
             'responsible_address.max' => 'O endereço não pode ter mais de 150 caracteres.',
             'student_name.required' => 'O nome do aluno é obrigatório.',
             'student_name.max' => 'O nome do aluno não pode ter mais de 80 caracteres.',
+            'student_name.regex' => 'O nome do aluno só pode conter letras, números, espaços, hífens e apóstrofos.',
             'student_cpf.required' => 'O CPF do aluno é obrigatório.',
             'student_cpf.regex' => 'O CPF deve conter exatamente 11 dígitos numéricos, sem pontos ou traços.',
             'student_cpf.unique' => 'Já existe um aluno cadastrado com este CPF.',

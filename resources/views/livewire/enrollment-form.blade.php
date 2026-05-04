@@ -55,6 +55,7 @@
                                 data-cy="input-responsible_name"
                                 maxlength="80"
                                 autocomplete="name"
+                                x-on:input="$el.value = $el.value.replace(/[^a-zA-ZÀ-ÿ0-9 '\-]/g, '')"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('responsible_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -63,19 +64,30 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <div x-data="{
+                            fmt(v) {
+                                v = String(v||'').replace(/\D/g,'').substring(0,11);
+                                if (v.length > 10)
+                                    return '('+v.slice(0,2)+') '+v.slice(2,3)+' '+v.slice(3,7)+'-'+v.slice(7);
+                                if (v.length > 6)
+                                    return '('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+                                if (v.length > 2)
+                                    return '('+v.slice(0,2)+') '+v.slice(2);
+                                return v.length ? '('+v : '';
+                            }
+                        }">
                             <label class="block text-sm font-medium text-neutral-400 mb-1.5">
                                 Telefone <span class="text-red-400">*</span>
-                                <span class="text-neutral-600 text-xs">(11 dígitos)</span>
                             </label>
                             <input
                                 type="tel"
-                                wire:model="responsible_phone_number"
                                 data-cy="input-responsible_phone_number"
-                                maxlength="11"
+                                maxlength="16"
                                 inputmode="numeric"
-                                placeholder="11999999999"
+                                placeholder="(42) 9 9999-9999"
                                 autocomplete="tel"
+                                x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_phone_number)"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_phone_number',r);"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('responsible_phone_number') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -84,18 +96,25 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <div x-data="{
+                            fmt(v) {
+                                v = String(v||'').replace(/\D/g,'').substring(0,11);
+                                return v.length>9 ? v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9)
+                                     : v.length>6 ? v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6)
+                                     : v.length>3 ? v.slice(0,3)+'.'+v.slice(3) : v;
+                            }
+                        }">
                             <label class="block text-sm font-medium text-neutral-400 mb-1.5">
                                 CPF <span class="text-red-400">*</span>
-                                <span class="text-neutral-600 text-xs">(somente números)</span>
                             </label>
                             <input
                                 type="text"
-                                wire:model="responsible_cpf"
                                 data-cy="input-responsible_cpf"
-                                maxlength="11"
+                                maxlength="14"
                                 inputmode="numeric"
-                                placeholder="12345678901"
+                                placeholder="123.456.789-01"
+                                x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_cpf)"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_cpf',r);"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('responsible_cpf') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -131,6 +150,9 @@
                                 type="date"
                                 wire:model="responsible_birth_date"
                                 data-cy="input-responsible_birth_date"
+                                min="{{ \Carbon\Carbon::now()->subYears(100)->format('Y-m-d') }}"
+                                max="{{ \Carbon\Carbon::now()->subYears(18)->subDay()->format('Y-m-d') }}"
+                                x-on:change="const y = parseInt(($el.value || '').split('-')[0]); if (!$el.value || y < 1900 || y > {{ date('Y') }}) $el.value = '';"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('responsible_birth_date') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -177,6 +199,7 @@
                                 data-cy="input-student_name"
                                 maxlength="80"
                                 autocomplete="off"
+                                x-on:input="$el.value = $el.value.replace(/[^a-zA-ZÀ-ÿ0-9 '\-]/g, '')"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('student_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -185,18 +208,25 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <div x-data="{
+                            fmt(v) {
+                                v = String(v||'').replace(/\D/g,'').substring(0,11);
+                                return v.length>9 ? v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9)
+                                     : v.length>6 ? v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6)
+                                     : v.length>3 ? v.slice(0,3)+'.'+v.slice(3) : v;
+                            }
+                        }">
                             <label class="block text-sm font-medium text-neutral-400 mb-1.5">
                                 CPF <span class="text-red-400">*</span>
-                                <span class="text-neutral-600 text-xs">(somente números)</span>
                             </label>
                             <input
                                 type="text"
-                                wire:model="student_cpf"
                                 data-cy="input-student_cpf"
-                                maxlength="11"
+                                maxlength="14"
                                 inputmode="numeric"
-                                placeholder="12345678901"
+                                placeholder="123.456.789-01"
+                                x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.student_cpf)"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('student_cpf',r);"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('student_cpf') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -205,16 +235,26 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <div x-data="{
+                            fmt(v) {
+                                v = String(v||'').replace(/\D/g,'').substring(0,9);
+                                return v.length>8 ? v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'-'+v.slice(8)
+                                     : v.length>5 ? v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5)
+                                     : v.length>2 ? v.slice(0,2)+'.'+v.slice(2) : v;
+                            }
+                        }">
                             <label class="block text-sm font-medium text-neutral-400 mb-1.5">
                                 RG
                                 <span class="text-neutral-600 text-xs">(opcional)</span>
                             </label>
                             <input
                                 type="text"
-                                wire:model="student_rg"
                                 data-cy="input-student_rg"
-                                maxlength="20"
+                                maxlength="12"
+                                inputmode="numeric"
+                                placeholder="12.232.343-4"
+                                x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.student_rg)"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,9); $el.value=fmt(r); $wire.set('student_rg',r);"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('student_rg') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -232,6 +272,9 @@
                                 type="date"
                                 wire:model="student_birth_date"
                                 data-cy="input-student_birth_date"
+                                min="{{ \Carbon\Carbon::now()->subYears(17)->format('Y-m-d') }}"
+                                max="{{ \Carbon\Carbon::now()->subYears(8)->format('Y-m-d') }}"
+                                x-on:change="const y = parseInt(($el.value || '').split('-')[0]); if (!$el.value || y < 1900 || y > {{ date('Y') }}) $el.value = '';"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('student_birth_date') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -264,12 +307,35 @@
                     </div>
                 </div>
 
+                {{-- Aceite LGPD --}}
+                <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-8 mb-6">
+                    <label for="lgpd_consent" class="flex items-start gap-3 cursor-pointer">
+                        <input
+                            id="lgpd_consent"
+                            type="checkbox"
+                            wire:model="lgpd_consent"
+                            data-cy="lgpd-consent-checkbox"
+                            class="mt-1 w-4 h-4 accent-white cursor-pointer"
+                        >
+                        <span class="text-sm text-neutral-400 leading-relaxed">
+                            Declaro que li e concordo que os dados informados serão utilizados
+                            exclusivamente para geração do termo de aceite para assinatura e
+                            para controle interno do CTM, conforme a
+                            <strong class="text-neutral-300">Lei Geral de Proteção de Dados (LGPD)</strong>.
+                        </span>
+                    </label>
+                    @error('lgpd_consent')
+                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-lgpd_consent">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- Ações --}}
                 <div class="flex flex-col items-center gap-4">
                     <button
                         type="submit"
                         data-cy="submit-btn"
                         wire:loading.attr="disabled"
+                        :disabled="!$wire.lgpd_consent"
                         class="bg-white text-black hover:bg-neutral-200 font-bold px-10 py-3 rounded-lg transition w-full md:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <span wire:loading.remove>Enviar Matrícula</span>

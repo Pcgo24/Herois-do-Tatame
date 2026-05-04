@@ -28,6 +28,7 @@ class EnrollmentTest extends TestCase
             'student_rg' => '123456789',
             'student_birth_date' => '2015-06-10',
             'student_modalidade' => 'Jiu Jitsu',
+            'lgpd_consent' => true,
         ];
     }
 
@@ -46,7 +47,8 @@ class EnrollmentTest extends TestCase
             ->set('student_cpf', $data['student_cpf'])
             ->set('student_rg', $data['student_rg'])
             ->set('student_birth_date', $data['student_birth_date'])
-            ->set('student_modalidade', $data['student_modalidade']);
+            ->set('student_modalidade', $data['student_modalidade'])
+            ->set('lgpd_consent', $data['lgpd_consent']);
     }
 
     public function test_enrollment_form_renders(): void
@@ -91,6 +93,7 @@ class EnrollmentTest extends TestCase
                 'student_cpf',
                 'student_birth_date',
                 'student_modalidade',
+                'lgpd_consent',
             ]);
     }
 
@@ -222,13 +225,26 @@ class EnrollmentTest extends TestCase
             ->once();
     }
 
-    public function test_xss_payload_is_stored_as_plain_text(): void
+    public function test_xss_payload_is_rejected_by_name_validation(): void
     {
         $xss = '<script>alert("xss")</script>';
 
         $this->fillForm(['responsible_name' => $xss])->call('submit')
-            ->assertSet('submitted', true);
+            ->assertHasErrors(['responsible_name']);
+    }
 
-        $this->assertDatabaseHas('responsibles', ['name' => $xss]);
+    public function test_lgpd_consent_is_required(): void
+    {
+        $this->fillForm(['lgpd_consent' => false])
+            ->call('submit')
+            ->assertHasErrors(['lgpd_consent']);
+    }
+
+    public function test_submission_blocked_without_lgpd_consent(): void
+    {
+        $this->fillForm(['lgpd_consent' => false])->call('submit');
+
+        $this->assertDatabaseMissing('responsibles', ['cpf' => '12345678901']);
+        $this->assertDatabaseMissing('students', ['cpf' => '98765432100']);
     }
 }

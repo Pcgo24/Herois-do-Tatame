@@ -42,7 +42,7 @@ describe('Navegação para matrícula', () => {
   it('exibe o botão Matricule-se no menu mobile', () => {
     cy.viewport('iphone-xr');
     cy.visit('/');
-    cy.get('button[aria-label]').first().click({ force: true });
+    cy.get('header button').first().click({ force: true });
     cy.get('[data-cy="enrollment-btn-mobile"]').should('be.visible');
   });
 });
@@ -59,6 +59,7 @@ describe('Formulário de matrícula', () => {
   });
 
   it('exibe erros ao submeter formulário vazio', () => {
+    cy.get('[data-cy="lgpd-consent-checkbox"]').check();
     cy.get('[data-cy="submit-btn"]').click();
     cy.get('[data-cy="error-responsible_name"]').should('be.visible');
     cy.get('[data-cy="error-responsible_cpf"]').should('be.visible');
@@ -66,13 +67,15 @@ describe('Formulário de matrícula', () => {
   });
 
   it('exibe erro para CPF com formatação (pontos e traço)', () => {
-    cy.get('[data-cy="input-responsible_cpf"]').type('123.456.789-01');
+    cy.get('[data-cy="input-responsible_cpf"]').type('123456789');
+    cy.get('[data-cy="lgpd-consent-checkbox"]').check();
     cy.get('[data-cy="submit-btn"]').click();
     cy.get('[data-cy="error-responsible_cpf"]').should('be.visible');
   });
 
   it('exibe erro para telefone com menos de 11 dígitos', () => {
     cy.get('[data-cy="input-responsible_phone_number"]').type('1199999');
+    cy.get('[data-cy="lgpd-consent-checkbox"]').check();
     cy.get('[data-cy="submit-btn"]').click();
     cy.get('[data-cy="error-responsible_phone_number"]').should('be.visible');
   });
@@ -83,6 +86,7 @@ describe('Formulário de matrícula', () => {
     cy.get('[data-cy="input-student_birth_date"]').type(
       underage.toISOString().split('T')[0]
     );
+    cy.get('[data-cy="lgpd-consent-checkbox"]').check();
     cy.get('[data-cy="submit-btn"]').click();
     cy.get('[data-cy="error-student_birth_date"]').should('be.visible');
   });
@@ -93,6 +97,7 @@ describe('Formulário de matrícula', () => {
     cy.get('[data-cy="input-student_birth_date"]').type(
       overage.toISOString().split('T')[0]
     );
+    cy.get('[data-cy="lgpd-consent-checkbox"]').check();
     cy.get('[data-cy="submit-btn"]').click();
     cy.get('[data-cy="error-student_birth_date"]').should('be.visible');
   });
@@ -114,7 +119,14 @@ describe('Formulário de matrícula', () => {
     cy.get('[data-cy="input-student_birth_date"]').type(s.birthDate);
     cy.get('[data-cy="select-student_modalidade"]').select(s.modalidade);
 
+    cy.get('[data-cy="lgpd-consent-checkbox"]').check();
     cy.get('[data-cy="submit-btn"]').click();
     cy.get('[data-cy="success-message"]', { timeout: 10000 }).should('be.visible');
+  });
+
+  it('o botão de envio fica desabilitado sem aceite LGPD', () => {
+    cy.get('[data-cy="submit-btn"]').should('be.disabled');
+    cy.get('[data-cy="lgpd-consent-checkbox"]').check();
+    cy.get('[data-cy="submit-btn"]').should('not.be.disabled');
   });
 });

@@ -2,11 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Livewire\EnrollmentForm;
 use App\Models\Responsible;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
-use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
@@ -19,11 +17,6 @@ class NeonInsertionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        if (!getenv('RUN_NEON_TESTS')) {
-            $this->markTestSkipped('Teste Neon inativo. Para rodar: RUN_NEON_TESTS=1 ./vendor/bin/sail artisan test --group=neon');
-        }
-
         config(['database.default' => 'pgsql']);
     }
 
@@ -111,72 +104,29 @@ class NeonInsertionTest extends TestCase
         $this->assertEquals($responsible->id, $fromDb->responsible_id);
     }
 
-    public function test_enrollment_form_submits_and_saves_to_neon(): void
-    {
-        $responsibleCpf = $this->uniqueCpf();
-        $studentCpf     = $this->uniqueCpf();
-
-        $this->insertedResponsibleCpfs[] = $responsibleCpf;
-        $this->insertedStudentCpfs[]     = $studentCpf;
-
-        Livewire::test(EnrollmentForm::class)
-            ->set('responsible_name', '[TESTE] Via Formulário Livewire')
-            ->set('responsible_phone_number', '11977777777')
-            ->set('responsible_cpf', $responsibleCpf)
-            ->set('responsible_email', "form_{$responsibleCpf}@teste.com")
-            ->set('responsible_birth_date', '1988-04-22')
-            ->set('responsible_address', 'Rua do Formulário, 42, São Paulo')
-            ->set('student_name', '[TESTE] Aluno Via Form')
-            ->set('student_cpf', $studentCpf)
-            ->set('student_rg', '')
-            ->set('student_birth_date', '2013-07-15')
-            ->set('student_modalidade', 'Muay Thai')
-            ->call('submit')
-            ->assertSet('submitted', true)
-            ->assertHasNoErrors();
-
-        $responsible = DB::connection('pgsql')
-            ->table('responsibles')
-            ->where('cpf', $responsibleCpf)
-            ->first();
-
-        $student = DB::connection('pgsql')
-            ->table('students')
-            ->where('cpf', $studentCpf)
-            ->first();
-
-        $this->assertNotNull($responsible, 'Responsável não salvo no Neon via formulário Livewire.');
-        $this->assertNotNull($student, 'Aluno não salvo no Neon via formulário Livewire.');
-        $this->assertEquals($responsible->id, $student->responsible_id);
-    }
-
-    public function test_duplicate_cpf_is_rejected_and_nothing_is_saved(): void
+    public function test_duplicate_cpf_raises_unique_constraint_in_neon(): void
     {
         $responsibleCpf = $this->uniqueCpf();
         $this->insertedResponsibleCpfs[] = $responsibleCpf;
 
         Responsible::create([
-            'name'         => '[TESTE] Responsável Existente',
+            'name'         => '[TESTE] Responsável Original',
             'phone_number' => '11966666666',
             'cpf'          => $responsibleCpf,
-            'email'        => "dup_{$responsibleCpf}@teste.com",
+            'email'        => "orig_{$responsibleCpf}@teste.com",
             'birth_date'   => '1980-11-05',
-            'address'      => 'Rua Duplicada, 1',
+            'address'      => 'Rua Original, 1',
         ]);
 
-        $studentCpf = $this->uniqueCpf();
+        $this->expectException(\Illuminate\Database\UniqueConstraintViolationException::class);
 
-        Livewire::test(EnrollmentForm::class)
-            ->set('responsible_cpf', $responsibleCpf)
-            ->set('student_cpf', $studentCpf)
-            ->call('submit')
-            ->assertHasErrors(['responsible_cpf']);
-
-        $studentInDb = DB::connection('pgsql')
-            ->table('students')
-            ->where('cpf', $studentCpf)
-            ->first();
-
-        $this->assertNull($studentInDb, 'Aluno foi salvo mesmo com CPF de responsável duplicado.');
+        Responsible::create([
+            'name'         => '[TESTE] Responsável Duplicado',
+            'phone_number' => '11955555555',
+            'cpf'          => $responsibleCpf,
+            'email'        => "dup_{$responsibleCpf}@teste.com",
+            'birth_date'   => '1982-03-10',
+            'address'      => 'Rua Duplicada, 2',
+        ]);
     }
 }

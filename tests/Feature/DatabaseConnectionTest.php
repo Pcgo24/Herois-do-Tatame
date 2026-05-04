@@ -13,11 +13,6 @@ class DatabaseConnectionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        if (!getenv('RUN_NEON_TESTS')) {
-            $this->markTestSkipped('Teste Neon inativo. Para rodar: RUN_NEON_TESTS=1 ./vendor/bin/sail artisan test --group=neon');
-        }
-
         config(['database.default' => 'pgsql']);
     }
 

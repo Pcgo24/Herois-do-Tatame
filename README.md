@@ -1,6 +1,5 @@
 <!--
-README inicial (em HTML) — Projeto: Heróis no Tatame
-Dica: o GitHub renderiza HTML dentro do README.md.
+README (HTML) — atualizado com as entregas da Sprint 2
 -->
 
 <div align="center">
@@ -11,89 +10,50 @@ Dica: o GitHub renderiza HTML dentro do README.md.
   <hr/>
 
   <p>
-    O CTM oferece <strong>aulas gratuitas</strong> para a comunidade carente e também para <strong>PCDs</strong> (Pessoas com Deficiência), com foco em disciplina, inclusão e desenvolvimento por meio das artes marciais.
+    A CTM oferece <strong>aulas gratuitas</strong> para a comunidade carente e para <strong>PCDs</strong> (Pessoas com Deficiência), promovendo disciplina, inclusão e desenvolvimento por meio das artes marciais.
   </p>
 
 </div>
 
-<h2>Contexto</h2>
+<h2>O que mudou (Sprint 2)</h2>
 <p>
-  Atualmente, o maior desafio do projeto é a <strong>divulgação</strong> das atividades e o <strong>controle/triagem</strong> de alunos que realmente não possuem condições financeiras para custear aulas.
-  Esta plataforma nasce para apoiar esses pontos com uma presença digital clara, simples e acessível.
+  A Sprint 2 (14/04/2026 a 04/05/2026) marcou a evolução do projeto de uma plataforma apenas informativa para um sistema
+  <strong>funcional</strong>, com foco em <strong>coleta segura de dados</strong> e <strong>triagem inicial</strong> de beneficiários,
+  em conformidade com a <strong>LGPD</strong>.
 </p>
 
-<h2>Objetivo do MVP</h2>
+<h2>Entregas da Sprint 2</h2>
 <ul>
-  <li><strong>Divulgar</strong> o projeto social (propósito, funcionamento e informações principais).</li>
-  <li><strong>Orientar</strong> visitantes sobre como participar.</li>
-  <li><strong>Triar</strong> candidatos elegíveis por meio de cadastro para análise.</li>
+  <li>
+    <strong>Módulo de Cadastro e Triagem</strong>: formulário funcional para captação de novos alunos e responsáveis,
+    integrando interface e backend (Laravel).
+  </li>
+  <li>
+    <strong>Segurança e Conformidade (LGPD)</strong>: implementação do <strong>termo de consentimento digital</strong>,
+    garantindo que a coleta de dados de menores aconteça somente após o aceite formal do responsável.
+  </li>
+  <li>
+    <strong>Regras de Validação</strong>: validações de campos obrigatórios e regras iniciais de triagem automática,
+    incluindo <strong>requisitos de idade</strong> para participação.
+  </li>
+  <li>
+    <strong>Persistência e Banco de Dados</strong>: modelagem e migrações no <strong>PostgreSQL</strong>, com base hospedada em nuvem na
+    <strong>NEON</strong>, garantindo disponibilidade e escalabilidade.
+  </li>
 </ul>
-
-<h2>Status do projeto</h2>
+<h2>Próximos passos</h2>
 <ul>
-<<<<<<< HEAD
-  <li>✅ <strong>Landing page</strong>: página inicial de apresentação do projeto.</li>
-  <li>✅ <strong>Formulário de matrícula</strong>: cadastro online de alunos para triagem.</li>
-=======
-  <li>✅ <strong>Landing page</strong> (recém commitada): página inicial de apresentação do projeto.</li>
-  <li>🔜 <strong>Em breve</strong>: cadastro de alunos para triagem.</li>
->>>>>>> c03bc5758b290fd070234f29a14db65af9b049b0
-  <li>🔜 <strong>Em breve</strong>: painel/fluxo de análise e aprovação.</li>
-  <li>🔜 <strong>Em breve</strong>: controle e gestão básica de alunos.</li>
+  <li>🔜 <strong>Em breve</strong>: Área Administrativa para instrutores/gestores do projeto.</li>
+  <li>🔜 <strong>Em breve</strong>: Autenticação e acesso restrito.</li>
+  <li>🔜 <strong>Em breve</strong>: Dashboard de triagem para visualizar candidatos e <strong>alterar status de aprovação</strong>.</li>
 </ul>
-
-<h2>Landing page</h2>
-<p>
-  A landing page tem como foco <strong>apresentar o projeto</strong>, comunicar sua missão e facilitar o entendimento de como a iniciativa funciona.
-  Ela é o primeiro passo do MVP e serve como base para as próximas funcionalidades.
-</p>
-
-<<<<<<< HEAD
-<h2>Formulário de matrícula</h2>
-<p>
-  O formulário de matrícula permite que o <strong>responsável pelo aluno</strong> faça o cadastro diretamente pelo site,
-  sem precisar ir pessoalmente ao CTM. O preenchimento é simples: dados do responsável (nome, CPF, telefone, e-mail,
-  data de nascimento e endereço) e dados do aluno (nome, CPF, RG opcional, data de nascimento e a modalidade de interesse).
-</p>
-<p>
-  As modalidades disponíveis são: <strong>Jiu Jitsu</strong>, <strong>Muay Thai</strong>, <strong>Taekwondo</strong> e <strong>Boxe</strong>.
-  O sistema aceita apenas alunos entre 8 e 17 anos, garantindo que o cadastro esteja dentro do perfil atendido pelo projeto.
-  Após o envio, o responsável recebe uma confirmação na tela.
-</p>
-
-<h2>Entidade beneficiada</h2>
-<p><strong>Centro de Treinamento Marcial LTDA (CTM)</strong></p>
-<p>
-  Organização que promove aulas gratuitas em Prudentópolis, atendendo <strong>crianças carentes</strong> e <strong>PCDs</strong>,
-  incentivando disciplina, inclusão e aprendizado por meio das artes marciais.
-</p>
-
-<h2>Time de desenvolvimento</h2>
-<ul>
-  <li><strong>Desenvolvimento:</strong> Vitor Bobato; Paulo Cesar Cardoso Domingues</li>
-</ul>
-
-<hr/>
-
 <div align="center">
+  <p><strong>Repositório:</strong> <a href="https://github.com/Pcgo24/Herois-do-Tatame">github.com/Pcgo24/Herois-do-Tatame</a></p>
   <p><strong>Heróis no Tatame</strong> — tecnologia a favor da inclusão e do impacto social.</p>
 </div>
-=======
-<h2>Entidade beneficiada</h2>
-<p><strong>Centro de Treinamento Marcial LTDA (CTM)</strong></p>
-<p>
-  Organização que promove aulas gratuitas em Prudentópolis, atendendo <strong>crianças carentes</strong> e <strong>PCDs</strong>,
-  incentivando disciplina, inclusão e aprendizado por meio das artes marciais.
-</p>
-
 <h2>Time de desenvolvimento</h2>
 <ul>
+  <li><strong>Product Owner:</strong> Vitor Bobato</li>
+  <li><strong>Scrum Master:</strong> Paulo Cesar Cardoso Domingues</li>
   <li><strong>Desenvolvimento:</strong> Vitor Bobato; Paulo Cesar Cardoso Domingues</li>
 </ul>
-
-<hr/>
-
-<div align="center">
-  <p><strong>Heróis no Tatame</strong> — tecnologia a favor da inclusão e do impacto social.</p>
-</div>
->>>>>>> c03bc5758b290fd070234f29a14db65af9b049b0

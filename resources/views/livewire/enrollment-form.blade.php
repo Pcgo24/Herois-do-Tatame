@@ -307,12 +307,35 @@
                     </div>
                 </div>
 
+                {{-- Aceite LGPD --}}
+                <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-8 mb-6">
+                    <label for="lgpd_consent" class="flex items-start gap-3 cursor-pointer">
+                        <input
+                            id="lgpd_consent"
+                            type="checkbox"
+                            wire:model="lgpd_consent"
+                            data-cy="lgpd-consent-checkbox"
+                            class="mt-1 w-4 h-4 accent-white cursor-pointer"
+                        >
+                        <span class="text-sm text-neutral-400 leading-relaxed">
+                            Declaro que li e concordo que os dados informados serão utilizados
+                            exclusivamente para geração do termo de aceite para assinatura e
+                            para controle interno do CTM, conforme a
+                            <strong class="text-neutral-300">Lei Geral de Proteção de Dados (LGPD)</strong>.
+                        </span>
+                    </label>
+                    @error('lgpd_consent')
+                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-lgpd_consent">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- Ações --}}
                 <div class="flex flex-col items-center gap-4">
                     <button
                         type="submit"
                         data-cy="submit-btn"
                         wire:loading.attr="disabled"
+                        :disabled="!$wire.lgpd_consent"
                         class="bg-white text-black hover:bg-neutral-200 font-bold px-10 py-3 rounded-lg transition w-full md:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <span wire:loading.remove>Enviar Matrícula</span>

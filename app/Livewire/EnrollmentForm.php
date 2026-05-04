@@ -35,6 +35,8 @@ class EnrollmentForm extends Component
 
     public bool $submitted = false;
 
+    public bool $lgpd_consent = false;
+
     public function submit(): void
     {
         Log::info('Tentativa de matrícula iniciada.', ['ip' => request()->ip()]);

@@ -7,18 +7,10 @@ use App\Models\Responsible;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-/**
- * @group neon
- *
- * Testa inserção real de dados no Neon (PostgreSQL de produção).
- * Cada teste limpa os próprios registros no tearDown para não poluir o banco.
- *
- * Pré-requisito: tabelas existentes — rode ./vendor/bin/sail artisan migrate antes.
- *
- * Para rodar: ./vendor/bin/sail artisan test --group=neon
- */
+#[Group('neon')]
 class NeonInsertionTest extends TestCase
 {
     private array $insertedResponsibleCpfs = [];

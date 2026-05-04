@@ -29,5 +29,8 @@ Thumbs.db
 /cypress/screenshots/
 /cypress/downloads/
 
-# .md files
-*.md
+CHANGELOG.md
+CLAUDE.md
+docs/
+RELATORIO_TASKS.md
+

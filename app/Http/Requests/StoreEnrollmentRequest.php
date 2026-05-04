@@ -31,6 +31,7 @@ class StoreEnrollmentRequest extends FormRequest
                 'after:'.Carbon::now()->subYears(18)->format('Y-m-d'),
             ],
             'student_modalidade' => ['required', 'string', 'in:Jiu Jitsu,Muay Thai,Taekwondo,Boxe'],
+            'lgpd_consent' => ['accepted'],
         ];
     }
 
@@ -67,6 +68,7 @@ class StoreEnrollmentRequest extends FormRequest
             'student_birth_date.after' => 'O aluno deve ter no máximo 17 anos.',
             'student_modalidade.required' => 'Selecione uma modalidade.',
             'student_modalidade.in' => 'Modalidade inválida. Escolha entre: Jiu Jitsu, Muay Thai, Taekwondo ou Boxe.',
+            'lgpd_consent.accepted' => 'Você precisa concordar com o uso dos dados para prosseguir.',
         ];
     }
 }

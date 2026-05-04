@@ -4,16 +4,10 @@ namespace Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
-/**
- * @group neon
- *
- * Testa a conectividade e estrutura do banco de dados Neon (PostgreSQL).
- * Não modifica nenhum dado.
- *
- * Para rodar: ./vendor/bin/sail artisan test --group=neon
- */
+#[Group('neon')]
 class DatabaseConnectionTest extends TestCase
 {
     protected function setUp(): void

@@ -31,8 +31,13 @@ Dica: o GitHub renderiza HTML dentro do README.md.
 
 <h2>Status do projeto</h2>
 <ul>
+<<<<<<< HEAD
   <li>✅ <strong>Landing page</strong>: página inicial de apresentação do projeto.</li>
   <li>✅ <strong>Formulário de matrícula</strong>: cadastro online de alunos para triagem.</li>
+=======
+  <li>✅ <strong>Landing page</strong> (recém commitada): página inicial de apresentação do projeto.</li>
+  <li>🔜 <strong>Em breve</strong>: cadastro de alunos para triagem.</li>
+>>>>>>> c03bc5758b290fd070234f29a14db65af9b049b0
   <li>🔜 <strong>Em breve</strong>: painel/fluxo de análise e aprovação.</li>
   <li>🔜 <strong>Em breve</strong>: controle e gestão básica de alunos.</li>
 </ul>
@@ -43,6 +48,7 @@ Dica: o GitHub renderiza HTML dentro do README.md.
   Ela é o primeiro passo do MVP e serve como base para as próximas funcionalidades.
 </p>
 
+<<<<<<< HEAD
 <h2>Formulário de matrícula</h2>
 <p>
   O formulário de matrícula permite que o <strong>responsável pelo aluno</strong> faça o cadastro diretamente pelo site,
@@ -72,3 +78,22 @@ Dica: o GitHub renderiza HTML dentro do README.md.
 <div align="center">
   <p><strong>Heróis no Tatame</strong> — tecnologia a favor da inclusão e do impacto social.</p>
 </div>
+=======
+<h2>Entidade beneficiada</h2>
+<p><strong>Centro de Treinamento Marcial LTDA (CTM)</strong></p>
+<p>
+  Organização que promove aulas gratuitas em Prudentópolis, atendendo <strong>crianças carentes</strong> e <strong>PCDs</strong>,
+  incentivando disciplina, inclusão e aprendizado por meio das artes marciais.
+</p>
+
+<h2>Time de desenvolvimento</h2>
+<ul>
+  <li><strong>Desenvolvimento:</strong> Vitor Bobato; Paulo Cesar Cardoso Domingues</li>
+</ul>
+
+<hr/>
+
+<div align="center">
+  <p><strong>Heróis no Tatame</strong> — tecnologia a favor da inclusão e do impacto social.</p>
+</div>
+>>>>>>> c03bc5758b290fd070234f29a14db65af9b049b0

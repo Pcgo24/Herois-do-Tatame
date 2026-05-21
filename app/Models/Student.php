@@ -19,6 +19,8 @@ class Student extends Model
         'rg',
         'birth_date',
         'modalidade',
+        'termo_status',
+        'termo_arquivo',
     ];
 
     protected function casts(): array

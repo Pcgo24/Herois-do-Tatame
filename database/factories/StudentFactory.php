@@ -19,6 +19,7 @@ class StudentFactory extends Factory
             'rg'             => $this->faker->optional(0.7)->numerify('#########'),
             'birth_date'     => $this->faker->dateTimeBetween('-16 years', '-9 years')->format('Y-m-d'),
             'modalidade'     => $this->faker->randomElement(['Jiu Jitsu', 'Muay Thai', 'Taekwondo', 'Boxe']),
+            'termo_status'   => 'pendente',
         ];
     }
 }

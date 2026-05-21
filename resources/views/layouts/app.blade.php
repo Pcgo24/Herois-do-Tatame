@@ -57,6 +57,7 @@
         {{ $slot }}
     </main>
 
+
 </body>
 </html>
 

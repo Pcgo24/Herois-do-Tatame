@@ -9,7 +9,7 @@ class Dashboard extends Component
 {
     public function updateTermoStatus(string $studentId, string $status): void
     {
-        if (!in_array($status, ['pendente', 'entregue', 'assinado'])) {
+        if (! in_array($status, ['pendente', 'entregue', 'assinado'])) {
             return;
         }
 

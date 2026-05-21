@@ -33,14 +33,14 @@ class DashboardTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
         $responsible = Responsible::factory()->create([
-            'name'         => 'Maria Souza',
+            'name' => 'Maria Souza',
             'phone_number' => '11987654321',
         ]);
         Student::factory()->create(['responsible_id' => $responsible->id]);
 
         Livewire::test(Dashboard::class)
             ->assertSee('Maria Souza')
-            ->assertSee('11987654321');
+            ->assertSee('(11) 98765-4321');
     }
 
     public function test_dashboard_shows_all_students(): void
@@ -96,8 +96,32 @@ class DashboardTest extends TestCase
         $this->assertEquals('pendente', $student->fresh()->termo_status);
     }
 
+    // TODO: a rota é pública durante o desenvolvimento; trocar este teste por
+    // verificação de auth quando o login for implementado.
     public function test_admin_dashboard_is_publicly_accessible(): void
     {
         $this->get('/admin/dashboard')->assertStatus(200);
+    }
+
+    public function test_dashboard_embeds_student_details_for_modal(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $responsible = Responsible::factory()->create([
+            'name' => 'Ana Responsável',
+            'email' => 'ana@example.com',
+        ]);
+        Student::factory()->create([
+            'responsible_id' => $responsible->id,
+            'name' => 'Pedro Estudante',
+            'modalidade' => 'Judô',
+        ]);
+
+        // O modal é client-side: os detalhes completos vão embutidos no HTML
+        // (via @js no @click da linha) para abrir sem ida ao servidor.
+        Livewire::test(Dashboard::class)
+            ->assertSee('Pedro Estudante')
+            ->assertSee('Ana Responsável')
+            ->assertSee('ana@example.com')
+            ->assertSee('Judô');
     }
 }

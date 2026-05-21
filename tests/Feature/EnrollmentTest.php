@@ -247,4 +247,14 @@ class EnrollmentTest extends TestCase
         $this->assertDatabaseMissing('responsibles', ['cpf' => '12345678901']);
         $this->assertDatabaseMissing('students', ['cpf' => '98765432100']);
     }
+
+    public function test_enrollment_route_is_accessible_at_english_url(): void
+    {
+        $this->get('/enrollment')->assertStatus(200);
+    }
+
+    public function test_old_matricula_url_no_longer_exists(): void
+    {
+        $this->get('/matricula')->assertStatus(404);
+    }
 }

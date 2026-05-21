@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Heróis do Tatame</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>[x-cloak]{display:none!important;}</style>
 </head>
 <body class="bg-black text-white antialiased font-sans min-h-screen">
 

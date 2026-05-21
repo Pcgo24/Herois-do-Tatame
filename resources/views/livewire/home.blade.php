@@ -222,6 +222,7 @@
                 <ul class="text-neutral-500 text-sm space-y-2">
                     <li><a href="{{ route('home') }}" class="hover:text-white transition">Início</a></li>
                     <li><a href="{{ route('enrollment') }}" class="hover:text-white transition">Inscrever Aluno</a></li>
+                    <li><a href="{{ route('admin.dashboard') }}" class="hover:text-white transition">Área Restrita</a></li>
                 </ul>
             </div>
 

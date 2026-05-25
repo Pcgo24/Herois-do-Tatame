@@ -1,11 +1,7 @@
-<!--
-README (HTML) — atualizado com as entregas da Sprint 2
--->
-
 <div align="center">
 
   <h1>Heróis no Tatame</h1>
-  <p><strong>Plataforma web para divulgação e triagem de alunos</strong> do projeto social <em>"Heróis no Tatame"</em>, promovido pelo <strong>Centro de Treinamento Marcial (CTM)</strong>.</p>
+  <p><strong>Plataforma web para divulgação, triagem e gestão de alunos</strong> do projeto social <em>"Heróis no Tatame"</em>, promovido pelo <strong>Centro de Treinamento Marcial (CTM)</strong>.</p>
 
   <hr/>
 
@@ -15,42 +11,45 @@ README (HTML) — atualizado com as entregas da Sprint 2
 
 </div>
 
-<h2>O que mudou (Sprint 2)</h2>
+<h2>O que mudou (Sprint 3)</h2>
 <p>
-  A Sprint 2 (14/04/2026 a 04/05/2026) marcou a evolução do projeto de uma plataforma apenas informativa para um sistema
-  <strong>funcional</strong>, com foco em <strong>coleta segura de dados</strong> e <strong>triagem inicial</strong> de beneficiários,
-  em conformidade com a <strong>LGPD</strong>.
+  A Sprint 3 (04/05/2026 a 25/05/2026) foi marcada pela criação da <strong>Área Administrativa (Dashboard de Triagem)</strong> para instrutores e gestores, ampliando o sistema para além da triagem, com foco em <strong>gestão centralizada</strong>, visualização dos inscritos e integração com o banco de dados em tempo real.
 </p>
 
-<h2>Entregas da Sprint 2</h2>
+<h2>Entregas da Sprint 3</h2>
 <ul>
   <li>
-    <strong>Módulo de Cadastro e Triagem</strong>: formulário funcional para captação de novos alunos e responsáveis,
-    integrando interface e backend (Laravel).
+    <strong>Dashboard Administrativo</strong>: painel visual para listagem, filtragem e visualização centralizada de todos os alunos e responsáveis cadastrados nas etapas anteriores.
   </li>
   <li>
-    <strong>Segurança e Conformidade (LGPD)</strong>: implementação do <strong>termo de consentimento digital</strong>,
-    garantindo que a coleta de dados de menores aconteça somente após o aceite formal do responsável.
+    <strong>Integração completa com Banco de Dados</strong>: painel vinculado à base <strong>PostgreSQL (Neon)</strong>, permitindo leitura dos registros de triagem em tempo real.
   </li>
   <li>
-    <strong>Regras de Validação</strong>: validações de campos obrigatórios e regras iniciais de triagem automática,
-    incluindo <strong>requisitos de idade</strong> para participação.
+    <strong>Infraestrutura técnica aprimorada</strong>: backend preparado para robustez, escalabilidade e futuras integrações.
   </li>
   <li>
-    <strong>Persistência e Banco de Dados</strong>: modelagem e migrações no <strong>PostgreSQL</strong>, com base hospedada em nuvem na
-    <strong>NEON</strong>, garantindo disponibilidade e escalabilidade.
+    <strong>Organização do backlog</strong>: tarefas e débitos técnicos do módulo de autenticação/control de acesso mantidos visíveis no Kanban para futura priorização.
   </li>
 </ul>
+
+<h2>Pendências e decisões</h2>
+<ul>
+  <li><strong>Autenticação e controle de acesso</strong>: entrega adiada, aguardando definição do fluxo ideal junto aos responsáveis do projeto e prefeitura.</li>
+  <li><strong>Testes manuais</strong>: realizados para responsividade do painel e confirmação da integração com o banco de dados.</li>
+</ul>
+
 <h2>Próximos passos</h2>
 <ul>
-  <li>🔜 <strong>Em breve</strong>: Área Administrativa para instrutores/gestores do projeto.</li>
-  <li>🔜 <strong>Em breve</strong>: Autenticação e acesso restrito.</li>
-  <li>🔜 <strong>Em breve</strong>: Dashboard de triagem para visualizar candidatos e <strong>alterar status de aprovação</strong>.</li>
+  <li>🔜 Implementação do sistema de autenticação e controle de acesso.</li>
+  <li>🔜 Ajustes visuais/técnicos do Dashboard conforme feedback dos instrutores.</li>
+  <li>🔜 Evolução contínua com foco em estabilidade, segurança e preparação para o deploy.</li>
 </ul>
+
 <div align="center">
   <p><strong>Repositório:</strong> <a href="https://github.com/Pcgo24/Herois-do-Tatame">github.com/Pcgo24/Herois-do-Tatame</a></p>
   <p><strong>Heróis no Tatame</strong> — tecnologia a favor da inclusão e do impacto social.</p>
 </div>
+
 <h2>Time de desenvolvimento</h2>
 <ul>
   <li><strong>Product Owner:</strong> Vitor Bobato</li>

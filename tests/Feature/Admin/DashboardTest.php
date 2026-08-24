@@ -138,4 +138,12 @@ class DashboardTest extends TestCase
         Livewire::test(Dashboard::class)
             ->assertSee(route('admin.students.ficha', $student), escape: false);
     }
+
+    public function test_guest_cannot_download_a_signed_ficha(): void
+    {
+        $student = Student::factory()->create();
+
+        $this->get(route('admin.students.ficha-assinada', $student))
+            ->assertRedirect(route('login'));
+    }
 }

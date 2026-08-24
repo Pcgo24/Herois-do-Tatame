@@ -29,6 +29,8 @@ class Student extends Model
         'modalidade',
         'termo_status',
         'termo_arquivo',
+        'termo_arquivo_nome',
+        'termo_arquivo_enviado_em',
     ];
 
     protected function casts(): array
@@ -39,6 +41,7 @@ class Student extends Model
             'birth_date' => 'date',
             'no_father' => 'boolean',
             'no_mother' => 'boolean',
+            'termo_arquivo_enviado_em' => 'datetime',
         ];
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SignedFichaController;
 use App\Http\Controllers\StudentFichaController;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Auth\Login;
@@ -16,6 +17,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/alunos/{student}/ficha', StudentFichaController::class)
         ->name('admin.students.ficha');
+
+    Route::get('/admin/alunos/{student}/ficha-assinada', SignedFichaController::class)
+        ->name('admin.students.ficha-assinada');
 
     Route::post('/logout', function () {
         auth()->logout();

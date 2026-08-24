@@ -35,6 +35,8 @@
             'email'        => $s->email ?: '—',
             'modalidade'   => $s->modalidade,
             'termo_status' => $s->termo_status,
+            'termo_arquivo'      => (bool) $s->termo_arquivo,
+            'termo_arquivo_nome' => $s->termo_arquivo_nome,
             'resp'         => [
                 'name'         => $s->responsible->name,
                 'phone'        => Formatters::phone($s->responsible->phone_number),
@@ -284,6 +286,70 @@
                         </div>
                     </dl>
                 </section>
+
+                {{-- Ficha assinada --}}
+                <section>
+                    <h3 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+                        <span class="h-1.5 w-1.5 rounded-full bg-neutral-600"></span>
+                        Ficha assinada
+                    </h3>
+
+                    <template x-if="s.termo_arquivo">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <a
+                                :href="'/admin/alunos/' + s.id + '/ficha-assinada'"
+                                target="_blank"
+                                data-cy="ficha-assinada-link"
+                                class="inline-block bg-white text-black font-bold px-5 py-2 rounded-lg hover:bg-neutral-200 transition"
+                            >
+                                Baixar ficha assinada
+                            </a>
+                            <span class="text-sm text-neutral-500" x-text="s.termo_arquivo_nome"></span>
+                            <button
+                                type="button"
+                                @click="$wire.removeSignedFicha(s.id).then(() => close())"
+                                data-cy="ficha-assinada-remove"
+                                class="text-sm text-red-400 hover:text-red-300 transition"
+                            >
+                                Remover
+                            </button>
+                        </div>
+                    </template>
+
+                    <template x-if="! s.termo_arquivo">
+                        <div>
+                            <p class="text-sm text-neutral-500 mb-3">
+                                Anexe o PDF ou a foto da ficha que o responsável assinou.
+                                O status do termo passa a &quot;assinado&quot; automaticamente.
+                            </p>
+                            <input
+                                type="file"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                data-cy="ficha-assinada-input"
+                                @change="$wire.set('uploadTargetId', s.id)"
+                                wire:model="signedFicha"
+                                class="block w-full text-sm text-neutral-400 file:mr-4 file:rounded-lg file:border-0
+                                       file:bg-neutral-800 file:px-4 file:py-2 file:text-sm file:font-semibold
+                                       file:text-neutral-200 hover:file:bg-neutral-700"
+                            >
+                            <div wire:loading wire:target="signedFicha" class="text-sm text-neutral-500 mt-2">
+                                Enviando arquivo...
+                            </div>
+                            <button
+                                type="button"
+                                @click="$wire.uploadSignedFicha().then(() => close())"
+                                data-cy="ficha-assinada-submit"
+                                class="mt-3 bg-white text-black font-bold px-5 py-2 rounded-lg hover:bg-neutral-200 transition"
+                            >
+                                Salvar ficha assinada
+                            </button>
+                            @error('signedFicha')
+                                <p class="text-red-400 text-sm mt-2" data-cy="error-signedFicha">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </template>
+                </section>
+
             </div>
         </div>
     </div>

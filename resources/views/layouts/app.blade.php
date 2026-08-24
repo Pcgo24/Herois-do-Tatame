@@ -16,7 +16,7 @@
 
             <div class="flex items-center gap-2">
                 <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <a href="#" class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</a>
+                <a href="{{ route('home') }}" class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</a>
             </div>
 
             <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-400 items-center">

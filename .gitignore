@@ -4,6 +4,8 @@
 .env.backup
 .env.production
 .env.testing
+# banco sqlite descartavel + chave de teste propria: seguro versionar
+!.env.testing
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -36,3 +38,6 @@ RELATORIO_TASKS.md
 
 # Temp
 temp/
+
+/database/testing.sqlite
+/testing

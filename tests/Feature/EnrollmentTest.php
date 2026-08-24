@@ -19,14 +19,25 @@ class EnrollmentTest extends TestCase
         return [
             'responsible_name' => 'Maria da Silva',
             'responsible_phone_number' => '11999999999',
+            'responsible_home_phone' => '4232241234',
             'responsible_cpf' => '12345678901',
+            'responsible_rg' => '123456789',
             'responsible_email' => 'maria@email.com',
             'responsible_birth_date' => '1990-01-15',
-            'responsible_address' => 'Rua das Flores, 123, São Paulo',
+            'responsible_address' => 'Rua das Flores, 123',
+            'responsible_neighborhood' => 'Centro',
             'student_name' => 'João da Silva',
             'student_cpf' => '98765432100',
-            'student_rg' => '123456789',
+            'student_rg' => '987654321',
             'student_birth_date' => '2015-06-10',
+            'student_school' => 'Colégio Estadual de Prudentópolis',
+            'student_grade' => '5º ano',
+            'student_father_name' => 'José da Silva',
+            'student_no_father' => false,
+            'student_mother_name' => 'Maria da Silva',
+            'student_no_mother' => false,
+            'student_phone' => '42999998888',
+            'student_email' => 'joao@email.com',
             'student_modalidade' => 'Jiu Jitsu',
             'lgpd_consent' => true,
         ];
@@ -36,19 +47,13 @@ class EnrollmentTest extends TestCase
     {
         $data = array_merge($this->validPayload(), $overrides);
 
-        return Livewire::test(EnrollmentForm::class)
-            ->set('responsible_name', $data['responsible_name'])
-            ->set('responsible_phone_number', $data['responsible_phone_number'])
-            ->set('responsible_cpf', $data['responsible_cpf'])
-            ->set('responsible_email', $data['responsible_email'])
-            ->set('responsible_birth_date', $data['responsible_birth_date'])
-            ->set('responsible_address', $data['responsible_address'])
-            ->set('student_name', $data['student_name'])
-            ->set('student_cpf', $data['student_cpf'])
-            ->set('student_rg', $data['student_rg'])
-            ->set('student_birth_date', $data['student_birth_date'])
-            ->set('student_modalidade', $data['student_modalidade'])
-            ->set('lgpd_consent', $data['lgpd_consent']);
+        $component = Livewire::test(EnrollmentForm::class);
+
+        foreach ($data as $property => $value) {
+            $component->set($property, $value);
+        }
+
+        return $component;
     }
 
     public function test_enrollment_form_renders(): void
@@ -193,14 +198,16 @@ class EnrollmentTest extends TestCase
             ->assertHasErrors(['student_cpf']);
     }
 
-    public function test_student_rg_is_optional(): void
+    // O RG deixou de ser opcional: a autorização da ficha da SMER identifica o
+    // menor pelo "portador da Cédula de Identidade RG nº", então sem ele o
+    // documento não pode ser emitido.
+    public function test_student_rg_is_required(): void
     {
         $this->fillForm(['student_rg' => ''])->call('submit')
-            ->assertSet('submitted', true)
-            ->assertHasNoErrors();
+            ->assertSet('submitted', false)
+            ->assertHasErrors(['student_rg' => 'required']);
 
-        $student = Student::where('cpf', '98765432100')->first();
-        $this->assertNull($student->rg);
+        $this->assertDatabaseCount('students', 0);
     }
 
     public function test_logs_enrollment_attempt(): void
@@ -256,5 +263,111 @@ class EnrollmentTest extends TestCase
     public function test_old_matricula_url_no_longer_exists(): void
     {
         $this->get('/matricula')->assertStatus(404);
+    }
+
+    public function test_submission_persists_ficha_fields(): void
+    {
+        $this->fillForm()->call('submit')->assertHasNoErrors();
+
+        $responsible = Responsible::first();
+        $student = Student::first();
+
+        $this->assertSame('123456789', $responsible->rg);
+        $this->assertSame('Centro', $responsible->neighborhood);
+        $this->assertSame('4232241234', $responsible->home_phone);
+        $this->assertSame('Colégio Estadual de Prudentópolis', $student->school);
+        $this->assertSame('5º ano', $student->grade);
+        $this->assertSame('José da Silva', $student->father_name);
+        $this->assertSame('Maria da Silva', $student->mother_name);
+        $this->assertSame('42999998888', $student->phone);
+        $this->assertSame('joao@email.com', $student->email);
+    }
+
+    public static function requiredFichaFieldProvider(): array
+    {
+        return [
+            'RG do responsável' => ['responsible_rg'],
+            'bairro' => ['responsible_neighborhood'],
+            'RG do aluno' => ['student_rg'],
+            'escola' => ['student_school'],
+            'série' => ['student_grade'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('requiredFichaFieldProvider')]
+    public function test_required_ficha_field_cannot_be_empty(string $field): void
+    {
+        $this->fillForm([$field => ''])
+            ->call('submit')
+            ->assertHasErrors([$field => 'required']);
+
+        $this->assertDatabaseCount('students', 0);
+    }
+
+    public function test_home_phone_and_student_contact_are_optional(): void
+    {
+        $this->fillForm([
+            'responsible_home_phone' => '',
+            'student_phone' => '',
+            'student_email' => '',
+        ])->call('submit')->assertHasNoErrors();
+
+        $this->assertNull(Responsible::first()->home_phone);
+        $this->assertNull(Student::first()->phone);
+        $this->assertNull(Student::first()->email);
+    }
+
+    public function test_missing_father_checkbox_replaces_the_father_name(): void
+    {
+        $this->fillForm([
+            'student_father_name' => '',
+            'student_no_father' => true,
+        ])->call('submit')->assertHasNoErrors();
+
+        $student = Student::first();
+
+        $this->assertNull($student->father_name);
+        $this->assertTrue($student->no_father);
+    }
+
+    public function test_missing_mother_checkbox_replaces_the_mother_name(): void
+    {
+        $this->fillForm([
+            'student_mother_name' => '',
+            'student_no_mother' => true,
+        ])->call('submit')->assertHasNoErrors();
+
+        $student = Student::first();
+
+        $this->assertNull($student->mother_name);
+        $this->assertTrue($student->no_mother);
+    }
+
+    public function test_father_name_is_required_without_the_checkbox(): void
+    {
+        $this->fillForm(['student_father_name' => ''])
+            ->call('submit')
+            ->assertHasErrors('student_father_name');
+
+        $this->assertDatabaseCount('students', 0);
+    }
+
+    public function test_at_least_one_filiation_is_required(): void
+    {
+        $this->fillForm([
+            'student_father_name' => '',
+            'student_no_father' => true,
+            'student_mother_name' => '',
+            'student_no_mother' => true,
+        ])->call('submit')->assertHasErrors('student_no_father');
+
+        $this->assertDatabaseCount('students', 0);
+    }
+
+    public function test_student_email_must_be_valid_when_filled(): void
+    {
+        $this->fillForm(['student_email' => 'nao-e-email'])
+            ->call('submit')
+            ->assertHasErrors(['student_email' => 'email']);
     }
 }

@@ -211,7 +211,6 @@
                                 data-cy="input-responsible_birth_date"
                                 min="{{ \Carbon\Carbon::now()->subYears(100)->format('Y-m-d') }}"
                                 max="{{ \Carbon\Carbon::now()->subYears(18)->subDay()->format('Y-m-d') }}"
-                                x-on:change="const y = parseInt(($el.value || '').split('-')[0]); if (!$el.value || y < 1900 || y > {{ date('Y') }}) $el.value = '';"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('responsible_birth_date') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >
@@ -347,9 +346,8 @@
                                 type="date"
                                 wire:model="student_birth_date"
                                 data-cy="input-student_birth_date"
-                                min="{{ \Carbon\Carbon::now()->subYears(17)->format('Y-m-d') }}"
+                                min="{{ \Carbon\Carbon::now()->subYears(18)->addDay()->format('Y-m-d') }}"
                                 max="{{ \Carbon\Carbon::now()->subYears(8)->format('Y-m-d') }}"
-                                x-on:change="const y = parseInt(($el.value || '').split('-')[0]); if (!$el.value || y < 1900 || y > {{ date('Y') }}) $el.value = '';"
                                 class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
                                        {{ $errors->has('student_birth_date') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
                             >

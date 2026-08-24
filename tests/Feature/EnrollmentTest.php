@@ -370,4 +370,36 @@ class EnrollmentTest extends TestCase
             ->call('submit')
             ->assertHasErrors(['student_email' => 'email']);
     }
+
+    // AJ-02: o handler Alpine apagava o campo ao ler um ano parcial (ex.: "0002"
+    // enquanto se digita "2015"). Recusar data inválida é trabalho da validação
+    // do servidor, não de um handler que descarta o que o usuário digitou.
+    public function test_student_with_seventeen_and_a_half_years_is_accepted(): void
+    {
+        $birthDate = \Illuminate\Support\Carbon::now()->subYears(17)->subMonths(6)->format('Y-m-d');
+
+        $this->fillForm(['student_birth_date' => $birthDate])
+            ->call('submit')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseCount('students', 1);
+    }
+
+    public function test_absurd_birth_year_is_rejected_with_a_message(): void
+    {
+        $this->fillForm(['student_birth_date' => '0002-06-10'])
+            ->call('submit')
+            ->assertHasErrors('student_birth_date');
+
+        $this->assertDatabaseCount('students', 0);
+    }
+
+    public function test_student_older_than_eighteen_is_rejected(): void
+    {
+        $birthDate = \Illuminate\Support\Carbon::now()->subYears(19)->format('Y-m-d');
+
+        $this->fillForm(['student_birth_date' => $birthDate])
+            ->call('submit')
+            ->assertHasErrors(['student_birth_date' => 'after']);
+    }
 }

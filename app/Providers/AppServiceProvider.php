@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RedirectIfAuthenticated::redirectUsing(fn () => route('admin.dashboard'));
+
         $scheme = parse_url(config('app.url'), PHP_URL_SCHEME) ?? 'http';
         URL::forceScheme($scheme);
     }

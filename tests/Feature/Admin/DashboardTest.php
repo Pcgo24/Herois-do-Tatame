@@ -96,11 +96,16 @@ class DashboardTest extends TestCase
         $this->assertEquals('pendente', $student->fresh()->termo_status);
     }
 
-    // TODO: a rota é pública durante o desenvolvimento; trocar este teste por
-    // verificação de auth quando o login for implementado.
-    public function test_admin_dashboard_is_publicly_accessible(): void
+    public function test_guest_is_redirected_to_login(): void
     {
-        $this->get('/admin/dashboard')->assertStatus(200);
+        $this->get('/admin/dashboard')->assertRedirect(route('login'));
+    }
+
+    public function test_authenticated_user_reaches_the_dashboard(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this->get('/admin/dashboard')->assertOk();
     }
 
     public function test_dashboard_embeds_student_details_for_modal(): void

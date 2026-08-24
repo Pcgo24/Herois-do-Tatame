@@ -123,6 +123,65 @@
                             @enderror
                         </div>
 
+                        <div x-data="{
+                            fmt(v) {
+                                v = String(v||'').replace(/\D/g,'').substring(0,9);
+                                return v.length>8 ? v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'-'+v.slice(8)
+                                     : v.length>5 ? v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5)
+                                     : v.length>2 ? v.slice(0,2)+'.'+v.slice(2) : v;
+                            }
+                        }">
+                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                RG <span class="text-red-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                data-cy="input-responsible_rg"
+                                maxlength="12"
+                                inputmode="numeric"
+                                placeholder="12.232.343-4"
+                                x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_rg)"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,9); $el.value=fmt(r); $wire.set('responsible_rg',r);"
+                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                       {{ $errors->has('responsible_rg') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                            >
+                            @error('responsible_rg')
+                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_rg">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div x-data="{
+                            fmt(v) {
+                                v = String(v||'').replace(/\D/g,'').substring(0,11);
+                                if (v.length > 10)
+                                    return '('+v.slice(0,2)+') '+v.slice(2,3)+' '+v.slice(3,7)+'-'+v.slice(7);
+                                if (v.length > 6)
+                                    return '('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+                                if (v.length > 2)
+                                    return '('+v.slice(0,2)+') '+v.slice(2);
+                                return v.length ? '('+v : '';
+                            }
+                        }">
+                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                Telefone residencial
+                                <span class="text-neutral-600 text-xs">(opcional)</span>
+                            </label>
+                            <input
+                                type="tel"
+                                data-cy="input-responsible_home_phone"
+                                maxlength="16"
+                                inputmode="numeric"
+                                placeholder="(42) 3224-1234"
+                                x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_home_phone)"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_home_phone',r);"
+                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                       {{ $errors->has('responsible_home_phone') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                            >
+                            @error('responsible_home_phone')
+                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_home_phone">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-neutral-400 mb-1.5">
                                 E-mail <span class="text-red-400">*</span>
@@ -177,6 +236,23 @@
                             >
                             @error('responsible_address')
                                 <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_address">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                Bairro <span class="text-red-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                wire:model="responsible_neighborhood"
+                                data-cy="input-responsible_neighborhood"
+                                maxlength="80"
+                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                       {{ $errors->has('responsible_neighborhood') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                            >
+                            @error('responsible_neighborhood')
+                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_neighborhood">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -244,8 +320,7 @@
                             }
                         }">
                             <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                RG
-                                <span class="text-neutral-600 text-xs">(opcional)</span>
+                                RG <span class="text-red-400">*</span>
                             </label>
                             <input
                                 type="text"
@@ -285,6 +360,161 @@
 
                         <div>
                             <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                Escola <span class="text-red-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                wire:model="student_school"
+                                data-cy="input-student_school"
+                                maxlength="120"
+                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                       {{ $errors->has('student_school') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                            >
+                            @error('student_school')
+                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_school">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                Série <span class="text-red-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                wire:model="student_grade"
+                                data-cy="input-student_grade"
+                                maxlength="30"
+                                placeholder="5º ano"
+                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                       {{ $errors->has('student_grade') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                            >
+                            @error('student_grade')
+                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_grade">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div x-data="{
+                            fmt(v) {
+                                v = String(v||'').replace(/\D/g,'').substring(0,11);
+                                if (v.length > 10)
+                                    return '('+v.slice(0,2)+') '+v.slice(2,3)+' '+v.slice(3,7)+'-'+v.slice(7);
+                                if (v.length > 6)
+                                    return '('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+                                if (v.length > 2)
+                                    return '('+v.slice(0,2)+') '+v.slice(2);
+                                return v.length ? '('+v : '';
+                            }
+                        }">
+                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                Celular do aluno
+                                <span class="text-neutral-600 text-xs">(opcional)</span>
+                            </label>
+                            <input
+                                type="tel"
+                                data-cy="input-student_phone"
+                                maxlength="16"
+                                inputmode="numeric"
+                                placeholder="(42) 9 9999-9999"
+                                x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.student_phone)"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('student_phone',r);"
+                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                       {{ $errors->has('student_phone') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                            >
+                            @error('student_phone')
+                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_phone">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                E-mail do aluno
+                                <span class="text-neutral-600 text-xs">(opcional)</span>
+                            </label>
+                            <input
+                                type="email"
+                                wire:model="student_email"
+                                data-cy="input-student_email"
+                                maxlength="255"
+                                autocomplete="off"
+                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                       {{ $errors->has('student_email') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                            >
+                            @error('student_email')
+                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_email">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="md:col-span-2 border-t border-neutral-800 pt-6">
+                            <p class="text-sm font-medium text-neutral-300 mb-4">Filiação</p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                                <div>
+                                    <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                        Nome do pai <span class="text-red-400">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        wire:model="student_father_name"
+                                        data-cy="input-student_father_name"
+                                        maxlength="80"
+                                        x-bind:disabled="$wire.student_no_father"
+                                        x-on:input="$el.value = $el.value.replace(/[^a-zA-Z\u00C0-\u00ff '\-]/g, '')"
+                                        class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                               disabled:opacity-40 disabled:cursor-not-allowed
+                                               {{ $errors->has('student_father_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                    >
+                                    <label class="flex items-center gap-2 mt-2 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            wire:model.live="student_no_father"
+                                            data-cy="checkbox-student_no_father"
+                                            class="w-4 h-4 accent-white cursor-pointer"
+                                        >
+                                        <span class="text-sm text-neutral-500">Não possui pai registrado</span>
+                                    </label>
+                                    @error('student_father_name')
+                                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_father_name">{{ $message }}</p>
+                                    @enderror
+                                    @error('student_no_father')
+                                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_no_father">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                                        Nome da mãe <span class="text-red-400">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        wire:model="student_mother_name"
+                                        data-cy="input-student_mother_name"
+                                        maxlength="80"
+                                        x-bind:disabled="$wire.student_no_mother"
+                                        x-on:input="$el.value = $el.value.replace(/[^a-zA-Z\u00C0-\u00ff '\-]/g, '')"
+                                        class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
+                                               disabled:opacity-40 disabled:cursor-not-allowed
+                                               {{ $errors->has('student_mother_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                    >
+                                    <label class="flex items-center gap-2 mt-2 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            wire:model.live="student_no_mother"
+                                            data-cy="checkbox-student_no_mother"
+                                            class="w-4 h-4 accent-white cursor-pointer"
+                                        >
+                                        <span class="text-sm text-neutral-500">Não possui mãe registrada</span>
+                                    </label>
+                                    @error('student_mother_name')
+                                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_mother_name">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
                                 Modalidade <span class="text-red-400">*</span>
                             </label>
                             <select
@@ -319,8 +549,9 @@
                         >
                         <span class="text-sm text-neutral-400 leading-relaxed">
                             Declaro que li e concordo que os dados informados serão utilizados
-                            exclusivamente para geração do termo de aceite para assinatura e
-                            para controle interno do CTM, conforme a
+                            exclusivamente para a geração da ficha de cadastro de atleta exigida
+                            pela Secretaria Municipal de Esportes e Recreação de Prudentópolis e
+                            para controle interno do projeto, conforme a
                             <strong class="text-neutral-300">Lei Geral de Proteção de Dados (LGPD)</strong>.
                         </span>
                     </label>

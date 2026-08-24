@@ -14,32 +14,37 @@
     }"
 >
     @php
+        use App\Support\Formatters;
+
         $statusBadge = fn (string $status) => match ($status) {
             'entregue' => 'bg-yellow-950 text-yellow-400 border-yellow-800',
             'assinado' => 'bg-green-950 text-green-400 border-green-800',
             default    => 'bg-red-950 text-red-400 border-red-800',
         };
-        $formatCpf = fn (?string $cpf) => $cpf
-            ? preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cpf)
-            : null;
-        $formatPhone = fn (?string $phone) => $phone
-            ? preg_replace(['/(\d{2})(\d{5})(\d{4})/', '/(\d{2})(\d{4})(\d{4})/'], ['($1) $2-$3', '($1) $2-$3'], $phone)
-            : null;
         $modalData = fn ($s) => [
             'id'           => $s->id,
             'name'         => $s->name,
-            'cpf'          => $formatCpf($s->cpf),
-            'rg'           => $s->rg ?: '—',
-            'birth_date'   => $s->birth_date?->format('d/m/Y'),
+            'cpf'          => Formatters::cpf($s->cpf),
+            'rg'           => Formatters::rg($s->rg) ?: '—',
+            'birth_date'   => Formatters::date($s->birth_date),
+            'school'       => $s->school ?: '—',
+            'grade'        => $s->grade ?: '—',
+            'father_name'  => $s->no_father ? 'Não declarado' : ($s->father_name ?: '—'),
+            'mother_name'  => $s->no_mother ? 'Não declarado' : ($s->mother_name ?: '—'),
+            'phone'        => Formatters::phone($s->phone) ?: '—',
+            'email'        => $s->email ?: '—',
             'modalidade'   => $s->modalidade,
             'termo_status' => $s->termo_status,
             'resp'         => [
-                'name'       => $s->responsible->name,
-                'phone'      => $formatPhone($s->responsible->phone_number),
-                'cpf'        => $formatCpf($s->responsible->cpf),
-                'email'      => $s->responsible->email,
-                'birth_date' => $s->responsible->birth_date?->format('d/m/Y'),
-                'address'    => $s->responsible->address,
+                'name'         => $s->responsible->name,
+                'phone'        => Formatters::phone($s->responsible->phone_number),
+                'home_phone'   => Formatters::phone($s->responsible->home_phone) ?: '—',
+                'cpf'          => Formatters::cpf($s->responsible->cpf),
+                'rg'           => Formatters::rg($s->responsible->rg) ?: '—',
+                'email'        => $s->responsible->email,
+                'birth_date'   => Formatters::date($s->responsible->birth_date),
+                'address'      => $s->responsible->address,
+                'neighborhood' => $s->responsible->neighborhood ?: '—',
             ],
         ];
     @endphp
@@ -75,7 +80,7 @@
                             title="Ver detalhes do aluno"
                         >
                             <td class="px-6 py-4 text-neutral-200">{{ $student->responsible->name }}</td>
-                            <td class="px-6 py-4 text-neutral-400 font-mono">{{ $formatPhone($student->responsible->phone_number) }}</td>
+                            <td class="px-6 py-4 text-neutral-400 font-mono">{{ Formatters::phone($student->responsible->phone_number) }}</td>
                             <td class="px-6 py-4 text-neutral-200">{{ $student->name }}</td>
                             <td class="px-6 py-4">
                                 <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border {{ $statusBadge($student->termo_status) }}">

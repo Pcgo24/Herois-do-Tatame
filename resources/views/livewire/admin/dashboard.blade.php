@@ -69,6 +69,7 @@
                         <th class="px-6 py-4 text-left">Contato</th>
                         <th class="px-6 py-4 text-left">Aluno</th>
                         <th class="px-6 py-4 text-left">Status do Termo</th>
+                        <th class="px-6 py-4 text-left">Ficha</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-neutral-900">
@@ -86,6 +87,17 @@
                                 <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border {{ $statusBadge($student->termo_status) }}">
                                     {{ ucfirst($student->termo_status) }}
                                 </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a
+                                    href="{{ route('admin.students.ficha', $student) }}"
+                                    target="_blank"
+                                    @click.stop
+                                    data-cy="ficha-link"
+                                    class="inline-block text-xs font-semibold border border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-white px-3 py-1.5 rounded-lg transition"
+                                >
+                                    Gerar ficha
+                                </a>
                             </td>
                         </tr>
                     @endforeach
@@ -162,6 +174,17 @@
                     </div>
                 </div>
 
+                <div>
+                    <a
+                        :href="'/admin/alunos/' + s.id + '/ficha'"
+                        target="_blank"
+                        data-cy="ficha-link-modal"
+                        class="inline-block bg-white text-black font-bold px-6 py-2.5 rounded-lg hover:bg-neutral-200 transition"
+                    >
+                        Gerar ficha
+                    </a>
+                </div>
+
                 {{-- Dados do Responsável --}}
                 <section>
                     <h3 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-neutral-400">
@@ -180,6 +203,18 @@
                         <div>
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">CPF</dt>
                             <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.resp.cpf"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">RG</dt>
+                            <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.resp.rg"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Telefone residencial</dt>
+                            <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.resp.home_phone"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Bairro</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.resp.neighborhood"></dd>
                         </div>
                         <div>
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">E-mail</dt>
@@ -218,6 +253,30 @@
                         <div>
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">Data de Nascimento</dt>
                             <dd class="mt-0.5 text-neutral-200" x-text="s.birth_date"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Escola</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.school"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Série</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.grade"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Filiação — Pai</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.father_name"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Filiação — Mãe</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.mother_name"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Celular do aluno</dt>
+                            <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.phone"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">E-mail do aluno</dt>
+                            <dd class="mt-0.5 break-all text-neutral-200" x-text="s.email"></dd>
                         </div>
                         <div class="sm:col-span-2">
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">Modalidade</dt>

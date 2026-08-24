@@ -129,4 +129,13 @@ class DashboardTest extends TestCase
             ->assertSee('ana@example.com')
             ->assertSee('Judô');
     }
+
+    public function test_dashboard_links_to_the_student_ficha(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $student = Student::factory()->create();
+
+        Livewire::test(Dashboard::class)
+            ->assertSee(route('admin.students.ficha', $student), escape: false);
+    }
 }

@@ -18,6 +18,14 @@ class Student extends Model
         'cpf',
         'rg',
         'birth_date',
+        'school',
+        'grade',
+        'father_name',
+        'mother_name',
+        'no_father',
+        'no_mother',
+        'phone',
+        'email',
         'modalidade',
         'termo_status',
         'termo_arquivo',
@@ -29,6 +37,8 @@ class Student extends Model
             'id' => 'string',
             'responsible_id' => 'string',
             'birth_date' => 'date',
+            'no_father' => 'boolean',
+            'no_mother' => 'boolean',
         ];
     }
 

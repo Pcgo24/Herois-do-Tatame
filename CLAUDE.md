@@ -73,7 +73,9 @@ tentativas por CPF+IP. Existe um único tipo de usuário, o professor; não há
 coluna `role` nem tela de registro.
 
 O usuário é criado por `ProfessorSeeder`, que lê `config/professor.php` (e este,
-as variáveis `PROFESSOR_*` do `.env`). Sob `middleware('auth')`:
+as variáveis `PROFESSOR_*` do `.env`). O seeder apaga qualquer usuário com CPF
+diferente antes de criar o novo — existe exatamente um professor, por projeto,
+e trocar o CPF precisa renomeá-lo, não somar um segundo. Sob `middleware('auth')`:
 `/admin/dashboard`, a ficha em PDF e a ficha assinada.
 
 ### Ficha de cadastro (SMER)

@@ -58,9 +58,19 @@ o disco `r2` de `config/filesystems.php` funciona com ele trocando apenas o
    **North America (West)** para ficar perto da região `oregon` do Render.
    Deixe o acesso público **desligado** — a ficha assinada tem RG, CPF e
    endereço de menor de idade, e só sai pela rota autenticada.
-2. **Manage R2 API Tokens > Create API Token**, com permissão de leitura e
-   escrita nesse bucket. Guarde o *Access Key ID* e o *Secret Access Key*: o
+2. **Dentro do R2**, procure **API > Manage R2 API Tokens > Create API Token**.
+   Permissão **Object Read & Write** (não "Admin Read & Write", que permite
+   criar e apagar buckets — poder que o app não precisa), restrita ao bucket
+   `herois-do-tatame`. Guarde o *Access Key ID* e o *Secret Access Key*: o
    segredo só aparece uma vez.
+
+   > A Cloudflare tem dois sistemas de token com nomes parecidos. Os **API
+   > Tokens** do perfil da conta, com templates como "Read and write to
+   > Cloudflare Stream and Images", geram um token bearer para a API REST da
+   > Cloudflare e **não funcionam aqui** — o Laravel fala o protocolo S3, que
+   > exige um par chave/segredo. A tela certa é a de dentro do R2, e ela
+   > termina mostrando um campo chamado *Access Key ID*. Se você só vê um token
+   > longo e nenhum Access Key ID, está na tela errada.
 3. Anote o endpoint da conta:
    `https://SEU_ACCOUNT_ID.r2.cloudflarestorage.com` — **sem** o nome do bucket
    no final. O Account ID aparece na página inicial do R2, à direita, e também
@@ -86,7 +96,7 @@ Preencha então as variáveis marcadas como `sync: false`:
 | Variável | Valor |
 |---|---|
 | `APP_KEY` | a saída do passo 3, com o `base64:` |
-| `APP_URL` | `https://SEU-APP.onrender.com` |
+| `APP_URL` | **deixe em branco** — veja a nota abaixo |
 | `DB_HOST` | host do Neon novo |
 | `DB_DATABASE` | normalmente `neondb` |
 | `DB_USERNAME` / `DB_PASSWORD` | do Neon novo |
@@ -97,8 +107,10 @@ Preencha então as variáveis marcadas como `sync: false`:
 | `PROFESSOR_PASSWORD` | **uma senha forte, não a de desenvolvimento** |
 | `PROFESSOR_EMAIL` | e-mail do professor |
 
-`APP_URL` só é conhecido depois que o Render cria o serviço; preencha na
-primeira implantação e implante de novo.
+`APP_URL` não precisa ser preenchido. Ele só seria conhecido depois que o
+Render cria o serviço, então o `start.sh` o herda de `RENDER_EXTERNAL_URL`, que
+o Render injeta automaticamente com a URL final. Só defina a variável à mão se
+for usar domínio próprio — nesse caso o valor explícito prevalece.
 
 Ao subir, o contêiner executa nesta ordem: gera a configuração do nginx na porta
 que o Render escolheu, roda as migrations, cria ou atualiza o usuário professor,
@@ -111,6 +123,21 @@ e cacheia configuração, rotas e views.
 >
 > O `StudentSeeder` (os três alunos de demonstração) se recusa a rodar quando
 > `APP_ENV=production`, então produção nunca recebe dados fictícios.
+
+### Nem o CPF nem o e-mail precisam ser reais
+
+O CPF é apenas o identificador de login — a validação exige 11 dígitos e não
+confere dígito verificador. O e-mail nunca é usado: não há SMTP configurado e o
+sistema não envia mensagem alguma; é só uma coluna única em `users`, herdada do
+esqueleto do Laravel.
+
+Enquanto o projeto não for entregue à Secretaria, o padrão `12345678909` com um
+e-mail de marcador funciona igual, e evita dado pessoal real num ambiente que
+ainda não passou por revisão de segurança. A senha, essa sim, tem que ser forte.
+
+Trocar `PROFESSOR_CPF` depois é seguro: o seeder remove qualquer usuário com CPF
+diferente antes de criar o novo, então o antigo não fica logando com a senha
+velha. O sistema tem exatamente um professor, por projeto.
 
 ## 5. Depois da primeira implantação
 
@@ -164,9 +191,17 @@ Se estiver faltando, o estágio de assets falhou — procure por `npm` nos logs 
 build. Um `package-lock.json` fora de sincronia com o `package.json` faz o
 `npm ci` abortar; a correção é rodar `npm install` e commitar o lock.
 
-**Livewire não responde ou o navegador reclama de conteúdo misto.** O Laravel
-está gerando URLs `http://`. Confirme que `APP_URL` começa com `https://` e que
-o `trustProxies` continua em [`bootstrap/app.php`](../bootstrap/app.php).
+**A página aparece sem estilo, e o Livewire não responde.** O Laravel está
+gerando os assets em `http://` enquanto a página é servida em `https://`, e o
+navegador bloqueia tudo como conteúdo misto. Quem resolve isso é o
+`forceHttpsBehindProxy()` em
+[`AppServiceProvider`](../app/Providers/AppServiceProvider.php), que força https
+quando `APP_URL` é https ou quando o proxy manda `X-Forwarded-Proto: https`.
+Confirme que ele continua lá e que o `trustProxies` segue em
+[`bootstrap/app.php`](../bootstrap/app.php).
+
+Nunca force o esquema para `http` a partir de `APP_URL`: isso derruba URLs que
+deveriam ser https e produz exatamente este sintoma.
 
 **Upload da ficha falha com erro de credencial.** Confira o `R2_ENDPOINT`: ele
 é o endereço da conta, sem o nome do bucket. O bucket vai em `R2_BUCKET`.

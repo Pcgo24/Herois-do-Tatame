@@ -49,4 +49,34 @@ class ProfessorSeederTest extends TestCase
 
         $this->assertMatchesRegularExpression('/^\d{11}$/', $user->cpf);
     }
+
+    // O sistema tem exatamente um professor: nao ha tela de registro, nem papeis.
+    // Trocar PROFESSOR_CPF precisa renomear esse unico usuario, e nao criar um
+    // segundo — senao o antigo continuaria logando com a senha antiga.
+    public function test_changing_the_cpf_replaces_the_professor_instead_of_adding_one(): void
+    {
+        $this->seed(ProfessorSeeder::class);
+
+        config()->set('professor.cpf', '98765432100');
+        config()->set('professor.password', 'senha-nova');
+        $this->seed(ProfessorSeeder::class);
+
+        $this->assertSame(1, User::count());
+        $this->assertNull(User::where('cpf', '12345678909')->first());
+
+        $professor = User::where('cpf', '98765432100')->first();
+        $this->assertNotNull($professor);
+        $this->assertTrue(Hash::check('senha-nova', $professor->password));
+    }
+
+    public function test_changing_the_email_does_not_duplicate_the_professor(): void
+    {
+        $this->seed(ProfessorSeeder::class);
+
+        config()->set('professor.email', 'outro@example.com');
+        $this->seed(ProfessorSeeder::class);
+
+        $this->assertSame(1, User::count());
+        $this->assertSame('outro@example.com', User::first()->email);
+    }
 }

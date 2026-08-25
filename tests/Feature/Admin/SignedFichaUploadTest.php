@@ -19,7 +19,7 @@ class SignedFichaUploadTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('local');
+        Storage::fake(config('fichas.disk'));
         $this->actingAs(User::factory()->create());
     }
 
@@ -39,7 +39,7 @@ class SignedFichaUploadTest extends TestCase
         $this->assertSame('ficha.pdf', $student->termo_arquivo_nome);
         $this->assertNotNull($student->termo_arquivo_enviado_em);
         $this->assertSame('assinado', $student->termo_status);
-        Storage::disk('local')->assertExists($student->termo_arquivo);
+        Storage::disk(config('fichas.disk'))->assertExists($student->termo_arquivo);
     }
 
     public function test_upload_accepts_a_photo_of_the_signed_sheet(): void
@@ -100,8 +100,8 @@ class SignedFichaUploadTest extends TestCase
         $second = $student->fresh()->termo_arquivo;
 
         $this->assertNotSame($first, $second);
-        Storage::disk('local')->assertMissing($first);
-        Storage::disk('local')->assertExists($second);
+        Storage::disk(config('fichas.disk'))->assertMissing($first);
+        Storage::disk(config('fichas.disk'))->assertExists($second);
     }
 
     public function test_removing_the_file_clears_the_columns_and_reverts_the_status(): void
@@ -122,7 +122,7 @@ class SignedFichaUploadTest extends TestCase
         $this->assertNull($student->termo_arquivo);
         $this->assertNull($student->termo_arquivo_nome);
         $this->assertSame('entregue', $student->termo_status);
-        Storage::disk('local')->assertMissing($path);
+        Storage::disk(config('fichas.disk'))->assertMissing($path);
     }
 
     public function test_authenticated_user_downloads_the_signed_ficha(): void
@@ -142,5 +142,39 @@ class SignedFichaUploadTest extends TestCase
         $student = Student::factory()->create();
 
         $this->get(route('admin.students.ficha-assinada', $student))->assertNotFound();
+    }
+
+    // Em produção o disco é o R2 (compatível com S3); em desenvolvimento e nos
+    // testes é o local. Quem decide é config('fichas.disk'), via FICHAS_DISK.
+    public function test_upload_respects_the_configured_disk(): void
+    {
+        config()->set('fichas.disk', 'fichas-remoto');
+        Storage::fake('fichas-remoto');
+
+        $student = Student::factory()->create();
+
+        Livewire::test(Dashboard::class)
+            ->set('uploadTargetId', $student->id)
+            ->set('signedFicha', UploadedFile::fake()->create('ficha.pdf', 100, 'application/pdf'))
+            ->call('uploadSignedFicha')
+            ->assertHasNoErrors();
+
+        Storage::disk('fichas-remoto')->assertExists($student->fresh()->termo_arquivo);
+        Storage::disk('local')->assertMissing($student->fresh()->termo_arquivo);
+    }
+
+    public function test_download_reads_from_the_configured_disk(): void
+    {
+        config()->set('fichas.disk', 'fichas-remoto');
+        Storage::fake('fichas-remoto');
+
+        $student = Student::factory()->create();
+
+        Livewire::test(Dashboard::class)
+            ->set('uploadTargetId', $student->id)
+            ->set('signedFicha', UploadedFile::fake()->create('ficha.pdf', 100, 'application/pdf'))
+            ->call('uploadSignedFicha');
+
+        $this->get(route('admin.students.ficha-assinada', $student))->assertOk();
     }
 }

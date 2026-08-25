@@ -1,0 +1,84 @@
+# Blueprint do Render — https://render.com/docs/blueprint-spec
+#
+# Para usar: no painel do Render, New > Blueprint, aponte para este repositório.
+# As variáveis marcadas com sync:false precisam ser preenchidas por você no
+# painel; elas são segredos e não podem morar no repositório.
+services:
+  - type: web
+    name: herois-do-tatame
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: Heróis do Tatame
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_LOCALE
+        value: pt_BR
+      - key: APP_FALLBACK_LOCALE
+        value: pt_BR
+      - key: APP_FAKER_LOCALE
+        value: pt_BR
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: warning
+
+      # Gerada pelo Render na primeira implantação e mantida daí em diante.
+      # Precisa ser prefixada com "base64:" — veja o passo 3 do docs/DEPLOY.md.
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+
+      # Sessão, cache e fila vivem no Postgres; não há Redis nem worker.
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+
+      # Neon — use a string de conexão com sslmode=require.
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+      # Fichas assinadas no Cloudflare R2 — o disco do Render é descartado a
+      # cada implantação.
+      - key: FICHAS_DISK
+        value: r2
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
+        sync: false
+      - key: R2_ENDPOINT
+        sync: false
+
+      # Credenciais do professor. TROQUE A SENHA.
+      - key: PROFESSOR_CPF
+        sync: false
+      - key: PROFESSOR_PASSWORD
+        sync: false
+      - key: PROFESSOR_NAME
+        value: Professor
+      - key: PROFESSOR_EMAIL
+        sync: false

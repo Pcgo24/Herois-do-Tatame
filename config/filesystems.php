@@ -47,6 +47,22 @@ return [
             'report' => false,
         ],
 
+        /*
+         | Cloudflare R2 — compatível com S3. Difere em dois pontos: a região é
+         | sempre 'auto' e o endpoint é o do bucket, não o da AWS.
+         */
+        'r2' => [
+            'driver' => 's3',
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => 'auto',
+            'bucket' => env('R2_BUCKET'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'throw' => true,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

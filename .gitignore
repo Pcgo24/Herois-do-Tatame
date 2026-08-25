@@ -32,8 +32,6 @@ Thumbs.db
 /cypress/downloads/
 
 CHANGELOG.md
-CLAUDE.md
-docs/
 RELATORIO_TASKS.md
 
 # Temp
@@ -41,3 +39,6 @@ temp/
 
 /database/testing.sqlite
 /testing
+
+# variaveis para rodar a imagem de producao localmente
+.env.docker

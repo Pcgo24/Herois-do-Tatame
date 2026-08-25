@@ -10,12 +10,14 @@ class SignedFichaController extends Controller
 {
     public function __invoke(Student $student): Response
     {
+        $disk = Storage::disk(config('fichas.disk'));
+
         abort_if(
-            ! $student->termo_arquivo || ! Storage::disk('local')->exists($student->termo_arquivo),
+            ! $student->termo_arquivo || ! $disk->exists($student->termo_arquivo),
             404,
         );
 
-        return Storage::disk('local')->download(
+        return $disk->download(
             $student->termo_arquivo,
             $student->termo_arquivo_nome ?? 'ficha-assinada',
         );

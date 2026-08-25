@@ -40,13 +40,13 @@ class Dashboard extends Component
         $student = Student::findOrFail($this->uploadTargetId);
 
         if ($student->termo_arquivo) {
-            Storage::disk('local')->delete($student->termo_arquivo);
+            Storage::disk($this->fichasDisk())->delete($student->termo_arquivo);
         }
 
         $path = $this->signedFicha->storeAs(
             'fichas-assinadas',
             $student->id.'-'.Str::random(8).'.'.$this->signedFicha->getClientOriginalExtension(),
-            'local',
+            $this->fichasDisk(),
         );
 
         $student->update([
@@ -64,7 +64,7 @@ class Dashboard extends Component
         $student = Student::findOrFail($studentId);
 
         if ($student->termo_arquivo) {
-            Storage::disk('local')->delete($student->termo_arquivo);
+            Storage::disk($this->fichasDisk())->delete($student->termo_arquivo);
         }
 
         $student->update([
@@ -73,6 +73,11 @@ class Dashboard extends Component
             'termo_arquivo_enviado_em' => null,
             'termo_status' => 'entregue',
         ]);
+    }
+
+    private function fichasDisk(): string
+    {
+        return config('fichas.disk');
     }
 
     public function render()

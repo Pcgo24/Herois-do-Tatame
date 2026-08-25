@@ -86,7 +86,7 @@ Preencha então as variáveis marcadas como `sync: false`:
 | Variável | Valor |
 |---|---|
 | `APP_KEY` | a saída do passo 3, com o `base64:` |
-| `APP_URL` | `https://SEU-APP.onrender.com` |
+| `APP_URL` | **deixe em branco** — veja a nota abaixo |
 | `DB_HOST` | host do Neon novo |
 | `DB_DATABASE` | normalmente `neondb` |
 | `DB_USERNAME` / `DB_PASSWORD` | do Neon novo |
@@ -97,8 +97,10 @@ Preencha então as variáveis marcadas como `sync: false`:
 | `PROFESSOR_PASSWORD` | **uma senha forte, não a de desenvolvimento** |
 | `PROFESSOR_EMAIL` | e-mail do professor |
 
-`APP_URL` só é conhecido depois que o Render cria o serviço; preencha na
-primeira implantação e implante de novo.
+`APP_URL` não precisa ser preenchido. Ele só seria conhecido depois que o
+Render cria o serviço, então o `start.sh` o herda de `RENDER_EXTERNAL_URL`, que
+o Render injeta automaticamente com a URL final. Só defina a variável à mão se
+for usar domínio próprio — nesse caso o valor explícito prevalece.
 
 Ao subir, o contêiner executa nesta ordem: gera a configuração do nginx na porta
 que o Render escolheu, roda as migrations, cria ou atualiza o usuário professor,

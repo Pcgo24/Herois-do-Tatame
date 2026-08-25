@@ -33,6 +33,9 @@ services:
       # Precisa ser prefixada com "base64:" — veja o passo 3 do docs/DEPLOY.md.
       - key: APP_KEY
         sync: false
+      # Deixe em branco: o start.sh preenche com RENDER_EXTERNAL_URL, que o
+      # Render injeta com a URL final do serviço. Só defina manualmente se for
+      # usar domínio próprio.
       - key: APP_URL
         sync: false
 

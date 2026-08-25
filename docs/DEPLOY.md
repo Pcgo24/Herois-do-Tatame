@@ -191,9 +191,17 @@ Se estiver faltando, o estágio de assets falhou — procure por `npm` nos logs 
 build. Um `package-lock.json` fora de sincronia com o `package.json` faz o
 `npm ci` abortar; a correção é rodar `npm install` e commitar o lock.
 
-**Livewire não responde ou o navegador reclama de conteúdo misto.** O Laravel
-está gerando URLs `http://`. Confirme que `APP_URL` começa com `https://` e que
-o `trustProxies` continua em [`bootstrap/app.php`](../bootstrap/app.php).
+**A página aparece sem estilo, e o Livewire não responde.** O Laravel está
+gerando os assets em `http://` enquanto a página é servida em `https://`, e o
+navegador bloqueia tudo como conteúdo misto. Quem resolve isso é o
+`forceHttpsBehindProxy()` em
+[`AppServiceProvider`](../app/Providers/AppServiceProvider.php), que força https
+quando `APP_URL` é https ou quando o proxy manda `X-Forwarded-Proto: https`.
+Confirme que ele continua lá e que o `trustProxies` segue em
+[`bootstrap/app.php`](../bootstrap/app.php).
+
+Nunca force o esquema para `http` a partir de `APP_URL`: isso derruba URLs que
+deveriam ser https e produz exatamente este sintoma.
 
 **Upload da ficha falha com erro de credencial.** Confira o `R2_ENDPOINT`: ele
 é o endereço da conta, sem o nome do bucket. O bucket vai em `R2_BUCKET`.

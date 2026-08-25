@@ -30,17 +30,41 @@ América do Sul, então o app ficaria nos EUA conversando com um banco no Brasil
 
 O projeto antigo pode continuar existindo como banco de desenvolvimento.
 
+A string do Neon vem inteira, no formato
+`postgresql://USUARIO:SENHA@HOST/BANCO?sslmode=require`, e precisa ser quebrada
+nas variáveis do Render — **elas vão no Render, nunca no Cloudflare**:
+
+| Variável | Pedaço da string |
+|---|---|
+| `DB_HOST` | o `HOST`, algo como `ep-xxxx.us-west-2.aws.neon.tech` |
+| `DB_DATABASE` | o `BANCO`, normalmente `neondb` |
+| `DB_USERNAME` | o `USUARIO` |
+| `DB_PASSWORD` | a `SENHA` |
+| `DB_PORT` | `5432`, fixo |
+
+O `sslmode=require` não vira variável: o driver `pgsql` do Laravel já negocia
+TLS com o Neon.
+
 ## 2. Armazenamento: bucket no Cloudflare R2
 
-1. No painel da Cloudflare: **R2 > Create bucket**. Nome sugerido:
-   `herois-do-tatame`. Deixe o acesso público **desligado** — a ficha assinada
-   tem RG, CPF e endereço de menor de idade, e só sai pela rota autenticada.
+O R2 oferece 10 GB gratuitos, mas a Cloudflare exige um **cartão cadastrado**
+para liberar o serviço, mesmo sem cobrança. Se isso for um impedimento, o
+Supabase Storage também é compatível com S3, tem 1 GB grátis e não pede cartão:
+o disco `r2` de `config/filesystems.php` funciona com ele trocando apenas o
+`R2_ENDPOINT`.
+
+1. No painel da Cloudflare, barra lateral: **Storage & databases > R2 Object
+   Storage > Create bucket**. Nome sugerido: `herois-do-tatame`, location
+   **North America (West)** para ficar perto da região `oregon` do Render.
+   Deixe o acesso público **desligado** — a ficha assinada tem RG, CPF e
+   endereço de menor de idade, e só sai pela rota autenticada.
 2. **Manage R2 API Tokens > Create API Token**, com permissão de leitura e
    escrita nesse bucket. Guarde o *Access Key ID* e o *Secret Access Key*: o
    segredo só aparece uma vez.
 3. Anote o endpoint da conta:
    `https://SEU_ACCOUNT_ID.r2.cloudflarestorage.com` — **sem** o nome do bucket
-   no final.
+   no final. O Account ID aparece na página inicial do R2, à direita, e também
+   no meio da URL do painel.
 
 ## 3. Chave da aplicação
 

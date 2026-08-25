@@ -58,9 +58,19 @@ o disco `r2` de `config/filesystems.php` funciona com ele trocando apenas o
    **North America (West)** para ficar perto da região `oregon` do Render.
    Deixe o acesso público **desligado** — a ficha assinada tem RG, CPF e
    endereço de menor de idade, e só sai pela rota autenticada.
-2. **Manage R2 API Tokens > Create API Token**, com permissão de leitura e
-   escrita nesse bucket. Guarde o *Access Key ID* e o *Secret Access Key*: o
+2. **Dentro do R2**, procure **API > Manage R2 API Tokens > Create API Token**.
+   Permissão **Object Read & Write** (não "Admin Read & Write", que permite
+   criar e apagar buckets — poder que o app não precisa), restrita ao bucket
+   `herois-do-tatame`. Guarde o *Access Key ID* e o *Secret Access Key*: o
    segredo só aparece uma vez.
+
+   > A Cloudflare tem dois sistemas de token com nomes parecidos. Os **API
+   > Tokens** do perfil da conta, com templates como "Read and write to
+   > Cloudflare Stream and Images", geram um token bearer para a API REST da
+   > Cloudflare e **não funcionam aqui** — o Laravel fala o protocolo S3, que
+   > exige um par chave/segredo. A tela certa é a de dentro do R2, e ela
+   > termina mostrando um campo chamado *Access Key ID*. Se você só vê um token
+   > longo e nenhum Access Key ID, está na tela errada.
 3. Anote o endpoint da conta:
    `https://SEU_ACCOUNT_ID.r2.cloudflarestorage.com` — **sem** o nome do bucket
    no final. O Account ID aparece na página inicial do R2, à direita, e também

@@ -124,6 +124,21 @@ e cacheia configuração, rotas e views.
 > O `StudentSeeder` (os três alunos de demonstração) se recusa a rodar quando
 > `APP_ENV=production`, então produção nunca recebe dados fictícios.
 
+### Nem o CPF nem o e-mail precisam ser reais
+
+O CPF é apenas o identificador de login — a validação exige 11 dígitos e não
+confere dígito verificador. O e-mail nunca é usado: não há SMTP configurado e o
+sistema não envia mensagem alguma; é só uma coluna única em `users`, herdada do
+esqueleto do Laravel.
+
+Enquanto o projeto não for entregue à Secretaria, o padrão `12345678909` com um
+e-mail de marcador funciona igual, e evita dado pessoal real num ambiente que
+ainda não passou por revisão de segurança. A senha, essa sim, tem que ser forte.
+
+Trocar `PROFESSOR_CPF` depois é seguro: o seeder remove qualquer usuário com CPF
+diferente antes de criar o novo, então o antigo não fica logando com a senha
+velha. O sistema tem exatamente um professor, por projeto.
+
 ## 5. Depois da primeira implantação
 
 1. Acesse `https://SEU-APP.onrender.com/up` — deve responder com o painel de

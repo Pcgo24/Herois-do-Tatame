@@ -1,8 +1,8 @@
 describe("Landing Page - Heróis do Tatame", () => {
     // Antes de cada teste, visita a página inicial
     beforeEach(() => {
-        // Substitua pela URL local do seu projeto Laravel (ex: http://localhost:8000)
-        cy.visit("http://localhost:8000");
+        // Usa o baseUrl de cypress.config.js.
+        cy.visit("/");
     });
 
     context("Visualização Desktop", () => {
@@ -18,21 +18,20 @@ describe("Landing Page - Heróis do Tatame", () => {
             cy.get("nav").contains("Início").should("be.visible");
 
             // Verifica se o botão de inscrição existe
-            cy.contains("Inscrever-se").should("be.visible");
+            cy.get('[data-cy="enrollment-btn"]').should("be.visible");
+
+            // Verifica se o acesso à área restrita existe
+            cy.get("nav").contains("Área do Professor").should("be.visible");
 
             // Rola a página para baixo e verifica se o header continua visível (sticky)
             cy.scrollTo(0, 500);
             cy.get("header").should("be.visible");
         });
 
-        it("Deve testar a navegação suave para a seção Sobre", () => {
-            // Clica no link "Sobre o Projeto"
-            cy.get("nav").contains("Sobre o Projeto").click();
-
-            // Verifica se a URL mudou para a âncora #sobre
-            cy.url().should("include", "#sobre");
-
-            // Verifica se o título da seção ficou visível na tela
+        // O link "Sobre o Projeto" existe apenas no menu mobile; no desktop a
+        // navegação até a seção é feita rolando a página.
+        it("Deve exibir a seção Sobre o Projeto", () => {
+            cy.get("#sobre").scrollIntoView();
             cy.get("#sobre").contains("Sobre o Projeto").should("be.visible");
         });
 

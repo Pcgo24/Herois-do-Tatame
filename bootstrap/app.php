@@ -11,7 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Fazer com que ele rode no codespaces
+        // Necessário atrás de qualquer proxy que termine o TLS — Codespaces em
+        // desenvolvimento, Render em produção. Sem isso o Laravel gera URLs
+        // http:// e o Livewire quebra por conteúdo misto.
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {

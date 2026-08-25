@@ -89,6 +89,17 @@ Depois de assinada, a ficha volta ao sistema pelo modal de detalhes do aluno
 (PDF ou foto, até 5 MB). O arquivo fica em disco privado e o status do termo
 passa a "assinado" automaticamente.
 
+## Deploy
+
+Render (Docker) + Neon (PostgreSQL) + Cloudflare R2 para as fichas assinadas.
+O passo a passo está em [docs/DEPLOY.md](docs/DEPLOY.md).
+
+Para popular um banco vazio com o professor e três alunos de demonstração:
+
+    ./vendor/bin/sail artisan migrate:fresh --seed
+
+Os alunos de demonstração não são criados quando `APP_ENV=production`.
+
 ## Testes
 
     ./vendor/bin/sail artisan test          # PHPUnit, em SQLite local

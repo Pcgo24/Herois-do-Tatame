@@ -1,0 +1,880 @@
+<title>Login e Ficha SMER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:      #F4F6F8;
+    --surface:     #FFFFFF;
+    --surface-alt: #EBF0F4;
+    --ink:         #16212B;
+    --ink-soft:    #536671;
+    --ink-faint:   #7C8D98;
+    --rule:        #CBD7DF;
+    --rule-strong: #16212B;
+    --accent:      #0B6FA4;
+    --accent-soft: #E1EFF7;
+    --good:        #2F7D4F;
+    --good-soft:   #E2F0E7;
+    --warn:        #B4531A;
+    --warn-soft:   #F7EAE0;
+
+    --measure: 68ch;
+    --step-fine: 0.72rem;
+    --step-small: 0.85rem;
+    --step-body: 1.02rem;
+    --step-h3: 1.12rem;
+    --step-h2: 1.55rem;
+    --step-h1: 2.5rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0F161C;
+      --surface:     #17212A;
+      --surface-alt: #1D2A34;
+      --ink:         #E5EEF4;
+      --ink-soft:    #9DAFBB;
+      --ink-faint:   #758996;
+      --rule:        #2A3944;
+      --rule-strong: #6E8492;
+      --accent:      #59B0E0;
+      --accent-soft: #16303F;
+      --good:        #6FC38F;
+      --good-soft:   #16301F;
+      --warn:        #E08C51;
+      --warn-soft:   #33210F;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0F161C;
+    --surface:     #17212A;
+    --surface-alt: #1D2A34;
+    --ink:         #E5EEF4;
+    --ink-soft:    #9DAFBB;
+    --ink-faint:   #758996;
+    --rule:        #2A3944;
+    --rule-strong: #6E8492;
+    --accent:      #59B0E0;
+    --accent-soft: #16303F;
+    --good:        #6FC38F;
+    --good-soft:   #16301F;
+    --warn:        #E08C51;
+    --warn-soft:   #33210F;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: var(--step-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 1.5rem 6rem;
+  }
+
+  .wrap {
+    max-width: var(--measure);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3.25rem;
+  }
+
+  /* ---------- cabeçalho no formato da ficha ---------- */
+
+  .folha {
+    margin-top: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .marca {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+    align-items: baseline;
+  }
+
+  .marca b {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  h1 {
+    font-family: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+    font-size: var(--step-h1);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .subtitulo {
+    color: var(--ink-soft);
+    font-size: 1.12rem;
+    margin: 0;
+    max-width: 54ch;
+  }
+
+  /* bloco de metadados desenhado como a tabela DADOS DO ATLETA da ficha */
+  .ficha-meta {
+    border: 1px solid var(--rule-strong);
+    background: var(--surface);
+  }
+
+  .ficha-meta__titulo {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--rule-strong);
+    color: var(--ink-soft);
+  }
+
+  .ficha-meta__linhas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
+
+  .ficha-meta__campo {
+    padding: 0.7rem 0.95rem;
+    border-top: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .ficha-meta__linhas > .ficha-meta__campo:last-child { border-right: none; }
+
+  .ficha-meta__campo dt {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  .ficha-meta__campo dd {
+    margin: 0;
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 600;
+    font-size: var(--step-small);
+  }
+
+  /* ---------- placar ---------- */
+
+  .placar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .placar__item {
+    background: var(--surface);
+    padding: 1.15rem 1.1rem 1.05rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .placar__num {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+
+  .placar__rot {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.07em;
+    color: var(--ink-soft);
+    line-height: 1.35;
+  }
+
+  .placar__antes {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    color: var(--ink-faint);
+  }
+
+  /* ---------- seções ---------- */
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    border-top: 2px solid var(--rule-strong);
+    padding-top: 1.1rem;
+  }
+
+  .rotulo {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  h2 {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-size: var(--step-h2);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: -0.5rem 0 0;
+  }
+
+  h3 {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-size: var(--step-h3);
+    font-weight: 700;
+    line-height: 1.3;
+    text-wrap: balance;
+    margin: 0.75rem 0 -0.4rem;
+  }
+
+  p { margin: 0; }
+
+  strong { font-weight: 600; }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.86em;
+  }
+
+  code {
+    background: var(--surface-alt);
+    padding: 0.1em 0.36em;
+    border-radius: 2px;
+    color: var(--ink);
+    word-break: break-word;
+  }
+
+  /* lista de decisões: régua fina à esquerda, sem bullets decorativos */
+  .itens {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .itens > li {
+    border-left: 2px solid var(--rule);
+    padding-left: 1.1rem;
+  }
+
+  .itens > li > .titulo {
+    display: block;
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.15rem;
+  }
+
+  /* etapas do processo: numeração porque é uma sequência real */
+  ol.etapas {
+    list-style: none;
+    counter-reset: etapa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  ol.etapas > li {
+    counter-increment: etapa;
+    display: grid;
+    grid-template-columns: 2.1rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+  }
+
+  ol.etapas > li::before {
+    content: counter(etapa, decimal-leading-zero);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 2px;
+    text-align: center;
+    padding: 0.25rem 0;
+    line-height: 1.4;
+  }
+
+  /* ---------- tabela ---------- */
+
+  .rolagem {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 34rem;
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-size: var(--step-small);
+  }
+
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--ink-soft);
+    font-weight: 500;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--rule-strong);
+    background: var(--surface-alt);
+  }
+
+  tbody td {
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.onde {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    color: var(--ink-soft);
+    word-break: break-word;
+  }
+
+  /* ---------- entregas ---------- */
+
+  .entregas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .entregas > li {
+    background: var(--surface);
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .entregas .cabeca {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .entregas .nome {
+    font-family: "Libre Franklin", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .entregas p { font-size: var(--step-small); color: var(--ink-soft); line-height: 1.55; }
+
+  .selo {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.5rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .selo--feito { background: var(--good-soft); color: var(--good); }
+  .selo--fora  { background: var(--warn-soft); color: var(--warn); }
+
+  /* ---------- nota destacada ---------- */
+
+  .nota {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.15rem;
+    font-size: var(--step-small);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nota .titulo {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 1.1rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--step-fine);
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, li:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 34rem) {
+    :root { --step-h1: 1.95rem; --step-h2: 1.35rem; }
+    body { padding: 0 1.1rem 4rem; }
+    .folha { margin-top: 2.25rem; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="folha">
+    <p class="marca"><b>Heróis do Tatame</b> <span>Relatório de sprint</span></p>
+    <h1>Login do professor e ficha SMER em PDF</h1>
+    <p class="subtitulo">
+      O que foi decidido, o que deu trabalho, o que quebrou pelo caminho e o que
+      ficou pronto para o deploy.
+    </p>
+
+    <dl class="ficha-meta">
+      <p class="ficha-meta__titulo">Dados da sprint</p>
+      <div class="ficha-meta__linhas">
+        <div class="ficha-meta__campo">
+          <dt>Período</dt>
+          <dd>24 de agosto de 2026</dd>
+        </div>
+        <div class="ficha-meta__campo">
+          <dt>Branch</dt>
+          <dd class="mono">Paulo</dd>
+        </div>
+        <div class="ficha-meta__campo">
+          <dt>Backlog atacado</dt>
+          <dd>AJ-01 · AJ-02 · AJ-06 · termo</dd>
+        </div>
+      </div>
+    </dl>
+  </header>
+
+  <div class="placar">
+    <div class="placar__item">
+      <span class="placar__num">94</span>
+      <span class="placar__rot">testes PHPUnit</span>
+      <span class="placar__antes">eram 37</span>
+    </div>
+    <div class="placar__item">
+      <span class="placar__num">26</span>
+      <span class="placar__rot">testes Cypress</span>
+      <span class="placar__antes">eram 0 — a suíte não rodava</span>
+    </div>
+    <div class="placar__item">
+      <span class="placar__num">5,4s</span>
+      <span class="placar__rot">suíte inteira</span>
+      <span class="placar__antes">antes: 17s para 10 testes</span>
+    </div>
+  </div>
+
+  <section>
+    <p class="rotulo">Decisões</p>
+    <h2>As escolhas que definiram o resto</h2>
+
+    <ul class="itens">
+      <li>
+        <span class="titulo">Escopo fechado antes de codar</span>
+        Do backlog de ajustes entraram AJ-01, AJ-02, AJ-06 e a geração do termo.
+        Ficaram de fora, por decisão explícita: AJ-04 (dados reais do rodapé,
+        que dependem de informação que não temos), AJ-07 e AJ-08. O AJ-03 já
+        estava pronto desde o commit <code>9d76dbf</code>.
+      </li>
+      <li>
+        <span class="titulo">PDF gerado no servidor, com dompdf</span>
+        A alternativa era uma página HTML com <code>@media print</code> e o
+        usuário salvando pelo Ctrl+P. Descartada: o resultado dependeria do
+        navegador de quem imprime, e a ficha precisa sair idêntica ao papel que
+        a Secretaria aceita.
+      </li>
+      <li>
+        <span class="titulo">Login por CPF, não por e-mail</span>
+        É o identificador que o professor já usa e sabe de cor. A tabela
+        <code>users</code> ganhou uma coluna <code>cpf</code> única, e a
+        autenticação passou a ser
+        <code>Auth::attempt(['cpf' =&gt; …, 'password' =&gt; …])</code>.
+      </li>
+      <li>
+        <span class="titulo">A ficha é entregue pelo professor</span>
+        É o que casa com o fluxo real: na primeira aula o aluno leva a folha
+        impressa e devolve assinada na aula seguinte. Por isso o botão
+        “Gerar ficha” vive no dashboard, e não na tela de sucesso da matrícula.
+      </li>
+      <li>
+        <span class="titulo">Checkbox de filiação em vez de campo opcional</span>
+        Aluno sem pai ou sem mãe registrada é comum em projeto social. Um campo
+        meramente opcional produziria fichas com lacunas indistinguíveis de
+        esquecimento. Com o checkbox, a ficha imprime <strong>“Não declarado”</strong> —
+        fica registrado que houve declaração do responsável. Regra de fecho: não
+        dá para marcar os dois, senão o documento não identifica ninguém.
+      </li>
+      <li>
+        <span class="titulo">Colunas novas entram <code>nullable</code> no banco</span>
+        As tabelas já têm linhas em produção, e <code>NOT NULL</code> quebraria a
+        migration. A obrigatoriedade vive na validação do formulário. O preço:
+        alunos cadastrados antes desta mudança geram ficha com lacunas.
+      </li>
+      <li>
+        <span class="titulo">PDF sob demanda, nunca gravado em disco</span>
+        Corrigir um dado do aluno e reimprimir sempre produz a versão atual.
+      </li>
+      <li>
+        <span class="titulo">Um controller, contrariando o CLAUDE.md de propósito</span>
+        O projeto mapeia rotas direto para componentes Livewire. Download de
+        arquivo binário não é página Livewire: uma URL estável abre em nova aba,
+        sobrevive a refresh e é testável com <code>$this-&gt;get(…)</code>. A
+        exceção foi registrada no CLAUDE.md em vez de ficar contradizendo o código.
+      </li>
+      <li>
+        <span class="titulo">Ficha assinada em disco privado</span>
+        O arquivo tem RG, CPF e endereço de menor de idade. Vai para o disco
+        <code>local</code>, não o <code>public</code>, e só sai por rota autenticada.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="rotulo">Processos</p>
+    <h2>Quatro etapas, cada uma com aprovação antes da seguinte</h2>
+
+    <ol class="etapas">
+      <li><span><strong>Brainstorming.</strong> Classificação do tamanho da tarefa, perguntas apenas sobre as decisões que mudariam o resultado, e um desenho apresentado para revisão.</span></li>
+      <li><span><strong>Spec.</strong> Mapeamento campo a campo da ficha de papel para o banco, com os não-objetivos e os riscos assumidos declarados.</span></li>
+      <li><span><strong>Plano.</strong> 15 tarefas e 125 passos, cada um com o código exato e o comando de verificação.</span></li>
+      <li><span><strong>Execução em TDD.</strong> Para cada tarefa: escrever o teste, rodar e <em>ver a falha</em>, implementar o mínimo, ver passar, <code>pint</code>, commit.</span></li>
+    </ol>
+
+    <p>
+      Ver o teste falhar antes de implementar não é cerimônia. Na tarefa do bug
+      da data, os três testes de faixa etária passaram já no primeiro
+      <span class="mono">RED</span> — e foi isso que provou que o defeito era
+      exclusivamente de front-end, e que a correção teria de ser verificada no
+      navegador, não no PHPUnit.
+    </p>
+
+    <p>
+      Os commits ficaram para execução manual, com mensagem e arquivos sugeridos
+      ao final de cada tarefa.
+    </p>
+  </section>
+
+  <section>
+    <p class="rotulo">Dificuldades</p>
+    <h2>O que era difícil por natureza</h2>
+
+    <ul class="itens">
+      <li>
+        <span class="titulo">A ficha exigia campos que o sistema não tinha</span>
+        Cruzando a foto do documento com o schema, faltavam escola, série,
+        filiação do pai, filiação da mãe, bairro, telefone residencial, celular
+        do aluno, e-mail do aluno e — o mais fácil de passar batido — o
+        <strong>RG do responsável</strong>, que a autorização cita em “portador
+        da Cédula de Identidade RG nº”. Nove colunas novas.
+      </li>
+      <li>
+        <span class="titulo">Migrar tabela com dados em produção</span>
+        Toda coluna obrigatória teve de entrar <code>nullable</code>, com a
+        obrigatoriedade movida para a camada de validação.
+      </li>
+      <li>
+        <span class="titulo">Um teste antigo afirmava o oposto de uma decisão nova</span>
+        <code>test_student_rg_is_optional</code> garantia que o RG podia ficar
+        vazio. Com a ficha, ele passou a ser obrigatório. Foi substituído por
+        <code>test_student_rg_is_required</code>, com um comentário explicando
+        a inversão.
+      </li>
+      <li>
+        <span class="titulo"><code>required_unless</code> não serve para booleano do Livewire</span>
+        A regra compara o valor com a string <code>"true"</code> do parâmetro —
+        uma coerção frágil. A obrigatoriedade condicional da filiação foi
+        resolvida em PHP, decidindo o array de regras antes de validar.
+      </li>
+      <li>
+        <span class="titulo"><code>nullable</code> não ignora string vazia</span>
+        Os campos mascarados chegam como <code>''</code>, e <code>nullable</code>
+        só pula <code>null</code>. Sem tratar isso, um telefone residencial em
+        branco falharia no <code>regex</code>.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="rotulo">Problemas</p>
+    <h2>O que estava quebrado e ninguém sabia</h2>
+
+    <ul class="itens">
+      <li>
+        <span class="titulo">A suíte de testes rodava contra o banco de produção</span>
+        O CLAUDE.md afirmava que os testes usavam SQLite via
+        <code>.env.testing</code>. Esse arquivo <strong>não existia</strong>. Na
+        prática:
+        <code>DEFAULT=pgsql HOST=ep-broad-smoke-acb19elt.sa-east-1.aws.neon.tech</code> —
+        cada teste pagava latência de rede até São Paulo, e o
+        <code>RefreshDatabase</code> rodava contra a infraestrutura real. O
+        primeiro teste levava 8,4 segundos.
+      </li>
+      <li>
+        <span class="titulo"><code>artisan test</code> abortava sem argumentos</span>
+        O <code>phpunit.xml</code> apontava para <code>tests/Unit</code>, um
+        diretório que não existia.
+      </li>
+      <li>
+        <span class="titulo">Cypress nunca tinha rodado</span>
+        O <code>baseUrl</code> apontava para uma URL de GitHub Codespaces
+        expirada; três testes esperavam a rota <code>/matricula</code>, que virou
+        <code>/enrollment</code>; <code>landing.cy.js</code> tinha
+        <code>http://localhost:8000</code> cravado no código, ignorando o
+        <code>baseUrl</code>; o binário do Cypress sequer estava instalado na
+        máquina; e <code>cypress/videos</code> pertencia a <code>root</code>, com
+        um vídeo de 2,3&nbsp;MB versionado no repositório.
+      </li>
+      <li>
+        <span class="titulo">Um teste de faixa etária era flaky por hora do dia</span>
+        Ele montava a data com <code>toISOString()</code>, que converte para UTC.
+        No fuso do Brasil, depois das 21h isso adianta um dia — a data de corte
+        virava válida e o teste falhava. Passava de manhã, falhava à noite.
+      </li>
+      <li>
+        <span class="titulo">Nome de arquivo colidia em uploads no mesmo segundo</span>
+        O anexo da ficha assinada usava <code>now()-&gt;timestamp</code> no nome.
+        Dois envios dentro do mesmo segundo produziam o mesmo caminho — o teste
+        de substituição pegou isso.
+      </li>
+      <li>
+        <span class="titulo">A chave de produção quase foi para o repositório</span>
+        O plano mandava copiar a <code>APP_KEY</code> do <code>.env</code> para o
+        <code>.env.testing</code>. Como esse arquivo passou a ser versionado,
+        para o Vitor também ter, isso publicaria a chave da aplicação.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="rotulo">Soluções</p>
+    <h2>O que foi feito para cada um</h2>
+
+    <div class="rolagem">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Problema</th>
+            <th scope="col">Solução</th>
+            <th scope="col">Onde</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Testes contra o Neon</td>
+            <td><code>.env.testing</code> com SQLite; overrides de banco removidos do <code>phpunit.xml</code></td>
+            <td class="onde">.env.testing<br>phpunit.xml</td>
+          </tr>
+          <tr>
+            <td><code>artisan test</code> abortando</td>
+            <td>Diretório <code>tests/Unit/</code> criado</td>
+            <td class="onde">tests/Unit/.gitkeep</td>
+          </tr>
+          <tr>
+            <td>Cypress inexecutável</td>
+            <td><code>baseUrl</code> para <code>http://localhost</code>, rota corrigida, binário instalado, vídeos desligados e ignorados pelo git</td>
+            <td class="onde">cypress.config.js<br>.gitignore</td>
+          </tr>
+          <tr>
+            <td>Testes da landing desatualizados</td>
+            <td>Asserções alinhadas ao que a página realmente mostra</td>
+            <td class="onde">cypress/e2e/landing.cy.js</td>
+          </tr>
+          <tr>
+            <td>Teste flaky por fuso</td>
+            <td>Helpers <code>isoLocal()</code> e <code>anosAtras()</code>, que montam a data em horário local</td>
+            <td class="onde">cypress/e2e/enrollment.cy.js</td>
+          </tr>
+          <tr>
+            <td>Colisão de nome de arquivo</td>
+            <td>Sufixo aleatório com <code>Str::random(8)</code> no lugar do timestamp</td>
+            <td class="onde">app/Livewire/Admin/Dashboard.php</td>
+          </tr>
+          <tr>
+            <td>Chave de produção exposta</td>
+            <td>Chave descartável, gerada só para o ambiente de teste</td>
+            <td class="onde">.env.testing</td>
+          </tr>
+          <tr>
+            <td>Campo de data se apagando</td>
+            <td>Handler <code>x-on:change</code> removido dos dois inputs; <code>min</code> alinhado à regra do servidor</td>
+            <td class="onde">enrollment-form.blade.php</td>
+          </tr>
+          <tr>
+            <td>Formatação duplicada</td>
+            <td>Closures do dashboard extraídas para uma classe compartilhada com a ficha</td>
+            <td class="onde">app/Support/Formatters.php</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <p class="rotulo">Resultados</p>
+    <h2>O que passou a existir</h2>
+
+    <ul class="entregas">
+      <li>
+        <div class="cabeca">
+          <span class="nome">Login do professor</span>
+          <span class="selo selo--feito">AJ-01 · pronto</span>
+        </div>
+        <p>
+          Autenticação por CPF e senha em <code>/login</code>, com rate limiting
+          de 5 tentativas por CPF+IP e mensagem genérica que não revela se o CPF
+          existe. O dashboard e as rotas de ficha exigem sessão; visitante recebe
+          302 para o login. Era este o furo que o teste de usuário expôs, com o
+          P2 entrando na área restrita sem permissão.
+        </p>
+      </li>
+      <li>
+        <div class="cabeca">
+          <span class="nome">Geração automática do termo</span>
+          <span class="selo selo--feito">pronto</span>
+        </div>
+        <p>
+          O botão “Gerar ficha” em cada aluno baixa a Ficha de Cadastro de Atleta
+          no formato da SMER, preenchida — restam só as duas assinaturas. O
+          título acompanha a modalidade do aluno, então a mesma ficha serve para
+          Boxe, Jiu Jitsu, Muay Thai e Taekwondo.
+        </p>
+      </li>
+      <li>
+        <div class="cabeca">
+          <span class="nome">Bug da data de nascimento</span>
+          <span class="selo selo--feito">AJ-02 · pronto</span>
+        </div>
+        <p>
+          Corrigido e verificado no navegador real. De quebra, o <code>min</code>
+          do campo do aluno passou a concordar com a regra do servidor: um aluno
+          de 17 anos e meio deixou de ser recusado indevidamente.
+        </p>
+      </li>
+      <li>
+        <div class="cabeca">
+          <span class="nome">Anexo do documento complementar</span>
+          <span class="selo selo--feito">AJ-06 · pronto</span>
+        </div>
+        <p>
+          O professor sobe o PDF ou a foto da ficha assinada pelo modal do aluno
+          (até 5&nbsp;MB, PDF/JPG/PNG). O status vai para “assinado” sozinho, o
+          arquivo fica em disco privado e volta pelo download com o nome original.
+        </p>
+      </li>
+      <li>
+        <div class="cabeca">
+          <span class="nome">Formulário e dashboard ampliados</span>
+          <span class="selo selo--feito">pronto</span>
+        </div>
+        <p>
+          Onze campos novos no formulário, com as máscaras e os
+          <code>data-cy</code> no padrão que já existia, mais o checkbox de
+          filiação inexistente. O modal de detalhes passou a mostrar RG,
+          telefone residencial, bairro, escola, série, filiação, celular e
+          e-mail do aluno.
+        </p>
+      </li>
+    </ul>
+
+    <h3>O que ficou de fora</h3>
+    <ul class="entregas">
+      <li>
+        <div class="cabeca">
+          <span class="nome">Dados reais do rodapé</span>
+          <span class="selo selo--fora">AJ-04</span>
+        </div>
+        <p>Dependem do endereço, telefone e redes do CTM — informação que ainda não temos.</p>
+      </li>
+      <li>
+        <div class="cabeca">
+          <span class="nome">Tabela de cadastros no mobile</span>
+          <span class="selo selo--fora">AJ-07</span>
+        </div>
+        <p>Hoje resolvida apenas com scroll horizontal.</p>
+      </li>
+      <li>
+        <div class="cabeca">
+          <span class="nome">Redirect após a matrícula</span>
+          <span class="selo selo--fora">AJ-08</span>
+        </div>
+        <p>A tela de sucesso continua com link manual de volta ao início.</p>
+      </li>
+    </ul>
+
+    <p>
+      Por decisão de projeto, registrada no spec, também ficaram fora:
+      assinatura digital, envio da ficha por e-mail e tela de cadastro de professor.
+    </p>
+
+    <div class="nota">
+      <span class="titulo">Pendência de material</span>
+      <p>
+        O cabeçalho do PDF usa <code>public/img/prudentopolis-smer.png</code> se
+        o arquivo existir, e cai num cabeçalho montado em HTML enquanto não
+        existir. Basta salvar a arte oficial nesse caminho — nenhuma alteração
+        de código é necessária.
+      </p>
+    </div>
+
+    <h3>Antes do deploy</h3>
+    <p>
+      Falta, do roadmap: AJ-04, AJ-07 e AJ-08; a aquisição do domínio; e o deploy
+      em si. Duas providências são obrigatórias antes do ar: trocar
+      <code>PROFESSOR_PASSWORD</code> no <code>.env</code> de produção — o padrão
+      serve apenas para desenvolvimento — e rodar as três migrations novas.
+    </p>
+  </section>
+
+  <footer>
+    Heróis do Tatame · Projeto social de artes marciais · Prudentópolis, PR
+  </footer>
+
+</div>

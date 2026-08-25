@@ -56,3 +56,40 @@
   <li><strong>Scrum Master:</strong> Paulo Cesar Cardoso Domingues</li>
   <li><strong>Desenvolvimento:</strong> Vitor Bobato; Paulo Cesar Cardoso Domingues</li>
 </ul>
+
+## Área do Professor
+
+O acesso ao dashboard exige login em `/login`, com **CPF e senha**.
+
+Crie o usuário professor com:
+
+    ./vendor/bin/sail artisan db:seed --class=ProfessorSeeder
+
+As credenciais vêm de `PROFESSOR_CPF`, `PROFESSOR_PASSWORD`, `PROFESSOR_NAME` e
+`PROFESSOR_EMAIL` no `.env` (veja `.env.example`). Os valores padrão — CPF
+`12345678909`, senha `heroisdotatame` — servem **apenas para desenvolvimento**.
+Troque a senha no `.env` e rode o seeder de novo antes de qualquer uso real; ele
+é idempotente e atualiza o usuário existente.
+
+## Ficha de cadastro de atleta
+
+No dashboard, o botão **Gerar ficha** de cada aluno baixa em PDF a Ficha de
+Cadastro de Atleta no formato exigido pela Secretaria Municipal de Esportes e
+Recreação de Prudentópolis, já preenchida com os dados do cadastro. Só restam as
+duas assinaturas.
+
+O PDF é gerado sob demanda e nunca gravado em disco: corrigir um dado do aluno e
+reimprimir sempre produz a versão atual. O título acompanha a modalidade do
+aluno, então a mesma ficha serve para Boxe, Jiu Jitsu, Muay Thai e Taekwondo.
+
+Para usar a arte oficial no cabeçalho, salve a logo em
+`public/img/prudentopolis-smer.png`. Sem o arquivo, o cabeçalho é montado em HTML.
+
+Depois de assinada, a ficha volta ao sistema pelo modal de detalhes do aluno
+(PDF ou foto, até 5 MB). O arquivo fica em disco privado e o status do termo
+passa a "assinado" automaticamente.
+
+## Testes
+
+    ./vendor/bin/sail artisan test          # PHPUnit, em SQLite local
+    npx cypress run                         # E2E, contra http://localhost

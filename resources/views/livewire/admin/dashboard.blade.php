@@ -14,32 +14,39 @@
     }"
 >
     @php
+        use App\Support\Formatters;
+
         $statusBadge = fn (string $status) => match ($status) {
             'entregue' => 'bg-yellow-950 text-yellow-400 border-yellow-800',
             'assinado' => 'bg-green-950 text-green-400 border-green-800',
             default    => 'bg-red-950 text-red-400 border-red-800',
         };
-        $formatCpf = fn (?string $cpf) => $cpf
-            ? preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cpf)
-            : null;
-        $formatPhone = fn (?string $phone) => $phone
-            ? preg_replace(['/(\d{2})(\d{5})(\d{4})/', '/(\d{2})(\d{4})(\d{4})/'], ['($1) $2-$3', '($1) $2-$3'], $phone)
-            : null;
         $modalData = fn ($s) => [
             'id'           => $s->id,
             'name'         => $s->name,
-            'cpf'          => $formatCpf($s->cpf),
-            'rg'           => $s->rg ?: '—',
-            'birth_date'   => $s->birth_date?->format('d/m/Y'),
+            'cpf'          => Formatters::cpf($s->cpf),
+            'rg'           => Formatters::rg($s->rg) ?: '—',
+            'birth_date'   => Formatters::date($s->birth_date),
+            'school'       => $s->school ?: '—',
+            'grade'        => $s->grade ?: '—',
+            'father_name'  => $s->no_father ? 'Não declarado' : ($s->father_name ?: '—'),
+            'mother_name'  => $s->no_mother ? 'Não declarado' : ($s->mother_name ?: '—'),
+            'phone'        => Formatters::phone($s->phone) ?: '—',
+            'email'        => $s->email ?: '—',
             'modalidade'   => $s->modalidade,
             'termo_status' => $s->termo_status,
+            'termo_arquivo'      => (bool) $s->termo_arquivo,
+            'termo_arquivo_nome' => $s->termo_arquivo_nome,
             'resp'         => [
-                'name'       => $s->responsible->name,
-                'phone'      => $formatPhone($s->responsible->phone_number),
-                'cpf'        => $formatCpf($s->responsible->cpf),
-                'email'      => $s->responsible->email,
-                'birth_date' => $s->responsible->birth_date?->format('d/m/Y'),
-                'address'    => $s->responsible->address,
+                'name'         => $s->responsible->name,
+                'phone'        => Formatters::phone($s->responsible->phone_number),
+                'home_phone'   => Formatters::phone($s->responsible->home_phone) ?: '—',
+                'cpf'          => Formatters::cpf($s->responsible->cpf),
+                'rg'           => Formatters::rg($s->responsible->rg) ?: '—',
+                'email'        => $s->responsible->email,
+                'birth_date'   => Formatters::date($s->responsible->birth_date),
+                'address'      => $s->responsible->address,
+                'neighborhood' => $s->responsible->neighborhood ?: '—',
             ],
         ];
     @endphp
@@ -64,6 +71,7 @@
                         <th class="px-6 py-4 text-left">Contato</th>
                         <th class="px-6 py-4 text-left">Aluno</th>
                         <th class="px-6 py-4 text-left">Status do Termo</th>
+                        <th class="px-6 py-4 text-left">Ficha</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-neutral-900">
@@ -75,12 +83,23 @@
                             title="Ver detalhes do aluno"
                         >
                             <td class="px-6 py-4 text-neutral-200">{{ $student->responsible->name }}</td>
-                            <td class="px-6 py-4 text-neutral-400 font-mono">{{ $formatPhone($student->responsible->phone_number) }}</td>
+                            <td class="px-6 py-4 text-neutral-400 font-mono">{{ Formatters::phone($student->responsible->phone_number) }}</td>
                             <td class="px-6 py-4 text-neutral-200">{{ $student->name }}</td>
                             <td class="px-6 py-4">
                                 <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border {{ $statusBadge($student->termo_status) }}">
                                     {{ ucfirst($student->termo_status) }}
                                 </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a
+                                    href="{{ route('admin.students.ficha', $student) }}"
+                                    target="_blank"
+                                    @click.stop
+                                    data-cy="ficha-link"
+                                    class="inline-block text-xs font-semibold border border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-white px-3 py-1.5 rounded-lg transition"
+                                >
+                                    Gerar ficha
+                                </a>
                             </td>
                         </tr>
                     @endforeach
@@ -157,6 +176,17 @@
                     </div>
                 </div>
 
+                <div>
+                    <a
+                        :href="'/admin/alunos/' + s.id + '/ficha'"
+                        target="_blank"
+                        data-cy="ficha-link-modal"
+                        class="inline-block bg-white text-black font-bold px-6 py-2.5 rounded-lg hover:bg-neutral-200 transition"
+                    >
+                        Gerar ficha
+                    </a>
+                </div>
+
                 {{-- Dados do Responsável --}}
                 <section>
                     <h3 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-neutral-400">
@@ -175,6 +205,18 @@
                         <div>
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">CPF</dt>
                             <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.resp.cpf"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">RG</dt>
+                            <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.resp.rg"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Telefone residencial</dt>
+                            <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.resp.home_phone"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Bairro</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.resp.neighborhood"></dd>
                         </div>
                         <div>
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">E-mail</dt>
@@ -214,12 +256,100 @@
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">Data de Nascimento</dt>
                             <dd class="mt-0.5 text-neutral-200" x-text="s.birth_date"></dd>
                         </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Escola</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.school"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Série</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.grade"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Filiação — Pai</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.father_name"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Filiação — Mãe</dt>
+                            <dd class="mt-0.5 text-neutral-200" x-text="s.mother_name"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">Celular do aluno</dt>
+                            <dd class="mt-0.5 font-mono text-neutral-200" x-text="s.phone"></dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs uppercase tracking-wide text-neutral-500">E-mail do aluno</dt>
+                            <dd class="mt-0.5 break-all text-neutral-200" x-text="s.email"></dd>
+                        </div>
                         <div class="sm:col-span-2">
                             <dt class="text-xs uppercase tracking-wide text-neutral-500">Modalidade</dt>
                             <dd class="mt-0.5 text-neutral-200" x-text="s.modalidade"></dd>
                         </div>
                     </dl>
                 </section>
+
+                {{-- Ficha assinada --}}
+                <section>
+                    <h3 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+                        <span class="h-1.5 w-1.5 rounded-full bg-neutral-600"></span>
+                        Ficha assinada
+                    </h3>
+
+                    <template x-if="s.termo_arquivo">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <a
+                                :href="'/admin/alunos/' + s.id + '/ficha-assinada'"
+                                target="_blank"
+                                data-cy="ficha-assinada-link"
+                                class="inline-block bg-white text-black font-bold px-5 py-2 rounded-lg hover:bg-neutral-200 transition"
+                            >
+                                Baixar ficha assinada
+                            </a>
+                            <span class="text-sm text-neutral-500" x-text="s.termo_arquivo_nome"></span>
+                            <button
+                                type="button"
+                                @click="$wire.removeSignedFicha(s.id).then(() => close())"
+                                data-cy="ficha-assinada-remove"
+                                class="text-sm text-red-400 hover:text-red-300 transition"
+                            >
+                                Remover
+                            </button>
+                        </div>
+                    </template>
+
+                    <template x-if="! s.termo_arquivo">
+                        <div>
+                            <p class="text-sm text-neutral-500 mb-3">
+                                Anexe o PDF ou a foto da ficha que o responsável assinou.
+                                O status do termo passa a &quot;assinado&quot; automaticamente.
+                            </p>
+                            <input
+                                type="file"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                data-cy="ficha-assinada-input"
+                                @change="$wire.set('uploadTargetId', s.id)"
+                                wire:model="signedFicha"
+                                class="block w-full text-sm text-neutral-400 file:mr-4 file:rounded-lg file:border-0
+                                       file:bg-neutral-800 file:px-4 file:py-2 file:text-sm file:font-semibold
+                                       file:text-neutral-200 hover:file:bg-neutral-700"
+                            >
+                            <div wire:loading wire:target="signedFicha" class="text-sm text-neutral-500 mt-2">
+                                Enviando arquivo...
+                            </div>
+                            <button
+                                type="button"
+                                @click="$wire.uploadSignedFicha().then(() => close())"
+                                data-cy="ficha-assinada-submit"
+                                class="mt-3 bg-white text-black font-bold px-5 py-2 rounded-lg hover:bg-neutral-200 transition"
+                            >
+                                Salvar ficha assinada
+                            </button>
+                            @error('signedFicha')
+                                <p class="text-red-400 text-sm mt-2" data-cy="error-signedFicha">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </template>
+                </section>
+
             </div>
         </div>
     </div>

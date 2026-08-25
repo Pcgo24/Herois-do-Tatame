@@ -14,13 +14,14 @@ use Tests\TestCase;
 class NeonInsertionTest extends TestCase
 {
     private array $insertedResponsibleCpfs = [];
+
     private array $insertedStudentCpfs = [];
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (!getenv('RUN_NEON_TESTS')) {
+        if (! getenv('RUN_NEON_TESTS')) {
             $this->markTestSkipped('Teste Neon inativo. Para rodar: RUN_NEON_TESTS=1 ./vendor/bin/sail artisan test --group=neon');
         }
 
@@ -29,13 +30,13 @@ class NeonInsertionTest extends TestCase
 
     protected function tearDown(): void
     {
-        if (!empty($this->insertedStudentCpfs)) {
+        if (! empty($this->insertedStudentCpfs)) {
             Student::withTrashed()
                 ->whereIn('cpf', $this->insertedStudentCpfs)
                 ->forceDelete();
         }
 
-        if (!empty($this->insertedResponsibleCpfs)) {
+        if (! empty($this->insertedResponsibleCpfs)) {
             Responsible::withTrashed()
                 ->whereIn('cpf', $this->insertedResponsibleCpfs)
                 ->forceDelete();
@@ -55,12 +56,12 @@ class NeonInsertionTest extends TestCase
         $this->insertedResponsibleCpfs[] = $cpf;
 
         $responsible = Responsible::create([
-            'name'         => '[TESTE] Responsável Direto',
+            'name' => '[TESTE] Responsável Direto',
             'phone_number' => '11999999999',
-            'cpf'          => $cpf,
-            'email'        => "teste_{$cpf}@teste.com",
-            'birth_date'   => '1990-01-15',
-            'address'      => 'Rua de Teste, 1, São Paulo',
+            'cpf' => $cpf,
+            'email' => "teste_{$cpf}@teste.com",
+            'birth_date' => '1990-01-15',
+            'address' => 'Rua de Teste, 1, São Paulo',
         ]);
 
         $this->assertNotNull($responsible->id);
@@ -77,27 +78,27 @@ class NeonInsertionTest extends TestCase
     public function test_can_insert_student_linked_to_responsible_into_neon(): void
     {
         $responsibleCpf = $this->uniqueCpf();
-        $studentCpf     = $this->uniqueCpf();
+        $studentCpf = $this->uniqueCpf();
 
         $this->insertedResponsibleCpfs[] = $responsibleCpf;
-        $this->insertedStudentCpfs[]     = $studentCpf;
+        $this->insertedStudentCpfs[] = $studentCpf;
 
         $responsible = Responsible::create([
-            'name'         => '[TESTE] Responsável com Aluno',
+            'name' => '[TESTE] Responsável com Aluno',
             'phone_number' => '11988888888',
-            'cpf'          => $responsibleCpf,
-            'email'        => "responsavel_{$responsibleCpf}@teste.com",
-            'birth_date'   => '1985-06-20',
-            'address'      => 'Av. Teste, 100, Campinas',
+            'cpf' => $responsibleCpf,
+            'email' => "responsavel_{$responsibleCpf}@teste.com",
+            'birth_date' => '1985-06-20',
+            'address' => 'Av. Teste, 100, Campinas',
         ]);
 
         $student = Student::create([
             'responsible_id' => $responsible->id,
-            'name'           => '[TESTE] Aluno',
-            'cpf'            => $studentCpf,
-            'rg'             => null,
-            'birth_date'     => '2015-03-10',
-            'modalidade'     => 'Jiu Jitsu',
+            'name' => '[TESTE] Aluno',
+            'cpf' => $studentCpf,
+            'rg' => null,
+            'birth_date' => '2015-03-10',
+            'modalidade' => 'Jiu Jitsu',
         ]);
 
         $this->assertNotNull($student->id);
@@ -114,10 +115,10 @@ class NeonInsertionTest extends TestCase
     public function test_enrollment_form_submits_and_saves_to_neon(): void
     {
         $responsibleCpf = $this->uniqueCpf();
-        $studentCpf     = $this->uniqueCpf();
+        $studentCpf = $this->uniqueCpf();
 
         $this->insertedResponsibleCpfs[] = $responsibleCpf;
-        $this->insertedStudentCpfs[]     = $studentCpf;
+        $this->insertedStudentCpfs[] = $studentCpf;
 
         Livewire::test(EnrollmentForm::class)
             ->set('responsible_name', '[TESTE] Via Formulário Livewire')
@@ -156,12 +157,12 @@ class NeonInsertionTest extends TestCase
         $this->insertedResponsibleCpfs[] = $responsibleCpf;
 
         Responsible::create([
-            'name'         => '[TESTE] Responsável Existente',
+            'name' => '[TESTE] Responsável Existente',
             'phone_number' => '11966666666',
-            'cpf'          => $responsibleCpf,
-            'email'        => "dup_{$responsibleCpf}@teste.com",
-            'birth_date'   => '1980-11-05',
-            'address'      => 'Rua Duplicada, 1',
+            'cpf' => $responsibleCpf,
+            'email' => "dup_{$responsibleCpf}@teste.com",
+            'birth_date' => '1980-11-05',
+            'address' => 'Rua Duplicada, 1',
         ]);
 
         $studentCpf = $this->uniqueCpf();

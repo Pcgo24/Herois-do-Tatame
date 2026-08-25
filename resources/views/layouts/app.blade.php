@@ -16,11 +16,12 @@
 
             <div class="flex items-center gap-2">
                 <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <a href="#" class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</a>
+                <a href="{{ route('home') }}" class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</a>
             </div>
 
             <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-400 items-center">
                 <a href="{{ route('home') }}" class="hover:text-white transition">Início</a>
+                <a href="{{ route('login') }}" class="hover:text-white transition">Área do Professor</a>
                 <a href="{{ route('enrollment') }}" data-cy="enrollment-btn" class="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-md transition">Matricule-se</a>
             </nav>
 
@@ -47,6 +48,7 @@
                 <a href="{{ route('home') }}" @click="menuAberto = false" class="text-white text-lg font-medium border-b border-neutral-800 pb-3">Início</a>
                 <a href="#sobre" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Sobre o Projeto</a>
                 <a href="#modalidades" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Modalidades</a>
+                <a href="{{ route('login') }}" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Área do Professor</a>
                 <a href="{{ route('enrollment') }}" @click="menuAberto = false" data-cy="enrollment-btn-mobile" class="bg-neutral-800 hover:bg-neutral-700 text-white text-lg font-medium px-4 py-2 rounded-md transition text-center">Matricule-se</a>
             </nav>
         </div>

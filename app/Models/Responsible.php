@@ -15,10 +15,13 @@ class Responsible extends Model
     protected $fillable = [
         'name',
         'phone_number',
+        'home_phone',
         'cpf',
+        'rg',
         'email',
         'birth_date',
         'address',
+        'neighborhood',
     ];
 
     protected function casts(): array

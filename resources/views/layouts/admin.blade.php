@@ -15,7 +15,8 @@
                 <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
-                <span class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</span>
+                <!-- <span href= class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</span> -->
+                <a href="{{ route('home') }}" class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</a>
                 <span class="text-xs bg-neutral-800 text-neutral-400 border border-neutral-700 px-2 py-0.5 rounded-full uppercase tracking-widest">Admin</span>
             </div>
             @if(Route::has('logout'))

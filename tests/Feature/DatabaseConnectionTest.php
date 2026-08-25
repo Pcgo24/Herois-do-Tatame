@@ -14,7 +14,7 @@ class DatabaseConnectionTest extends TestCase
     {
         parent::setUp();
 
-        if (!getenv('RUN_NEON_TESTS')) {
+        if (! getenv('RUN_NEON_TESTS')) {
             $this->markTestSkipped('Teste Neon inativo. Para rodar: RUN_NEON_TESTS=1 ./vendor/bin/sail artisan test --group=neon');
         }
 

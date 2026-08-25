@@ -6,8 +6,10 @@ use App\Livewire\EnrollmentForm;
 use App\Models\Responsible;
 use App\Models\Student;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class EnrollmentTest extends TestCase
@@ -294,7 +296,7 @@ class EnrollmentTest extends TestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('requiredFichaFieldProvider')]
+    #[DataProvider('requiredFichaFieldProvider')]
     public function test_required_ficha_field_cannot_be_empty(string $field): void
     {
         $this->fillForm([$field => ''])
@@ -376,7 +378,7 @@ class EnrollmentTest extends TestCase
     // do servidor, não de um handler que descarta o que o usuário digitou.
     public function test_student_with_seventeen_and_a_half_years_is_accepted(): void
     {
-        $birthDate = \Illuminate\Support\Carbon::now()->subYears(17)->subMonths(6)->format('Y-m-d');
+        $birthDate = Carbon::now()->subYears(17)->subMonths(6)->format('Y-m-d');
 
         $this->fillForm(['student_birth_date' => $birthDate])
             ->call('submit')
@@ -396,7 +398,7 @@ class EnrollmentTest extends TestCase
 
     public function test_student_older_than_eighteen_is_rejected(): void
     {
-        $birthDate = \Illuminate\Support\Carbon::now()->subYears(19)->format('Y-m-d');
+        $birthDate = Carbon::now()->subYears(19)->format('Y-m-d');
 
         $this->fillForm(['student_birth_date' => $birthDate])
             ->call('submit')

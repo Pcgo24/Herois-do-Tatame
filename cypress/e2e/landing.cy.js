@@ -44,10 +44,38 @@ describe("Landing Page - Heróis do Tatame", () => {
             // Verifica se a tabela existe
             cy.get("table").should("exist");
 
-            // Verifica dados específicos da tabela
-            cy.contains("td", "Segunda-feira").should("be.visible");
+            // Verifica dados específicos da tabela. O dia é o cabeçalho da
+            // linha (th scope="row"), não uma célula comum.
+            cy.contains("th", "Segunda-feira").should("be.visible");
             cy.contains("td", "18:00 - 19:30").should("be.visible");
-            cy.contains("span", "Jiu Jitsu / Boxe").should("be.visible");
+            // Cada modalidade é um chip com a cor da sua faixa.
+            cy.contains("td span", "Jiu Jitsu").should("be.visible");
+            cy.contains("td span", "Boxe").should("be.visible");
+        });
+    });
+
+    context("Alternância de tema", () => {
+        beforeEach(() => {
+            cy.viewport(1280, 720);
+        });
+
+        it("Deve abrir no tema claro e alternar para o escuro", () => {
+            // Claro é o padrão: só fica escuro quem clicou no botão.
+            cy.get("html").should("not.have.class", "dark");
+
+            cy.get('[data-cy="theme-toggle"]').click();
+            cy.get("html").should("have.class", "dark");
+
+            cy.get('[data-cy="theme-toggle"]').click();
+            cy.get("html").should("not.have.class", "dark");
+        });
+
+        it("Deve lembrar o tema escolhido depois de recarregar", () => {
+            cy.get('[data-cy="theme-toggle"]').click();
+            cy.get("html").should("have.class", "dark");
+
+            cy.reload();
+            cy.get("html").should("have.class", "dark");
         });
     });
 
@@ -60,8 +88,9 @@ describe("Landing Page - Heróis do Tatame", () => {
             // No mobile, o menu desktop deve estar escondido
             cy.get("nav").contains("Início").should("not.be.visible");
 
-            // Clica no botão Hamburguer (buscando pelo elemento <button> no header)
-            cy.get("header button").click();
+            // Clica no botão Hamburguer. O header também tem o botão de tema,
+            // então o seletor precisa ser específico.
+            cy.get('[data-cy="menu-toggle"]').click();
 
             // Agora o link "Sobre o Projeto" dentro do menu mobile deve estar visível
             cy.get('header div[x-show="menuAberto"]')

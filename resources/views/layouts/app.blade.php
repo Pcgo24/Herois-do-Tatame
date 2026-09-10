@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heróis do Tatame</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style> [x-cloak] { display: none !important; } </style>
+    @include('partials.head')
 </head>
-<body class="bg-black text-white antialiased font-sans">
+<body class="bg-tatame-base text-tatame-ink dark:bg-noite-base dark:text-noite-ink antialiased font-sans transition-colors duration-300">
 
-    <header x-data="{ menuAberto: false }" class="sticky top-0 z-50 w-full bg-black/80 backdrop-blur-md border-b border-neutral-900">
+    <a href="#conteudo" class="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-3 focus:rounded-md focus:bg-faixa-azul focus:px-4 focus:py-2 focus:text-white">
+        Pular para o conteúdo
+    </a>
 
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center relative">
+    <header x-data="{ menuAberto: false }" class="sticky top-0 z-50 w-full bg-tatame-base dark:bg-noite-base border-b border-tatame-line dark:border-noite-line">
 
-            <div class="flex items-center gap-2">
-                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <a href="{{ route('home') }}" class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</a>
-            </div>
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center relative">
 
-            <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-400 items-center">
-                <a href="{{ route('home') }}" class="hover:text-white transition">Início</a>
-                <a href="{{ route('login') }}" class="hover:text-white transition">Área do Professor</a>
-                <a href="{{ route('enrollment') }}" data-cy="enrollment-btn" class="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-md transition">Matricule-se</a>
+            <x-marca />
+
+            <nav class="hidden md:flex gap-7 text-sm font-medium text-tatame-muted dark:text-noite-muted items-center">
+                <a href="{{ route('home') }}" class="hover:text-tatame-ink dark:hover:text-noite-ink transition">Início</a>
+                <a href="#modalidades" class="hover:text-tatame-ink dark:hover:text-noite-ink transition">Modalidades</a>
+                <a href="{{ route('login') }}" class="hover:text-tatame-ink dark:hover:text-noite-ink transition">Área do Professor</a>
+
+                <x-botao-tema data-cy="theme-toggle" />
+
+                <a href="{{ route('enrollment') }}" data-cy="enrollment-btn" class="bg-faixa-azul hover:bg-[#175a96] text-white px-4 py-2 rounded-md font-semibold transition">Matricule-se</a>
             </nav>
 
-            <button @click="menuAberto = !menuAberto" class="md:hidden text-neutral-300 hover:text-white focus:outline-none transition">
-                <svg x-show="!menuAberto" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                <svg x-show="menuAberto" x-cloak class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <div class="md:hidden flex items-center gap-1">
+                <x-botao-tema data-cy="theme-toggle-mobile" :com-borda="false" icone="w-6 h-6" />
+
+                <button data-cy="menu-toggle" @click="menuAberto = !menuAberto" class="p-2 text-tatame-ink dark:text-noite-ink focus:outline-none transition">
+                    <span class="sr-only">Abrir menu</span>
+                    <svg x-show="!menuAberto" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    <svg x-show="menuAberto" x-cloak class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
 
         </div>
 
@@ -41,29 +46,23 @@
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-4"
             @click.away="menuAberto = false"
-            class="md:hidden absolute top-full left-0 w-full bg-[#111111] border-b border-neutral-900 shadow-2xl"
+            class="md:hidden absolute top-full left-0 w-full bg-tatame-surface dark:bg-noite-surface border-b border-tatame-line dark:border-noite-line shadow-xl"
             x-cloak
         >
             <nav class="flex flex-col px-6 py-6 gap-4">
-                <a href="{{ route('home') }}" @click="menuAberto = false" class="text-white text-lg font-medium border-b border-neutral-800 pb-3">Início</a>
-                <a href="#sobre" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Sobre o Projeto</a>
-                <a href="#modalidades" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Modalidades</a>
-                <a href="{{ route('login') }}" @click="menuAberto = false" class="text-gray-400 hover:text-white text-lg font-medium border-b border-neutral-800 pb-3 transition">Área do Professor</a>
-                <a href="{{ route('enrollment') }}" @click="menuAberto = false" data-cy="enrollment-btn-mobile" class="bg-neutral-800 hover:bg-neutral-700 text-white text-lg font-medium px-4 py-2 rounded-md transition text-center">Matricule-se</a>
+                <a href="{{ route('home') }}" @click="menuAberto = false" class="text-lg font-semibold border-b border-tatame-line dark:border-noite-line pb-3">Início</a>
+                <a href="#sobre" @click="menuAberto = false" class="text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink text-lg font-medium border-b border-tatame-line dark:border-noite-line pb-3 transition">Sobre o Projeto</a>
+                <a href="#modalidades" @click="menuAberto = false" class="text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink text-lg font-medium border-b border-tatame-line dark:border-noite-line pb-3 transition">Modalidades</a>
+                <a href="{{ route('login') }}" @click="menuAberto = false" class="text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink text-lg font-medium border-b border-tatame-line dark:border-noite-line pb-3 transition">Área do Professor</a>
+                <a href="{{ route('enrollment') }}" @click="menuAberto = false" data-cy="enrollment-btn-mobile" class="bg-faixa-azul hover:bg-[#175a96] text-white text-lg font-semibold px-4 py-2 rounded-md transition text-center">Matricule-se</a>
             </nav>
         </div>
 
     </header>
 
-    <main>
+    <main id="conteudo">
         {{ $slot }}
     </main>
 
-
 </body>
 </html>
-
-
-<!-- <a href="#" class="hover:text-white transition">Cadastro de Alunos</a>
-                <a href="#" class="hover:text-white transition">Área do Instrutor</a>
-                <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition">Matricule-se</a> -->

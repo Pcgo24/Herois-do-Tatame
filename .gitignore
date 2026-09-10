@@ -42,3 +42,6 @@ temp/
 
 # variaveis para rodar a imagem de producao localmente
 .env.docker
+docs/imgs/
+
+

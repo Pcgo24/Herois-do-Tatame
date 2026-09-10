@@ -1,16 +1,11 @@
 <div class="w-full max-w-md">
 
-    <div class="flex items-center justify-center gap-2 mb-8">
-        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-        <a href="{{ route('home') }}" class="text-xl font-bold tracking-widest uppercase">Heróis do Tatame</a>
-    </div>
+    <x-marca class="justify-center mb-8" logo="h-14" texto="text-xl" />
 
-    <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-8">
+    <div class="cartao p-8">
 
-        <h1 class="text-2xl font-bold text-white mb-1">Área do Professor</h1>
-        <p class="text-neutral-500 text-sm mb-8">Entre com seu CPF e senha para acessar os cadastros.</p>
+        <h1 class="font-display font-extrabold text-2xl mb-1">Área do Professor</h1>
+        <p class="text-tatame-muted dark:text-noite-muted text-sm mb-8">Entre com seu CPF e senha para acessar os cadastros.</p>
 
         <form wire:submit="login" data-cy="login-form" novalidate>
 
@@ -22,8 +17,9 @@
                          : v.length>3 ? v.slice(0,3)+'.'+v.slice(3) : v;
                 }
             }">
-                <label class="block text-sm font-medium text-neutral-400 mb-1.5">CPF</label>
+                <label class="rotulo" for="cpf">CPF</label>
                 <input
+                    id="cpf"
                     type="text"
                     data-cy="input-cpf"
                     maxlength="14"
@@ -31,43 +27,42 @@
                     autocomplete="username"
                     placeholder="123.456.789-01"
                     x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.cpf)"
-                    x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('cpf',r);"
-                    class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                           {{ $errors->has('cpf') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                    x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('cpf',r,false);"
+                    class="campo @error('cpf') campo--erro @enderror"
                 >
                 @error('cpf')
-                    <p class="text-red-400 text-sm mt-1.5" data-cy="error-cpf">{{ $message }}</p>
+                    <p class="erro-campo" data-cy="error-cpf">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="mb-5">
-                <label class="block text-sm font-medium text-neutral-400 mb-1.5">Senha</label>
+                <label class="rotulo" for="senha">Senha</label>
                 <input
+                    id="senha"
                     type="password"
                     wire:model="password"
                     data-cy="input-password"
                     autocomplete="current-password"
-                    class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                           {{ $errors->has('password') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                    class="campo @error('password') campo--erro @enderror"
                 >
                 @error('password')
-                    <p class="text-red-400 text-sm mt-1.5" data-cy="error-password">{{ $message }}</p>
+                    <p class="erro-campo" data-cy="error-password">{{ $message }}</p>
                 @enderror
             </div>
 
             <label class="flex items-center gap-2 mb-8 cursor-pointer">
-                <input type="checkbox" wire:model="remember" data-cy="input-remember" class="w-4 h-4 accent-white cursor-pointer">
-                <span class="text-sm text-neutral-400">Manter conectado neste dispositivo</span>
+                <input type="checkbox" wire:model="remember" data-cy="input-remember" class="w-4 h-4 accent-faixa-azul cursor-pointer">
+                <span class="text-sm text-tatame-muted dark:text-noite-muted">Manter conectado neste dispositivo</span>
             </label>
 
             <button
                 type="submit"
                 data-cy="login-btn"
-                wire:loading.attr="disabled"
-                class="bg-white text-black hover:bg-neutral-200 font-bold px-10 py-3 rounded-lg transition w-full disabled:opacity-60 disabled:cursor-not-allowed"
+                wire:loading.attr="disabled" wire:target="login"
+                class="botao-primario w-full px-10 py-3"
             >
-                <span wire:loading.remove>Entrar</span>
-                <span wire:loading class="flex items-center justify-center gap-2">
+                <span wire:loading.remove wire:target="login">Entrar</span>
+                <span wire:loading wire:target="login" class="flex items-center justify-center gap-2">
                     <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -80,6 +75,6 @@
     </div>
 
     <p class="text-center mt-6">
-        <a href="{{ route('home') }}" class="text-neutral-500 hover:text-neutral-300 text-sm transition">← Voltar ao início</a>
+        <a href="{{ route('home') }}" class="text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink text-sm transition">← Voltar ao início</a>
     </p>
 </div>

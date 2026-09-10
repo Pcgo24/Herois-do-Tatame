@@ -62,7 +62,7 @@ describe('Navegação para matrícula', () => {
   it('exibe o botão Matricule-se no menu mobile', () => {
     cy.viewport('iphone-xr');
     cy.visit('/');
-    cy.get('header button').first().click({ force: true });
+    cy.get('[data-cy="menu-toggle"]').click({ force: true });
     cy.get('[data-cy="enrollment-btn-mobile"]').should('be.visible');
   });
 });

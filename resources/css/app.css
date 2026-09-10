@@ -1,3 +1,116 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        color-scheme: light;
+        --faixa-branca: #DEDED7;
+        --faixa-preta: #14161A;
+    }
+
+    .dark {
+        color-scheme: dark;
+        --faixa-branca: #E9E9E3;
+        --faixa-preta: #454C55;
+    }
+
+    :focus-visible {
+        outline: 2px solid #1D6FB8;
+        outline-offset: 3px;
+    }
+
+    .dark :focus-visible {
+        outline-color: #F0B429;
+    }
+}
+
+@layer components {
+    /* A progressão de faixas divide as seções: um divisor que diz "aqui se
+       evolui". Um gradiente de paradas rígidas, e não sete filhos em flex,
+       para não depender de um caminho de renderização que falha em alguns
+       navegadores. */
+    .faixa-progressao {
+        height: 0.5rem;
+        background-image: linear-gradient(
+            to right,
+            var(--faixa-branca) 0 14.2857%,
+            #F0B429 0 28.5714%,
+            #E07A2F 0 42.8571%,
+            #2E7D5B 0 57.1428%,
+            #1D6FB8 0 71.4285%,
+            #6B4130 0 85.7142%,
+            var(--faixa-preta) 0 100%
+        );
+    }
+
+    .faixa-progressao--fina {
+        height: 0.1875rem;
+    }
+
+    /* Formulários. O login e a ficha de matrícula repetiam as mesmas dez
+       classes em cada campo; aqui elas viram um nome só. */
+    .rotulo {
+        @apply block text-sm font-medium text-tatame-muted dark:text-noite-muted mb-1.5;
+    }
+
+    .campo {
+        @apply w-full rounded-lg px-4 py-2.5 transition
+               border border-tatame-line dark:border-noite-line
+               bg-tatame-surface dark:bg-noite-raised
+               text-tatame-ink dark:text-noite-ink
+               placeholder:text-tatame-muted/60 dark:placeholder:text-noite-muted/60
+               focus:outline-none focus:border-faixa-azul dark:focus:border-faixa-amarela
+               disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    /* Depois de .campo no mesmo layer, então vence a cor da borda. */
+    .campo--erro {
+        @apply border-red-500 dark:border-red-500/70;
+    }
+
+    .erro-campo {
+        @apply text-red-600 dark:text-red-400 text-sm mt-1.5;
+    }
+
+    .botao-primario {
+        @apply bg-faixa-azul hover:bg-[#175a96] text-white font-semibold rounded-lg transition
+               disabled:opacity-60 disabled:cursor-not-allowed;
+    }
+
+    .botao-secundario {
+        @apply border border-tatame-ink/25 dark:border-noite-ink/30 font-semibold rounded-lg transition
+               hover:bg-tatame-raised dark:hover:bg-noite-raised
+               disabled:opacity-60 disabled:cursor-not-allowed;
+    }
+
+    .cartao {
+        @apply bg-tatame-surface dark:bg-noite-surface
+               border border-tatame-line dark:border-noite-line rounded-2xl;
+    }
+
+    /* Sem animation-fill-mode: o estado final é a largura normal do elemento.
+       Com `forwards` o navegador para de repintar a faixa e ela some. */
+    .faixa-progressao--anima {
+        animation: amarrar-faixa 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+}
+
+@keyframes amarrar-faixa {
+    from {
+        width: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .faixa-progressao--anima {
+        animation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

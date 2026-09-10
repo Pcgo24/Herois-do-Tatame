@@ -3,17 +3,17 @@
     @if ($submitted)
 
         <section class="flex flex-col items-center justify-center min-h-[70vh] px-6 py-20 text-center" data-cy="success-message">
-            <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-12 max-w-lg w-full">
+            <div class="cartao p-12 max-w-lg w-full">
                 <div class="flex justify-center mb-6">
                     <div class="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center">
-                        <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </div>
                 </div>
-                <h2 class="text-2xl font-bold text-white mb-3">Matrícula Enviada!</h2>
-                <p class="text-neutral-400 mb-8">Em breve nossa equipe entrará em contato para confirmar a inscrição do aluno.</p>
-                <a href="{{ route('home') }}" class="inline-block bg-white text-black font-bold px-8 py-3 rounded-lg hover:bg-neutral-200 transition">
+                <h2 class="font-display font-extrabold text-2xl mb-3">Matrícula Enviada!</h2>
+                <p class="text-tatame-muted dark:text-noite-muted mb-8">Em breve nossa equipe entrará em contato para confirmar a inscrição do aluno.</p>
+                <a href="{{ route('home') }}" class="botao-primario inline-block px-8 py-3">
                     Voltar ao Início
                 </a>
             </div>
@@ -21,18 +21,16 @@
 
     @else
 
-        <section class="border-b border-neutral-900 px-6 py-12 text-center">
-            <div class="inline-block bg-neutral-900 border border-neutral-700 text-neutral-300 rounded-full px-3 py-1 text-sm uppercase font-semibold tracking-widest mb-4">
-                Projeto Social
-            </div>
-            <h1 class="text-3xl md:text-4xl font-extrabold uppercase mb-3">Matrícula de Aluno</h1>
-            <p class="text-neutral-400 max-w-xl mx-auto">Preencha os dados do responsável e do aluno para concluir a inscrição.</p>
+        <section class="border-b border-tatame-line dark:border-noite-line px-6 py-12 text-center">
+            <p class="text-sm font-semibold text-faixa-azul dark:text-faixa-amarela mb-3">Projeto social do Centro de Treinamento Marcial</p>
+            <h1 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight mb-3">Matrícula de aluno</h1>
+            <p class="text-tatame-muted dark:text-noite-muted max-w-xl mx-auto">Preencha os dados do responsável e do aluno para concluir a inscrição.</p>
         </section>
 
         <section class="container mx-auto px-6 py-16 max-w-3xl">
 
             @if ($errors->has('general'))
-                <div class="bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-6 py-4 mb-8">
+                <div class="bg-red-50 dark:bg-red-500/10 border border-red-300 dark:border-red-500/30 text-red-700 dark:text-red-300 rounded-xl px-6 py-4 mb-8">
                     {{ $errors->first('general') }}
                 </div>
             @endif
@@ -40,14 +38,14 @@
             <form wire:submit="submit" data-cy="enrollment-form" novalidate>
 
                 {{-- Dados do Responsável --}}
-                <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-8 mb-6">
-                    <h2 class="text-xl font-bold text-white mb-6 pb-3 border-b border-neutral-800">Dados do Responsável</h2>
+                <div class="cartao p-8 mb-6">
+                    <h2 class="font-display font-bold text-xl mb-6 pb-3 border-b border-tatame-line dark:border-noite-line">Dados do Responsável</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Nome Completo <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Nome Completo <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -56,11 +54,10 @@
                                 maxlength="80"
                                 autocomplete="name"
                                 x-on:input="$el.value = $el.value.replace(/[^a-zA-ZÀ-ÿ0-9 '\-]/g, '')"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('responsible_name') campo--erro @enderror"
                             >
                             @error('responsible_name')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_name">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_name">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -76,8 +73,8 @@
                                 return v.length ? '('+v : '';
                             }
                         }">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Telefone <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Telefone <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="tel"
@@ -87,12 +84,11 @@
                                 placeholder="(42) 9 9999-9999"
                                 autocomplete="tel"
                                 x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_phone_number)"
-                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_phone_number',r);"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_phone_number') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_phone_number',r,false);"
+                                class="campo @error('responsible_phone_number') campo--erro @enderror"
                             >
                             @error('responsible_phone_number')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_phone_number">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_phone_number">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -104,8 +100,8 @@
                                      : v.length>3 ? v.slice(0,3)+'.'+v.slice(3) : v;
                             }
                         }">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                CPF <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                CPF <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -114,12 +110,11 @@
                                 inputmode="numeric"
                                 placeholder="123.456.789-01"
                                 x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_cpf)"
-                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_cpf',r);"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_cpf') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_cpf',r,false);"
+                                class="campo @error('responsible_cpf') campo--erro @enderror"
                             >
                             @error('responsible_cpf')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_cpf">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_cpf">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -131,8 +126,8 @@
                                      : v.length>2 ? v.slice(0,2)+'.'+v.slice(2) : v;
                             }
                         }">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                RG <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                RG <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -141,12 +136,11 @@
                                 inputmode="numeric"
                                 placeholder="12.232.343-4"
                                 x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_rg)"
-                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,9); $el.value=fmt(r); $wire.set('responsible_rg',r);"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_rg') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,9); $el.value=fmt(r); $wire.set('responsible_rg',r,false);"
+                                class="campo @error('responsible_rg') campo--erro @enderror"
                             >
                             @error('responsible_rg')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_rg">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_rg">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -162,9 +156,9 @@
                                 return v.length ? '('+v : '';
                             }
                         }">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                            <label class="rotulo">
                                 Telefone residencial
-                                <span class="text-neutral-600 text-xs">(opcional)</span>
+                                <span class="text-tatame-muted dark:text-noite-muted text-xs">(opcional)</span>
                             </label>
                             <input
                                 type="tel"
@@ -173,18 +167,17 @@
                                 inputmode="numeric"
                                 placeholder="(42) 3224-1234"
                                 x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.responsible_home_phone)"
-                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_home_phone',r);"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_home_phone') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('responsible_home_phone',r,false);"
+                                class="campo @error('responsible_home_phone') campo--erro @enderror"
                             >
                             @error('responsible_home_phone')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_home_phone">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_home_phone">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                E-mail <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                E-mail <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="email"
@@ -192,18 +185,17 @@
                                 data-cy="input-responsible_email"
                                 maxlength="255"
                                 autocomplete="email"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_email') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('responsible_email') campo--erro @enderror"
                             >
                             @error('responsible_email')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_email">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_email">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Data de Nascimento <span class="text-red-400">*</span>
-                                <span class="text-neutral-600 text-xs">(mín. 18 anos)</span>
+                            <label class="rotulo">
+                                Data de Nascimento <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
+                                <span class="text-tatame-muted dark:text-noite-muted text-xs">(mín. 18 anos)</span>
                             </label>
                             <input
                                 type="date"
@@ -211,17 +203,16 @@
                                 data-cy="input-responsible_birth_date"
                                 min="{{ \Carbon\Carbon::now()->subYears(100)->format('Y-m-d') }}"
                                 max="{{ \Carbon\Carbon::now()->subYears(18)->subDay()->format('Y-m-d') }}"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_birth_date') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('responsible_birth_date') campo--erro @enderror"
                             >
                             @error('responsible_birth_date')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_birth_date">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_birth_date">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Endereço <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Endereço <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -230,28 +221,26 @@
                                 maxlength="150"
                                 placeholder="Rua, número, bairro, cidade"
                                 autocomplete="street-address"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_address') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('responsible_address') campo--erro @enderror"
                             >
                             @error('responsible_address')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_address">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_address">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Bairro <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Bairro <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
                                 wire:model="responsible_neighborhood"
                                 data-cy="input-responsible_neighborhood"
                                 maxlength="80"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('responsible_neighborhood') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('responsible_neighborhood') campo--erro @enderror"
                             >
                             @error('responsible_neighborhood')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-responsible_neighborhood">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-responsible_neighborhood">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -259,14 +248,14 @@
                 </div>
 
                 {{-- Dados do Aluno --}}
-                <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-8 mb-8">
-                    <h2 class="text-xl font-bold text-white mb-6 pb-3 border-b border-neutral-800">Dados do Aluno</h2>
+                <div class="cartao p-8 mb-8">
+                    <h2 class="font-display font-bold text-xl mb-6 pb-3 border-b border-tatame-line dark:border-noite-line">Dados do Aluno</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Nome Completo <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Nome Completo <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -275,11 +264,10 @@
                                 maxlength="80"
                                 autocomplete="off"
                                 x-on:input="$el.value = $el.value.replace(/[^a-zA-ZÀ-ÿ0-9 '\-]/g, '')"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('student_name') campo--erro @enderror"
                             >
                             @error('student_name')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_name">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_name">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -291,8 +279,8 @@
                                      : v.length>3 ? v.slice(0,3)+'.'+v.slice(3) : v;
                             }
                         }">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                CPF <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                CPF <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -301,12 +289,11 @@
                                 inputmode="numeric"
                                 placeholder="123.456.789-01"
                                 x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.student_cpf)"
-                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('student_cpf',r);"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_cpf') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('student_cpf',r,false);"
+                                class="campo @error('student_cpf') campo--erro @enderror"
                             >
                             @error('student_cpf')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_cpf">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_cpf">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -318,8 +305,8 @@
                                      : v.length>2 ? v.slice(0,2)+'.'+v.slice(2) : v;
                             }
                         }">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                RG <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                RG <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -328,19 +315,18 @@
                                 inputmode="numeric"
                                 placeholder="12.232.343-4"
                                 x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.student_rg)"
-                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,9); $el.value=fmt(r); $wire.set('student_rg',r);"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_rg') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,9); $el.value=fmt(r); $wire.set('student_rg',r,false);"
+                                class="campo @error('student_rg') campo--erro @enderror"
                             >
                             @error('student_rg')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_rg">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_rg">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Data de Nascimento <span class="text-red-400">*</span>
-                                <span class="text-neutral-600 text-xs">(8 a 17 anos)</span>
+                            <label class="rotulo">
+                                Data de Nascimento <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
+                                <span class="text-tatame-muted dark:text-noite-muted text-xs">(8 a 17 anos)</span>
                             </label>
                             <input
                                 type="date"
@@ -348,34 +334,32 @@
                                 data-cy="input-student_birth_date"
                                 min="{{ \Carbon\Carbon::now()->subYears(18)->addDay()->format('Y-m-d') }}"
                                 max="{{ \Carbon\Carbon::now()->subYears(8)->format('Y-m-d') }}"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_birth_date') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('student_birth_date') campo--erro @enderror"
                             >
                             @error('student_birth_date')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_birth_date">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_birth_date">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Escola <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Escola <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
                                 wire:model="student_school"
                                 data-cy="input-student_school"
                                 maxlength="120"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_school') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('student_school') campo--erro @enderror"
                             >
                             @error('student_school')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_school">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_school">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Série <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Série <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -383,11 +367,10 @@
                                 data-cy="input-student_grade"
                                 maxlength="30"
                                 placeholder="5º ano"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_grade') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('student_grade') campo--erro @enderror"
                             >
                             @error('student_grade')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_grade">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_grade">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -403,9 +386,9 @@
                                 return v.length ? '('+v : '';
                             }
                         }">
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                            <label class="rotulo">
                                 Celular do aluno
-                                <span class="text-neutral-600 text-xs">(opcional)</span>
+                                <span class="text-tatame-muted dark:text-noite-muted text-xs">(opcional)</span>
                             </label>
                             <input
                                 type="tel"
@@ -414,19 +397,18 @@
                                 inputmode="numeric"
                                 placeholder="(42) 9 9999-9999"
                                 x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.student_phone)"
-                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('student_phone',r);"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_phone') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('student_phone',r,false);"
+                                class="campo @error('student_phone') campo--erro @enderror"
                             >
                             @error('student_phone')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_phone">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_phone">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
+                            <label class="rotulo">
                                 E-mail do aluno
-                                <span class="text-neutral-600 text-xs">(opcional)</span>
+                                <span class="text-tatame-muted dark:text-noite-muted text-xs">(opcional)</span>
                             </label>
                             <input
                                 type="email"
@@ -434,22 +416,21 @@
                                 data-cy="input-student_email"
                                 maxlength="255"
                                 autocomplete="off"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_email') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('student_email') campo--erro @enderror"
                             >
                             @error('student_email')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_email">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_email">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="md:col-span-2 border-t border-neutral-800 pt-6">
-                            <p class="text-sm font-medium text-neutral-300 mb-4">Filiação</p>
+                        <div class="md:col-span-2 border-t border-tatame-line dark:border-noite-line pt-6">
+                            <p class="text-sm font-semibold mb-4">Filiação</p>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                                 <div>
-                                    <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                        Nome do pai <span class="text-red-400">*</span>
+                                    <label class="rotulo">
+                                        Nome do pai <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -458,30 +439,28 @@
                                         maxlength="80"
                                         x-bind:disabled="$wire.student_no_father"
                                         x-on:input="$el.value = $el.value.replace(/[^a-zA-Z\u00C0-\u00ff '\-]/g, '')"
-                                        class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                               disabled:opacity-40 disabled:cursor-not-allowed
-                                               {{ $errors->has('student_father_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                        class="campo @error('student_father_name') campo--erro @enderror"
                                     >
                                     <label class="flex items-center gap-2 mt-2 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             wire:model.live="student_no_father"
                                             data-cy="checkbox-student_no_father"
-                                            class="w-4 h-4 accent-white cursor-pointer"
+                                            class="w-4 h-4 accent-faixa-azul cursor-pointer"
                                         >
-                                        <span class="text-sm text-neutral-500">Não possui pai registrado</span>
+                                        <span class="text-sm text-tatame-muted dark:text-noite-muted">Não possui pai registrado</span>
                                     </label>
                                     @error('student_father_name')
-                                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_father_name">{{ $message }}</p>
+                                        <p class="erro-campo" data-cy="error-student_father_name">{{ $message }}</p>
                                     @enderror
                                     @error('student_no_father')
-                                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_no_father">{{ $message }}</p>
+                                        <p class="erro-campo" data-cy="error-student_no_father">{{ $message }}</p>
                                     @enderror
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                        Nome da mãe <span class="text-red-400">*</span>
+                                    <label class="rotulo">
+                                        Nome da mãe <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -490,21 +469,19 @@
                                         maxlength="80"
                                         x-bind:disabled="$wire.student_no_mother"
                                         x-on:input="$el.value = $el.value.replace(/[^a-zA-Z\u00C0-\u00ff '\-]/g, '')"
-                                        class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                               disabled:opacity-40 disabled:cursor-not-allowed
-                                               {{ $errors->has('student_mother_name') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                        class="campo @error('student_mother_name') campo--erro @enderror"
                                     >
                                     <label class="flex items-center gap-2 mt-2 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             wire:model.live="student_no_mother"
                                             data-cy="checkbox-student_no_mother"
-                                            class="w-4 h-4 accent-white cursor-pointer"
+                                            class="w-4 h-4 accent-faixa-azul cursor-pointer"
                                         >
-                                        <span class="text-sm text-neutral-500">Não possui mãe registrada</span>
+                                        <span class="text-sm text-tatame-muted dark:text-noite-muted">Não possui mãe registrada</span>
                                     </label>
                                     @error('student_mother_name')
-                                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_mother_name">{{ $message }}</p>
+                                        <p class="erro-campo" data-cy="error-student_mother_name">{{ $message }}</p>
                                     @enderror
                                 </div>
 
@@ -512,14 +489,13 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-neutral-400 mb-1.5">
-                                Modalidade <span class="text-red-400">*</span>
+                            <label class="rotulo">
+                                Modalidade <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
                             </label>
                             <select
                                 wire:model="student_modalidade"
                                 data-cy="select-student_modalidade"
-                                class="bg-neutral-900 border focus:outline-none text-white rounded-lg px-4 py-2.5 w-full transition
-                                       {{ $errors->has('student_modalidade') ? 'border-red-500/60' : 'border-neutral-800 focus:border-neutral-600' }}"
+                                class="campo @error('student_modalidade') campo--erro @enderror"
                             >
                                 <option value="">Selecione uma modalidade</option>
                                 <option value="Jiu Jitsu">Jiu Jitsu</option>
@@ -528,7 +504,7 @@
                                 <option value="Boxe">Boxe</option>
                             </select>
                             @error('student_modalidade')
-                                <p class="text-red-400 text-sm mt-1.5" data-cy="error-student_modalidade">{{ $message }}</p>
+                                <p class="erro-campo" data-cy="error-student_modalidade">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -536,25 +512,25 @@
                 </div>
 
                 {{-- Aceite LGPD --}}
-                <div class="bg-neutral-950 border border-neutral-800 rounded-2xl p-8 mb-6">
+                <div class="cartao p-8 mb-6">
                     <label for="lgpd_consent" class="flex items-start gap-3 cursor-pointer">
                         <input
                             id="lgpd_consent"
                             type="checkbox"
                             wire:model="lgpd_consent"
                             data-cy="lgpd-consent-checkbox"
-                            class="mt-1 w-4 h-4 accent-white cursor-pointer"
+                            class="mt-1 w-4 h-4 accent-faixa-azul cursor-pointer"
                         >
-                        <span class="text-sm text-neutral-400 leading-relaxed">
+                        <span class="text-sm text-tatame-muted dark:text-noite-muted leading-relaxed">
                             Declaro que li e concordo que os dados informados serão utilizados
                             exclusivamente para a geração da ficha de cadastro de atleta exigida
                             pela Secretaria Municipal de Esportes e Recreação de Prudentópolis e
                             para controle interno do projeto, conforme a
-                            <strong class="text-neutral-300">Lei Geral de Proteção de Dados (LGPD)</strong>.
+                            <strong class="text-tatame-ink dark:text-noite-ink">Lei Geral de Proteção de Dados (LGPD)</strong>.
                         </span>
                     </label>
                     @error('lgpd_consent')
-                        <p class="text-red-400 text-sm mt-1.5" data-cy="error-lgpd_consent">{{ $message }}</p>
+                        <p class="erro-campo" data-cy="error-lgpd_consent">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -563,12 +539,12 @@
                     <button
                         type="submit"
                         data-cy="submit-btn"
-                        wire:loading.attr="disabled"
+                        wire:loading.attr="disabled" wire:target="submit"
                         :disabled="!$wire.lgpd_consent"
-                        class="bg-white text-black hover:bg-neutral-200 font-bold px-10 py-3 rounded-lg transition w-full md:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
+                        class="botao-primario w-full md:w-auto px-10 py-3"
                     >
-                        <span wire:loading.remove>Enviar Matrícula</span>
-                        <span wire:loading class="flex items-center justify-center gap-2">
+                        <span wire:loading.remove wire:target="submit">Enviar Matrícula</span>
+                        <span wire:loading wire:target="submit" class="flex items-center justify-center gap-2">
                             <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -576,7 +552,7 @@
                             Aguarde...
                         </span>
                     </button>
-                    <a href="{{ route('home') }}" class="text-neutral-500 hover:text-neutral-300 text-sm transition">
+                    <a href="{{ route('home') }}" class="text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink text-sm transition">
                         ← Voltar ao início
                     </a>
                 </div>

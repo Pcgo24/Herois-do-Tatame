@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,7 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RedirectIfAuthenticated::redirectUsing(fn () => route('admin.dashboard'));
+        RedirectIfAuthenticated::redirectUsing(fn ($request) => route($request->user()->homeRoute()));
+
+        // Dados de aluno são do professor. O admin só administra usuários.
+        Gate::define('view-students', fn (User $user) => $user->isProfessor());
 
         $this->forceHttpsBehindProxy();
     }

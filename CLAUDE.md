@@ -69,13 +69,17 @@ Session, cache, and queue all use the `database` driver, so the migrations must 
 ### Autenticação
 O login é por **nome de usuário**, não e-mail — `users.username` (3–30
 caracteres, `[a-z0-9_.]`, único) e `Auth::attempt(['username' => ...,
-'password' => ...])`, com rate limiting de 5 tentativas por usuário+IP. Existe
-um único tipo de usuário, o professor; não há coluna `role` nem tela pública de
-registro. `users.email` é nullable e não é usado.
+'password' => ...])`, com rate limiting de 5 tentativas por usuário+IP. Há
+dois papéis em `users.role`: `professor` (usa o sistema) e `admin` (quem
+entrega o sistema: gere professores em `/admin/usuarios`, não vê dados de aluno
+— gate `view-students` → 403 — e **nunca aparece na lista de usuários**, nem
+para si mesmo). Não há tela pública de registro. `users.email` é nullable e não
+é usado. `User::homeRoute()` decide onde cada papel cai após o login.
 
-`ProfessorSeeder` é só o bootstrap: cria o primeiro usuário a partir de
-`config/professor.php` (variáveis `PROFESSOR_*`) **apenas quando `users` está
-vazia** — inclusive removidos contam. Ele nunca apaga usuários nem reseta
+`ProfessorSeeder` e `AdminSeeder` são só bootstrap: criam o primeiro usuário
+de cada papel a partir de `config/professor.php` / `config/admin.php`
+(variáveis `PROFESSOR_*` / `ADMIN_*`) **apenas quando não existe ninguém
+daquele papel** — removidos contam. Ele nunca apaga usuários nem reseta
 senha, porque roda a cada deploy e o painel é a fonte da verdade depois do
 primeiro acesso.
 

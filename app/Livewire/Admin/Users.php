@@ -34,7 +34,7 @@ class Users extends Component
 
     public function edit(int $id): void
     {
-        $user = User::findOrFail($id);
+        $user = User::professors()->findOrFail($id);
 
         $this->resetForm();
         $this->editingId = $user->id;
@@ -69,14 +69,14 @@ class Users extends Component
             'password.confirmed' => 'A confirmação não confere com a senha.',
         ]);
 
-        $data = ['name' => $this->name, 'username' => $this->username];
+        $data = ['name' => $this->name, 'username' => $this->username, 'role' => User::ROLE_PROFESSOR];
 
         if ($this->password !== '') {
             $data['password'] = Hash::make($this->password);
         }
 
         if ($this->editingId) {
-            User::findOrFail($this->editingId)->update($data);
+            User::professors()->findOrFail($this->editingId)->update($data);
         } else {
             User::create($data + ['email_verified_at' => now()]);
         }
@@ -87,20 +87,23 @@ class Users extends Component
 
     public function remove(int $id): void
     {
-        if ($id === Auth::id()) {
+        $user = User::professors()->findOrFail($id);
+
+        if ($user->id === Auth::id()) {
             throw ValidationException::withMessages(['remove' => 'Você não pode remover o próprio usuário.']);
         }
 
-        if (User::count() <= 1) {
-            throw ValidationException::withMessages(['remove' => 'O sistema precisa manter ao menos um usuário ativo.']);
+        // Admins não dão aula: o sistema precisa de um professor ativo.
+        if (User::professors()->count() <= 1) {
+            throw ValidationException::withMessages(['remove' => 'O sistema precisa manter ao menos um professor ativo.']);
         }
 
-        User::findOrFail($id)->delete();
+        $user->delete();
     }
 
     public function restore(int $id): void
     {
-        User::onlyTrashed()->findOrFail($id)->restore();
+        User::professors()->onlyTrashed()->findOrFail($id)->restore();
     }
 
     public function closeModal(): void
@@ -117,7 +120,13 @@ class Users extends Component
 
     public function render()
     {
-        $query = $this->showRemoved ? User::withTrashed() : User::query();
+        // Admins ficam fora da lista em qualquer situação: o professor não
+        // sabe que existem, e nem o próprio admin se administra por aqui.
+        $query = User::professors();
+
+        if ($this->showRemoved) {
+            $query->withTrashed();
+        }
 
         return view('livewire.admin.users', [
             'users' => $query->orderBy('name')->get(),

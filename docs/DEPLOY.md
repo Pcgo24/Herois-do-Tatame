@@ -106,6 +106,9 @@ Preencha então as variáveis marcadas como `sync: false`:
 | `PROFESSOR_USERNAME` | usuário do primeiro professor, ex.: `alisson_antunes` |
 | `PROFESSOR_PASSWORD` | senha inicial — ele troca no primeiro acesso |
 | `PROFESSOR_NAME` | nome de exibição |
+| `ADMIN_USERNAME` | usuário do administrador (vocês), ex.: `paulo_admin` |
+| `ADMIN_PASSWORD` | senha forte — esta conta não é entregue ao professor |
+| `ADMIN_NAME` | nome de exibição |
 
 `APP_URL` não precisa ser preenchido. Ele só seria conhecido depois que o
 Render cria o serviço, então o `start.sh` o herda de `RENDER_EXTERNAL_URL`, que
@@ -119,11 +122,12 @@ estiver vazia, e cacheia configuração, rotas e views.
 > O `StudentSeeder` (os três alunos de demonstração) se recusa a rodar quando
 > `APP_ENV=production`, então produção nunca recebe dados fictícios.
 
-### As variáveis `PROFESSOR_*` valem uma vez só
+### As variáveis `PROFESSOR_*` e `ADMIN_*` valem uma vez só
 
-`db:seed --class=ProfessorSeeder` roda a cada implantação, mas **só cria alguém
-quando a tabela `users` está vazia** — no primeiro deploy, portanto. Ele nunca
-apaga usuários nem reseta senha. Depois do primeiro acesso:
+`db:seed` roda `AdminSeeder` e `ProfessorSeeder` a cada implantação, mas cada
+um **só cria alguém quando ainda não existe ninguém daquele papel** — no
+primeiro deploy, portanto. Nenhum dos dois apaga usuários nem reseta senha.
+Depois do primeiro acesso:
 
 - a senha se troca em **Alterar senha**, no cabeçalho da área do professor;
 - outros professores se cadastram em **Usuários**, na mesma barra; remover é
@@ -134,11 +138,15 @@ A senha inicial pode ser simples, porque o professor a troca na primeira
 entrada. O que não pode é ficar: combine com ele que a troca faz parte do
 primeiro acesso.
 
-**Esqueceu a senha e não há outro usuário para redefinir?** Não há tela de
-recuperação (não existe e-mail configurado). O caminho é pelo banco: no SQL
-Editor do Neon, `DELETE FROM users;` e um redeploy no Render — o seeder recria o
-primeiro usuário a partir das variáveis. Só faça isso com a tabela de alunos
-intacta; o comando toca apenas `users`.
+**O professor esqueceu a senha?** Entre com a conta de administrador, abra
+**Usuários**, edite o professor e defina uma senha nova. O admin não vê os
+alunos e não aparece na lista de usuários do professor.
+
+**Perderam também a senha do admin?** Não há tela de recuperação (não existe
+e-mail configurado). O caminho é pelo banco: no SQL Editor do Neon,
+`DELETE FROM users WHERE role = 'admin';` e um redeploy no Render — o
+`AdminSeeder` recria o admin a partir das variáveis. O comando toca apenas
+`users`; os alunos ficam intactos.
 
 ## 5. Depois da primeira implantação
 
@@ -153,7 +161,44 @@ intacta; o comando toca apenas `users`.
    não está valendo `r2`.
 6. Apague o aluno de teste.
 
-## 6. Hibernação
+## 6. Entrega: zerar o ambiente de produção
+
+Antes de entregar o sistema ao professor, o banco de produção precisa nascer
+limpo — sem matrículas de teste, usuários antigos ou sessões. O Render gratuito
+não tem shell para rodar `artisan`, então o reset é feito no Neon e o deploy
+reconstrói tudo.
+
+1. **Ajuste as variáveis no Render** primeiro (Environment): `PROFESSOR_*` com
+   o usuário e a senha inicial do professor, `ADMIN_*` com a conta de vocês.
+   Remova `PROFESSOR_CPF` e `PROFESSOR_EMAIL`, se ainda existirem. Salve sem
+   implantar ainda (o Render pergunta).
+2. **Zere o schema no Neon.** Painel do Neon → projeto de produção → **SQL
+   Editor** → confirme no seletor que o banco é o de produção (`neondb`, branch
+   `main`) e rode:
+
+   ```sql
+   DROP SCHEMA public CASCADE;
+   CREATE SCHEMA public;
+   ```
+
+   Isso apaga todas as tabelas, inclusive `migrations`, `sessions` e `cache`.
+   Não há como desfazer; confira duas vezes o projeto selecionado — o de
+   desenvolvimento (`sa-east-1`) fica na mesma conta.
+3. **Limpe o bucket R2**, se houver ficha assinada de teste: painel da
+   Cloudflare → R2 → `herois-do-tatame` → selecione os objetos → Delete.
+4. **Manual Deploy → Deploy latest commit** no Render. O `start.sh` roda as
+   migrations do zero e os seeders criam o admin e o professor.
+5. Confira: `/up` responde; o professor entra e cai em **Alunos** (vazio); o
+   admin entra e cai em **Usuários**, vendo só o professor.
+
+Se o objetivo for apenas apagar matrículas de teste **sem** mexer em usuários,
+use em vez disso:
+
+```sql
+TRUNCATE students, responsibles;
+```
+
+## 7. Hibernação
 
 No plano gratuito o Render derruba o serviço após cerca de 15 minutos sem
 acesso, e volta em torno de 50 segundos. O Neon suspende o banco após cerca de

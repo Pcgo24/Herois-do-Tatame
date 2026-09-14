@@ -84,3 +84,11 @@ services:
         sync: false
       - key: PROFESSOR_NAME
         sync: false
+
+      # Administrador (vocês). Mesma regra: só cria se não houver admin.
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NAME
+        sync: false

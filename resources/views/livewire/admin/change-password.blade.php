@@ -56,7 +56,7 @@
             </div>
 
             <div class="flex items-center justify-between gap-4">
-                <a href="{{ route('admin.dashboard') }}" class="text-sm text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink transition">← Voltar</a>
+                <a href="{{ route(auth()->user()->homeRoute()) }}" class="text-sm text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink transition">← Voltar</a>
                 <button
                     type="submit"
                     data-cy="password-save-btn"

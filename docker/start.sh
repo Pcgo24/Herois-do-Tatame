@@ -21,7 +21,8 @@ php artisan package:discover --ansi
 echo "==> Rodando as migrations"
 php artisan migrate --force
 
-echo "==> Criando o usuário professor, se ainda não existir"
+echo "==> Criando administrador e professor, se ainda não existirem"
+php artisan db:seed --class=AdminSeeder --force
 php artisan db:seed --class=ProfessorSeeder --force
 
 echo "==> Cacheando configuração, rotas e views"

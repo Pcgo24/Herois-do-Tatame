@@ -69,10 +69,16 @@ As credenciais vêm de `PROFESSOR_USERNAME`, `PROFESSOR_PASSWORD` e
 `PROFESSOR_NAME` no `.env` (veja `.env.example`). Os valores padrão — usuário
 `professor`, senha `heroisdotatame` — servem **apenas para desenvolvimento**.
 
-O seeder só age quando a tabela `users` está vazia. A partir daí, a senha se
+O seeder só age quando ainda não há professor. A partir daí, a senha se
 troca em **Alterar senha** e os demais professores se cadastram em
 **Usuários**, ambos no cabeçalho da área do professor. Usuários são removidos
 com soft delete e podem ser restaurados pela mesma tela.
+
+Existe também um **administrador** (`ADMIN_USERNAME` / `ADMIN_PASSWORD` /
+`ADMIN_NAME`, criado por `AdminSeeder`): entra pelo mesmo `/login`, gere os
+professores e troca a própria senha, mas não vê os alunos e não aparece na
+lista de usuários. É a conta de quem entrega o sistema, para redefinir a senha
+do professor sem tocar no banco.
 
 ## Cancelamento de matrícula
 

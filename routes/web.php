@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\SignedFichaController;
 use App\Http\Controllers\StudentFichaController;
+use App\Livewire\Admin\ChangePassword;
 use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\Users;
 use App\Livewire\Auth\Login;
 use App\Livewire\EnrollmentForm;
 use App\Livewire\Home;
@@ -14,6 +16,8 @@ Route::get('/login', Login::class)->middleware('guest')->name('login');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', Dashboard::class)->name('admin.dashboard');
+    Route::get('/admin/senha', ChangePassword::class)->name('admin.password');
+    Route::get('/admin/usuarios', Users::class)->name('admin.users');
 
     Route::get('/admin/alunos/{student}/ficha', StudentFichaController::class)
         ->name('admin.students.ficha');

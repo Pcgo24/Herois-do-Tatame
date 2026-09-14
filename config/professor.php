@@ -1,8 +1,9 @@
 <?php
 
+// Bootstrap do primeiro usuário. Só é lido pelo ProfessorSeeder, e só quando a
+// tabela users está vazia — depois disso, o painel é a única fonte da verdade.
 return [
-    'cpf' => env('PROFESSOR_CPF', '12345678909'),
+    'username' => env('PROFESSOR_USERNAME', 'professor'),
     'password' => env('PROFESSOR_PASSWORD', 'heroisdotatame'),
     'name' => env('PROFESSOR_NAME', 'Professor'),
-    'email' => env('PROFESSOR_EMAIL', 'professor@heroisdotatame.local'),
 ];

@@ -76,12 +76,11 @@ services:
       - key: R2_ENDPOINT
         sync: false
 
-      # Credenciais do professor. TROQUE A SENHA.
-      - key: PROFESSOR_CPF
+      # Primeiro usuário. Só é usado quando a tabela users está vazia; depois
+      # do primeiro deploy, senha e usuários são geridos pelo painel.
+      - key: PROFESSOR_USERNAME
         sync: false
       - key: PROFESSOR_PASSWORD
         sync: false
       - key: PROFESSOR_NAME
-        value: Professor
-      - key: PROFESSOR_EMAIL
         sync: false

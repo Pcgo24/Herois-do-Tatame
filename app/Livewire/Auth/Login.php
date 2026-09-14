@@ -5,12 +5,13 @@ namespace App\Livewire\Auth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class Login extends Component
 {
-    public string $cpf = '';
+    public string $username = '';
 
     public string $password = '';
 
@@ -18,27 +19,28 @@ class Login extends Component
 
     public function login(): void
     {
+        $this->username = Str::lower(trim($this->username));
+
         $this->validate([
-            'cpf' => ['required', 'regex:/^\d{11}$/'],
+            'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ], [
-            'cpf.required' => 'Informe seu CPF.',
-            'cpf.regex' => 'O CPF deve conter 11 dígitos.',
+            'username.required' => 'Informe seu usuário.',
             'password.required' => 'Informe sua senha.',
         ]);
 
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(['cpf' => $this->cpf, 'password' => $this->password], $this->remember)) {
+        if (! Auth::attempt(['username' => $this->username, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey(), 60);
 
             Log::warning('Tentativa de login malsucedida.', [
-                'cpf' => $this->cpf,
+                'username' => $this->username,
                 'ip' => request()->ip(),
             ]);
 
             throw ValidationException::withMessages([
-                'cpf' => 'CPF ou senha inválidos.',
+                'username' => 'Usuário ou senha inválidos.',
             ]);
         }
 
@@ -57,13 +59,13 @@ class Login extends Component
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'cpf' => "Muitas tentativas. Tente novamente em {$seconds} segundos.",
+            'username' => "Muitas tentativas. Tente novamente em {$seconds} segundos.",
         ]);
     }
 
     private function throttleKey(): string
     {
-        return 'login:'.$this->cpf.'|'.request()->ip();
+        return 'login:'.$this->username.'|'.request()->ip();
     }
 
     public function render()

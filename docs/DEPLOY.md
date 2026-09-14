@@ -103,9 +103,9 @@ Preencha então as variáveis marcadas como `sync: false`:
 | `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | do passo 2 |
 | `R2_BUCKET` | `herois-do-tatame` |
 | `R2_ENDPOINT` | `https://SEU_ACCOUNT_ID.r2.cloudflarestorage.com` |
-| `PROFESSOR_CPF` | o CPF real do professor |
-| `PROFESSOR_PASSWORD` | **uma senha forte, não a de desenvolvimento** |
-| `PROFESSOR_EMAIL` | e-mail do professor |
+| `PROFESSOR_USERNAME` | usuário do primeiro professor, ex.: `alisson_antunes` |
+| `PROFESSOR_PASSWORD` | senha inicial — ele troca no primeiro acesso |
+| `PROFESSOR_NAME` | nome de exibição |
 
 `APP_URL` não precisa ser preenchido. Ele só seria conhecido depois que o
 Render cria o serviço, então o `start.sh` o herda de `RENDER_EXTERNAL_URL`, que
@@ -113,37 +113,39 @@ o Render injeta automaticamente com a URL final. Só defina a variável à mão 
 for usar domínio próprio — nesse caso o valor explícito prevalece.
 
 Ao subir, o contêiner executa nesta ordem: gera a configuração do nginx na porta
-que o Render escolheu, roda as migrations, cria ou atualiza o usuário professor,
-e cacheia configuração, rotas e views.
+que o Render escolheu, roda as migrations, cria o primeiro usuário se a tabela
+estiver vazia, e cacheia configuração, rotas e views.
 
-> `db:seed --class=ProfessorSeeder` roda a cada implantação. Como ele usa
-> `updateOrCreate`, **a senha do professor volta ao valor de
-> `PROFESSOR_PASSWORD` toda vez que o app subir.** Para trocar a senha, mude a
-> variável no Render, não no banco.
->
 > O `StudentSeeder` (os três alunos de demonstração) se recusa a rodar quando
 > `APP_ENV=production`, então produção nunca recebe dados fictícios.
 
-### Nem o CPF nem o e-mail precisam ser reais
+### As variáveis `PROFESSOR_*` valem uma vez só
 
-O CPF é apenas o identificador de login — a validação exige 11 dígitos e não
-confere dígito verificador. O e-mail nunca é usado: não há SMTP configurado e o
-sistema não envia mensagem alguma; é só uma coluna única em `users`, herdada do
-esqueleto do Laravel.
+`db:seed --class=ProfessorSeeder` roda a cada implantação, mas **só cria alguém
+quando a tabela `users` está vazia** — no primeiro deploy, portanto. Ele nunca
+apaga usuários nem reseta senha. Depois do primeiro acesso:
 
-Enquanto o projeto não for entregue à Secretaria, o padrão `12345678909` com um
-e-mail de marcador funciona igual, e evita dado pessoal real num ambiente que
-ainda não passou por revisão de segurança. A senha, essa sim, tem que ser forte.
+- a senha se troca em **Alterar senha**, no cabeçalho da área do professor;
+- outros professores se cadastram em **Usuários**, na mesma barra; remover é
+  soft delete, reversível pela própria tela;
+- mudar ou apagar as variáveis `PROFESSOR_*` no Render não tem efeito algum.
 
-Trocar `PROFESSOR_CPF` depois é seguro: o seeder remove qualquer usuário com CPF
-diferente antes de criar o novo, então o antigo não fica logando com a senha
-velha. O sistema tem exatamente um professor, por projeto.
+A senha inicial pode ser simples, porque o professor a troca na primeira
+entrada. O que não pode é ficar: combine com ele que a troca faz parte do
+primeiro acesso.
+
+**Esqueceu a senha e não há outro usuário para redefinir?** Não há tela de
+recuperação (não existe e-mail configurado). O caminho é pelo banco: no SQL
+Editor do Neon, `DELETE FROM users;` e um redeploy no Render — o seeder recria o
+primeiro usuário a partir das variáveis. Só faça isso com a tabela de alunos
+intacta; o comando toca apenas `users`.
 
 ## 5. Depois da primeira implantação
 
 1. Acesse `https://SEU-APP.onrender.com/up` — deve responder com o painel de
    saúde do Laravel.
-2. Entre em `/login` com o CPF e a senha configurados.
+2. Entre em `/login` com o usuário e a senha configurados, e troque a senha
+   em **Alterar senha**.
 3. Faça uma matrícula de teste pelo formulário público.
 4. Gere a ficha em PDF do aluno criado.
 5. **Anexe uma ficha assinada e implante de novo.** Se o arquivo continuar lá

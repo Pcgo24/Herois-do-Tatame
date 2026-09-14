@@ -59,17 +59,20 @@
 
 ## Área do Professor
 
-O acesso ao dashboard exige login em `/login`, com **CPF e senha**.
+O acesso ao dashboard exige login em `/login`, com **usuário e senha**.
 
-Crie o usuário professor com:
+Crie o primeiro usuário com:
 
     ./vendor/bin/sail artisan db:seed --class=ProfessorSeeder
 
-As credenciais vêm de `PROFESSOR_CPF`, `PROFESSOR_PASSWORD`, `PROFESSOR_NAME` e
-`PROFESSOR_EMAIL` no `.env` (veja `.env.example`). Os valores padrão — CPF
-`12345678909`, senha `heroisdotatame` — servem **apenas para desenvolvimento**.
-Troque a senha no `.env` e rode o seeder de novo antes de qualquer uso real; ele
-é idempotente e atualiza o usuário existente.
+As credenciais vêm de `PROFESSOR_USERNAME`, `PROFESSOR_PASSWORD` e
+`PROFESSOR_NAME` no `.env` (veja `.env.example`). Os valores padrão — usuário
+`professor`, senha `heroisdotatame` — servem **apenas para desenvolvimento**.
+
+O seeder só age quando a tabela `users` está vazia. A partir daí, a senha se
+troca em **Alterar senha** e os demais professores se cadastram em
+**Usuários**, ambos no cabeçalho da área do professor. Usuários são removidos
+com soft delete e podem ser restaurados pela mesma tela.
 
 ## Ficha de cadastro de atleta
 

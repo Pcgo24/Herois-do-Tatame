@@ -67,16 +67,24 @@ abre em nova aba, sobrevive a refresh e é testável com `$this->get(...)`.
 Session, cache, and queue all use the `database` driver, so the migrations must be run before the app works.
 
 ### Autenticação
-O login é por **CPF**, não e-mail — `users.cpf` (11 dígitos, único) e
-`Auth::attempt(['cpf' => ..., 'password' => ...])`, com rate limiting de 5
-tentativas por CPF+IP. Existe um único tipo de usuário, o professor; não há
-coluna `role` nem tela de registro.
+O login é por **nome de usuário**, não e-mail — `users.username` (3–30
+caracteres, `[a-z0-9_.]`, único) e `Auth::attempt(['username' => ...,
+'password' => ...])`, com rate limiting de 5 tentativas por usuário+IP. Existe
+um único tipo de usuário, o professor; não há coluna `role` nem tela pública de
+registro. `users.email` é nullable e não é usado.
 
-O usuário é criado por `ProfessorSeeder`, que lê `config/professor.php` (e este,
-as variáveis `PROFESSOR_*` do `.env`). O seeder apaga qualquer usuário com CPF
-diferente antes de criar o novo — existe exatamente um professor, por projeto,
-e trocar o CPF precisa renomeá-lo, não somar um segundo. Sob `middleware('auth')`:
-`/admin/dashboard`, a ficha em PDF e a ficha assinada.
+`ProfessorSeeder` é só o bootstrap: cria o primeiro usuário a partir de
+`config/professor.php` (variáveis `PROFESSOR_*`) **apenas quando `users` está
+vazia** — inclusive removidos contam. Ele nunca apaga usuários nem reseta
+senha, porque roda a cada deploy e o painel é a fonte da verdade depois do
+primeiro acesso.
+
+`User` usa `SoftDeletes`: um removido não loga (o escopo global barra
+`Auth::attempt` e a leitura da sessão) e o `username` continua ocupado no índice
+único até ser restaurado. Sob `middleware('auth')`: `/admin/dashboard`,
+`/admin/senha` (`Admin\ChangePassword`), `/admin/usuarios` (`Admin\Users`:
+criar, editar, remover, restaurar; não remove a si mesmo nem o último ativo), a
+ficha em PDF e a ficha assinada.
 
 ### Ficha de cadastro (SMER)
 `GET /admin/alunos/{student}/ficha` gera com dompdf a Ficha de Cadastro de Atleta

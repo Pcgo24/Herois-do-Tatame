@@ -5,33 +5,26 @@
     <div class="cartao p-8">
 
         <h1 class="font-display font-extrabold text-2xl mb-1">Área do Professor</h1>
-        <p class="text-tatame-muted dark:text-noite-muted text-sm mb-8">Entre com seu CPF e senha para acessar os cadastros.</p>
+        <p class="text-tatame-muted dark:text-noite-muted text-sm mb-8">Entre com seu usuário e senha para acessar os cadastros.</p>
 
         <form wire:submit="login" data-cy="login-form" novalidate>
 
-            <div class="mb-5" x-data="{
-                fmt(v) {
-                    v = String(v||'').replace(/\D/g,'').substring(0,11);
-                    return v.length>9 ? v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9)
-                         : v.length>6 ? v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6)
-                         : v.length>3 ? v.slice(0,3)+'.'+v.slice(3) : v;
-                }
-            }">
-                <label class="rotulo" for="cpf">CPF</label>
+            <div class="mb-5">
+                <label class="rotulo" for="username">Usuário</label>
                 <input
-                    id="cpf"
+                    id="username"
                     type="text"
-                    data-cy="input-cpf"
-                    maxlength="14"
-                    inputmode="numeric"
+                    wire:model="username"
+                    data-cy="input-username"
+                    maxlength="30"
                     autocomplete="username"
-                    placeholder="123.456.789-01"
-                    x-effect="if (document.activeElement !== $el) $el.value = fmt($wire.cpf)"
-                    x-on:input="let r=$el.value.replace(/\D/g,'').substring(0,11); $el.value=fmt(r); $wire.set('cpf',r,false);"
-                    class="campo @error('cpf') campo--erro @enderror"
+                    autocapitalize="none"
+                    spellcheck="false"
+                    placeholder="seu_usuario"
+                    class="campo @error('username') campo--erro @enderror"
                 >
-                @error('cpf')
-                    <p class="erro-campo" data-cy="error-cpf">{{ $message }}</p>
+                @error('username')
+                    <p class="erro-campo" data-cy="error-username">{{ $message }}</p>
                 @enderror
             </div>
 

@@ -74,6 +74,14 @@ troca em **Alterar senha** e os demais professores se cadastram em
 **Usuários**, ambos no cabeçalho da área do professor. Usuários são removidos
 com soft delete e podem ser restaurados pela mesma tela.
 
+## Cancelamento de matrícula
+
+No modal de cada aluno, **Cancelar matrícula** tira o aluno da lista sem apagar
+nada: o cadastro, o responsável e a ficha assinada ficam guardados, e a opção
+**Mostrar matrículas canceladas** permite **Reativar** depois. Enquanto
+cancelado, o CPF do aluno não pode ser usado numa matrícula nova — o formulário
+orienta a família a falar com o professor.
+
 ## Ficha de cadastro de atleta
 
 No dashboard, o botão **Gerar ficha** de cada aluno baixa em PDF a Ficha de

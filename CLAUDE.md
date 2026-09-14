@@ -109,6 +109,15 @@ a cada implantação. O disco `r2` está em `config/filesystems.php`.
 `StudentSeeder` cria três alunos de demonstração e se recusa a rodar quando
 `APP_ENV=production`.
 
+### Cancelamento de matrícula
+`Student` e `Responsible` usam `SoftDeletes`. "Cancelar matrícula" no modal do
+dashboard faz soft delete só do aluno — responsável e ficha assinada ficam —
+e "Reativar" restaura. A lista esconde cancelados até marcar "Mostrar
+matrículas canceladas"; as rotas de ficha respondem 404 para cancelados (route
+binding sem `withTrashed`). No formulário público, o CPF de um aluno cancelado
+recebe a mensagem "Esta matrícula foi cancelada…": reativar é ação do
+professor, não uma matrícula nova.
+
 ### Laravel 13 bootstrap style
 No `Kernel.php`, `Handler.php`, or Kernel classes. Middleware and exception handling are configured inline in `bootstrap/app.php` using the fluent `Application::configure()` API.
 

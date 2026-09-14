@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 
 class StoreEnrollmentRequest extends FormRequest
 {
@@ -28,7 +30,17 @@ class StoreEnrollmentRequest extends FormRequest
             'responsible_address' => ['required', 'string', 'max:150'],
             'responsible_neighborhood' => ['required', 'string', 'max:80'],
             'student_name' => ['required', 'string', 'max:80', 'regex:/^[\pL\pN\s\'\-]+$/u'],
-            'student_cpf' => ['required', 'string', 'regex:/^\d{11}$/', 'unique:students,cpf'],
+            'student_cpf' => [
+                'required', 'string', 'regex:/^\d{11}$/',
+                // Matrícula cancelada continua ocupando o CPF: reativar é
+                // ação do professor no painel, não uma nova matrícula.
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if (Student::onlyTrashed()->where('cpf', $value)->exists()) {
+                        $fail('Esta matrícula foi cancelada. Fale com o professor para reativá-la.');
+                    }
+                },
+                Rule::unique('students', 'cpf')->whereNull('deleted_at'),
+            ],
             'student_rg' => ['required', 'string', 'regex:/^\d{7,9}$/'],
             'student_birth_date' => [
                 'required',

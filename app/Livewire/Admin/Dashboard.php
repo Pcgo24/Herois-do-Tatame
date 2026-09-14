@@ -17,6 +17,8 @@ class Dashboard extends Component
 
     public string $uploadTargetId = '';
 
+    public bool $showCancelled = false;
+
     public function updateTermoStatus(string $studentId, string $status): void
     {
         if (! in_array($status, ['pendente', 'entregue', 'assinado'])) {
@@ -75,6 +77,18 @@ class Dashboard extends Component
         ]);
     }
 
+    // Cancelar é soft delete: o responsável e a ficha assinada ficam no lugar,
+    // porque reativar precisa devolver a matrícula exatamente como estava.
+    public function cancelEnrollment(string $studentId): void
+    {
+        Student::findOrFail($studentId)->delete();
+    }
+
+    public function restoreEnrollment(string $studentId): void
+    {
+        Student::onlyTrashed()->findOrFail($studentId)->restore();
+    }
+
     private function fichasDisk(): string
     {
         return config('fichas.disk');
@@ -83,7 +97,11 @@ class Dashboard extends Component
     public function render()
     {
         return view('livewire.admin.dashboard', [
-            'students' => Student::with('responsible')->orderBy('created_at')->get(),
+            'students' => Student::query()
+                ->when($this->showCancelled, fn ($q) => $q->withTrashed())
+                ->with('responsible')
+                ->orderBy('created_at')
+                ->get(),
         ])->layout('layouts.admin');
     }
 }

@@ -37,6 +37,7 @@
             'termo_status' => $s->termo_status,
             'termo_arquivo'      => (bool) $s->termo_arquivo,
             'termo_arquivo_nome' => $s->termo_arquivo_nome,
+            'cancelled'          => $s->trashed(),
             'resp'         => [
                 'name'         => $s->responsible->name,
                 'phone'        => Formatters::phone($s->responsible->phone_number),
@@ -51,11 +52,18 @@
         ];
     @endphp
 
-    <div class="mb-8">
-        <h1 class="font-display font-extrabold text-3xl tracking-tight">Alunos Cadastrados</h1>
-        <p class="text-tatame-muted dark:text-noite-muted mt-1 text-sm">
-            {{ $students->count() }} {{ $students->count() === 1 ? 'aluno cadastrado' : 'alunos cadastrados' }}
-        </p>
+    @php $ativos = $students->whereNull('deleted_at')->count(); @endphp
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <h1 class="font-display font-extrabold text-3xl tracking-tight">Alunos Cadastrados</h1>
+            <p class="text-tatame-muted dark:text-noite-muted mt-1 text-sm">
+                {{ $ativos }} {{ $ativos === 1 ? 'aluno matriculado' : 'alunos matriculados' }}
+            </p>
+        </div>
+        <label class="flex items-center gap-2 cursor-pointer text-sm text-tatame-muted dark:text-noite-muted">
+            <input type="checkbox" wire:model.live="showCancelled" data-cy="toggle-cancelled" class="w-4 h-4 accent-faixa-azul cursor-pointer">
+            Mostrar matrículas canceladas
+        </label>
     </div>
 
     @if($students->isEmpty())
@@ -79,18 +87,31 @@
                         <tr
                             wire:key="{{ $student->id }}"
                             @click="select(@js($modalData($student)))"
-                            class="bg-tatame-surface dark:bg-noite-surface hover:bg-tatame-raised dark:hover:bg-noite-raised transition-colors duration-150 cursor-pointer"
+                            @class([
+                                'bg-tatame-surface dark:bg-noite-surface hover:bg-tatame-raised dark:hover:bg-noite-raised transition-colors duration-150 cursor-pointer',
+                                'opacity-60' => $student->trashed(),
+                            ])
+                            data-cy="student-row"
                             title="Ver detalhes do aluno"
                         >
                             <td class="px-6 py-4 text-tatame-ink dark:text-noite-ink">{{ $student->responsible->name }}</td>
                             <td class="px-6 py-4 text-tatame-muted dark:text-noite-muted font-mono">{{ Formatters::phone($student->responsible->phone_number) }}</td>
                             <td class="px-6 py-4 text-tatame-ink dark:text-noite-ink">{{ $student->name }}</td>
                             <td class="px-6 py-4">
-                                <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border {{ $statusBadge($student->termo_status) }}">
-                                    {{ ucfirst($student->termo_status) }}
-                                </span>
+                                @if ($student->trashed())
+                                    <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border border-tatame-line dark:border-noite-line text-tatame-muted dark:text-noite-muted" data-cy="badge-cancelled">
+                                        Cancelada
+                                    </span>
+                                @else
+                                    <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border {{ $statusBadge($student->termo_status) }}">
+                                        {{ ucfirst($student->termo_status) }}
+                                    </span>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
+                                @if ($student->trashed())
+                                    <span class="text-xs text-tatame-muted dark:text-noite-muted">—</span>
+                                @else
                                 <a
                                     href="{{ route('admin.students.ficha', $student) }}"
                                     target="_blank"
@@ -100,6 +121,7 @@
                                 >
                                     Gerar ficha
                                 </a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -139,6 +161,7 @@
                 <div>
                     <p class="text-xs uppercase tracking-widest text-tatame-muted dark:text-noite-muted">Detalhes do Aluno</p>
                     <h2 class="mt-1 text-2xl font-bold text-tatame-ink dark:text-noite-ink" x-text="s.name"></h2>
+                    <span x-show="s.cancelled" x-cloak class="mt-2 inline-block rounded-full border border-tatame-line dark:border-noite-line px-2.5 py-1 text-xs font-semibold text-tatame-muted dark:text-noite-muted">Matrícula cancelada</span>
                 </div>
                 <button
                     type="button"
@@ -153,8 +176,21 @@
             </div>
 
             <div class="space-y-8 px-6 py-6">
+                {{-- Matrícula cancelada: só resta reativar --}}
+                <div x-show="s.cancelled" x-cloak class="rounded-xl border border-tatame-line dark:border-noite-line bg-tatame-raised/60 dark:bg-noite-raised/50 p-4 flex flex-wrap items-center justify-between gap-3">
+                    <p class="text-sm text-tatame-muted dark:text-noite-muted">Esta matrícula foi cancelada. Os dados e a ficha assinada continuam guardados.</p>
+                    <button
+                        type="button"
+                        @click="$wire.restoreEnrollment(s.id).then(() => close())"
+                        data-cy="restore-enrollment"
+                        class="botao-primario px-5 py-2 text-sm"
+                    >
+                        Reativar matrícula
+                    </button>
+                </div>
+
                 {{-- Status do Termo --}}
-                <div class="rounded-xl border border-tatame-line dark:border-noite-line bg-tatame-raised/60 dark:bg-noite-raised/50 p-4">
+                <div x-show="! s.cancelled" class="rounded-xl border border-tatame-line dark:border-noite-line bg-tatame-raised/60 dark:bg-noite-raised/50 p-4">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex items-center gap-3">
                             <span class="text-sm font-medium text-tatame-muted dark:text-noite-muted">Status do Termo</span>
@@ -176,7 +212,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div x-show="! s.cancelled">
                     <a
                         :href="'/admin/alunos/' + s.id + '/ficha'"
                         target="_blank"
@@ -288,7 +324,7 @@
                 </section>
 
                 {{-- Ficha assinada --}}
-                <section>
+                <section x-show="! s.cancelled">
                     <h3 class="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-tatame-muted dark:text-noite-muted">
                         <span class="h-1.5 w-1.5 rounded-full bg-tatame-muted dark:bg-noite-muted"></span>
                         Ficha assinada
@@ -349,6 +385,21 @@
                             @enderror
                         </div>
                     </template>
+                </section>
+
+                {{-- Cancelar matrícula --}}
+                <section x-show="! s.cancelled" class="border-t border-tatame-line dark:border-noite-line pt-6">
+                    <p class="text-sm text-tatame-muted dark:text-noite-muted mb-3">
+                        Cancelar tira o aluno da lista, mas guarda o cadastro e a ficha assinada. Dá para reativar depois em "Mostrar matrículas canceladas".
+                    </p>
+                    <button
+                        type="button"
+                        @click="if (confirm('Cancelar a matrícula de ' + s.name + '?')) $wire.cancelEnrollment(s.id).then(() => close())"
+                        data-cy="cancel-enrollment"
+                        class="text-sm font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition"
+                    >
+                        Cancelar matrícula
+                    </button>
                 </section>
 
             </div>

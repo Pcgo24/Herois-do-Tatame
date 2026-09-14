@@ -10,30 +10,27 @@ class ProfessorSeeder extends Seeder
 {
     public function run(): void
     {
-        $cpf = preg_replace('/\D/', '', (string) config('professor.cpf'));
+        // Este seeder roda a cada deploy, mas é apenas o bootstrap do primeiro
+        // acesso. Havendo qualquer professor — inclusive um removido pelo painel —
+        // ele não mexe em nada: senha, nome e a lista de usuários passam a ser
+        // geridos na tela de usuários, não pelas variáveis de ambiente. Admins
+        // não contam: são outro bootstrap (AdminSeeder) e não dão aula.
+        if (User::withTrashed()->where('role', User::ROLE_PROFESSOR)->exists()) {
+            $this->command?->info('Já existe professor cadastrado; nada a fazer.');
 
-        // O sistema tem exatamente um professor: não há tela de registro nem
-        // papéis. Sem esta limpeza, trocar PROFESSOR_CPF criaria um segundo
-        // usuário e deixaria o antigo capaz de logar com a senha antiga.
-        //
-        // Ela vem antes do upsert de propósito: users.email é único, e o
-        // usuário obsoleto ainda seguraria o e-mail que estamos prestes a usar.
-        $orfaos = User::where(fn ($q) => $q->where('cpf', '!=', $cpf)->orWhereNull('cpf'))->delete();
-
-        if ($orfaos > 0) {
-            $this->command?->warn("{$orfaos} usuário(s) com outro CPF removido(s).");
+            return;
         }
 
-        User::updateOrCreate(
-            ['cpf' => $cpf],
-            [
-                'name' => config('professor.name'),
-                'email' => config('professor.email'),
-                'password' => Hash::make(config('professor.password')),
-                'email_verified_at' => now(),
-            ],
-        );
+        $username = (string) config('professor.username');
 
-        $this->command?->info("Professor disponível para login com o CPF {$cpf}.");
+        User::create([
+            'name' => config('professor.name'),
+            'username' => $username,
+            'role' => User::ROLE_PROFESSOR,
+            'password' => Hash::make(config('professor.password')),
+            'email_verified_at' => now(),
+        ]);
+
+        $this->command?->info("Primeiro usuário criado: {$username}.");
     }
 }

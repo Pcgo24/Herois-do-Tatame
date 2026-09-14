@@ -67,16 +67,28 @@ abre em nova aba, sobrevive a refresh e é testável com `$this->get(...)`.
 Session, cache, and queue all use the `database` driver, so the migrations must be run before the app works.
 
 ### Autenticação
-O login é por **CPF**, não e-mail — `users.cpf` (11 dígitos, único) e
-`Auth::attempt(['cpf' => ..., 'password' => ...])`, com rate limiting de 5
-tentativas por CPF+IP. Existe um único tipo de usuário, o professor; não há
-coluna `role` nem tela de registro.
+O login é por **nome de usuário**, não e-mail — `users.username` (3–30
+caracteres, `[a-z0-9_.]`, único) e `Auth::attempt(['username' => ...,
+'password' => ...])`, com rate limiting de 5 tentativas por usuário+IP. Há
+dois papéis em `users.role`: `professor` (usa o sistema) e `admin` (quem
+entrega o sistema: gere professores em `/admin/usuarios`, não vê dados de aluno
+— gate `view-students` → 403 — e **nunca aparece na lista de usuários**, nem
+para si mesmo). Não há tela pública de registro. `users.email` é nullable e não
+é usado. `User::homeRoute()` decide onde cada papel cai após o login.
 
-O usuário é criado por `ProfessorSeeder`, que lê `config/professor.php` (e este,
-as variáveis `PROFESSOR_*` do `.env`). O seeder apaga qualquer usuário com CPF
-diferente antes de criar o novo — existe exatamente um professor, por projeto,
-e trocar o CPF precisa renomeá-lo, não somar um segundo. Sob `middleware('auth')`:
-`/admin/dashboard`, a ficha em PDF e a ficha assinada.
+`ProfessorSeeder` e `AdminSeeder` são só bootstrap: criam o primeiro usuário
+de cada papel a partir de `config/professor.php` / `config/admin.php`
+(variáveis `PROFESSOR_*` / `ADMIN_*`) **apenas quando não existe ninguém
+daquele papel** — removidos contam. Ele nunca apaga usuários nem reseta
+senha, porque roda a cada deploy e o painel é a fonte da verdade depois do
+primeiro acesso.
+
+`User` usa `SoftDeletes`: um removido não loga (o escopo global barra
+`Auth::attempt` e a leitura da sessão) e o `username` continua ocupado no índice
+único até ser restaurado. Sob `middleware('auth')`: `/admin/dashboard`,
+`/admin/senha` (`Admin\ChangePassword`), `/admin/usuarios` (`Admin\Users`:
+criar, editar, remover, restaurar; não remove a si mesmo nem o último ativo), a
+ficha em PDF e a ficha assinada.
 
 ### Ficha de cadastro (SMER)
 `GET /admin/alunos/{student}/ficha` gera com dompdf a Ficha de Cadastro de Atleta
@@ -100,6 +112,15 @@ a cada implantação. O disco `r2` está em `config/filesystems.php`.
 
 `StudentSeeder` cria três alunos de demonstração e se recusa a rodar quando
 `APP_ENV=production`.
+
+### Cancelamento de matrícula
+`Student` e `Responsible` usam `SoftDeletes`. "Cancelar matrícula" no modal do
+dashboard faz soft delete só do aluno — responsável e ficha assinada ficam —
+e "Reativar" restaura. A lista esconde cancelados até marcar "Mostrar
+matrículas canceladas"; as rotas de ficha respondem 404 para cancelados (route
+binding sem `withTrashed`). No formulário público, o CPF de um aluno cancelado
+recebe a mensagem "Esta matrícula foi cancelada…": reativar é ação do
+professor, não uma matrícula nova.
 
 ### Laravel 13 bootstrap style
 No `Kernel.php`, `Handler.php`, or Kernel classes. Middleware and exception handling are configured inline in `bootstrap/app.php` using the fluent `Application::configure()` API.

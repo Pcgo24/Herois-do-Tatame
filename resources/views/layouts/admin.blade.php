@@ -14,6 +14,11 @@
 
             <div class="flex items-center gap-2">
                 <x-botao-tema data-cy="theme-toggle" />
+                @can('view-students')
+                    <a href="{{ route('admin.dashboard') }}" data-cy="link-dashboard" class="text-sm font-medium text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink transition px-3 py-2">Alunos</a>
+                @endcan
+                <a href="{{ route('admin.users') }}" data-cy="link-users" class="text-sm font-medium text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink transition px-3 py-2">Usuários</a>
+                <a href="{{ route('admin.password') }}" data-cy="link-password" class="text-sm font-medium text-tatame-muted dark:text-noite-muted hover:text-tatame-ink dark:hover:text-noite-ink transition px-3 py-2">Alterar senha</a>
                 @if (Route::has('logout'))
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

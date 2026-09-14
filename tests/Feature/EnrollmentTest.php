@@ -45,6 +45,19 @@ class EnrollmentTest extends TestCase
         ];
     }
 
+    public function test_cancelled_student_cpf_gets_a_specific_message(): void
+    {
+        Student::factory()->create(['cpf' => '98765432100'])->delete();
+
+        $component = $this->fillForm()->call('submit');
+
+        $component->assertHasErrors('student_cpf');
+        $this->assertStringContainsString(
+            'matrícula foi cancelada',
+            $component->errors()->first('student_cpf'),
+        );
+    }
+
     private function fillForm(array $overrides = []): mixed
     {
         $data = array_merge($this->validPayload(), $overrides);

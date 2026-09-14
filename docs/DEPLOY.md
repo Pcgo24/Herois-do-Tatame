@@ -103,9 +103,12 @@ Preencha então as variáveis marcadas como `sync: false`:
 | `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | do passo 2 |
 | `R2_BUCKET` | `herois-do-tatame` |
 | `R2_ENDPOINT` | `https://SEU_ACCOUNT_ID.r2.cloudflarestorage.com` |
-| `PROFESSOR_CPF` | o CPF real do professor |
-| `PROFESSOR_PASSWORD` | **uma senha forte, não a de desenvolvimento** |
-| `PROFESSOR_EMAIL` | e-mail do professor |
+| `PROFESSOR_USERNAME` | usuário do primeiro professor, ex.: `alisson_antunes` |
+| `PROFESSOR_PASSWORD` | senha inicial — ele troca no primeiro acesso |
+| `PROFESSOR_NAME` | nome de exibição |
+| `ADMIN_USERNAME` | usuário do administrador (vocês), ex.: `paulo_admin` |
+| `ADMIN_PASSWORD` | senha forte — esta conta não é entregue ao professor |
+| `ADMIN_NAME` | nome de exibição |
 
 `APP_URL` não precisa ser preenchido. Ele só seria conhecido depois que o
 Render cria o serviço, então o `start.sh` o herda de `RENDER_EXTERNAL_URL`, que
@@ -113,37 +116,44 @@ o Render injeta automaticamente com a URL final. Só defina a variável à mão 
 for usar domínio próprio — nesse caso o valor explícito prevalece.
 
 Ao subir, o contêiner executa nesta ordem: gera a configuração do nginx na porta
-que o Render escolheu, roda as migrations, cria ou atualiza o usuário professor,
-e cacheia configuração, rotas e views.
+que o Render escolheu, roda as migrations, cria o primeiro usuário se a tabela
+estiver vazia, e cacheia configuração, rotas e views.
 
-> `db:seed --class=ProfessorSeeder` roda a cada implantação. Como ele usa
-> `updateOrCreate`, **a senha do professor volta ao valor de
-> `PROFESSOR_PASSWORD` toda vez que o app subir.** Para trocar a senha, mude a
-> variável no Render, não no banco.
->
 > O `StudentSeeder` (os três alunos de demonstração) se recusa a rodar quando
 > `APP_ENV=production`, então produção nunca recebe dados fictícios.
 
-### Nem o CPF nem o e-mail precisam ser reais
+### As variáveis `PROFESSOR_*` e `ADMIN_*` valem uma vez só
 
-O CPF é apenas o identificador de login — a validação exige 11 dígitos e não
-confere dígito verificador. O e-mail nunca é usado: não há SMTP configurado e o
-sistema não envia mensagem alguma; é só uma coluna única em `users`, herdada do
-esqueleto do Laravel.
+`db:seed` roda `AdminSeeder` e `ProfessorSeeder` a cada implantação, mas cada
+um **só cria alguém quando ainda não existe ninguém daquele papel** — no
+primeiro deploy, portanto. Nenhum dos dois apaga usuários nem reseta senha.
+Depois do primeiro acesso:
 
-Enquanto o projeto não for entregue à Secretaria, o padrão `12345678909` com um
-e-mail de marcador funciona igual, e evita dado pessoal real num ambiente que
-ainda não passou por revisão de segurança. A senha, essa sim, tem que ser forte.
+- a senha se troca em **Alterar senha**, no cabeçalho da área do professor;
+- outros professores se cadastram em **Usuários**, na mesma barra; remover é
+  soft delete, reversível pela própria tela;
+- mudar ou apagar as variáveis `PROFESSOR_*` no Render não tem efeito algum.
 
-Trocar `PROFESSOR_CPF` depois é seguro: o seeder remove qualquer usuário com CPF
-diferente antes de criar o novo, então o antigo não fica logando com a senha
-velha. O sistema tem exatamente um professor, por projeto.
+A senha inicial pode ser simples, porque o professor a troca na primeira
+entrada. O que não pode é ficar: combine com ele que a troca faz parte do
+primeiro acesso.
+
+**O professor esqueceu a senha?** Entre com a conta de administrador, abra
+**Usuários**, edite o professor e defina uma senha nova. O admin não vê os
+alunos e não aparece na lista de usuários do professor.
+
+**Perderam também a senha do admin?** Não há tela de recuperação (não existe
+e-mail configurado). O caminho é pelo banco: no SQL Editor do Neon,
+`DELETE FROM users WHERE role = 'admin';` e um redeploy no Render — o
+`AdminSeeder` recria o admin a partir das variáveis. O comando toca apenas
+`users`; os alunos ficam intactos.
 
 ## 5. Depois da primeira implantação
 
 1. Acesse `https://SEU-APP.onrender.com/up` — deve responder com o painel de
    saúde do Laravel.
-2. Entre em `/login` com o CPF e a senha configurados.
+2. Entre em `/login` com o usuário e a senha configurados, e troque a senha
+   em **Alterar senha**.
 3. Faça uma matrícula de teste pelo formulário público.
 4. Gere a ficha em PDF do aluno criado.
 5. **Anexe uma ficha assinada e implante de novo.** Se o arquivo continuar lá
@@ -151,7 +161,44 @@ velha. O sistema tem exatamente um professor, por projeto.
    não está valendo `r2`.
 6. Apague o aluno de teste.
 
-## 6. Hibernação
+## 6. Entrega: zerar o ambiente de produção
+
+Antes de entregar o sistema ao professor, o banco de produção precisa nascer
+limpo — sem matrículas de teste, usuários antigos ou sessões. O Render gratuito
+não tem shell para rodar `artisan`, então o reset é feito no Neon e o deploy
+reconstrói tudo.
+
+1. **Ajuste as variáveis no Render** primeiro (Environment): `PROFESSOR_*` com
+   o usuário e a senha inicial do professor, `ADMIN_*` com a conta de vocês.
+   Remova `PROFESSOR_CPF` e `PROFESSOR_EMAIL`, se ainda existirem. Salve sem
+   implantar ainda (o Render pergunta).
+2. **Zere o schema no Neon.** Painel do Neon → projeto de produção → **SQL
+   Editor** → confirme no seletor que o banco é o de produção (`neondb`, branch
+   `main`) e rode:
+
+   ```sql
+   DROP SCHEMA public CASCADE;
+   CREATE SCHEMA public;
+   ```
+
+   Isso apaga todas as tabelas, inclusive `migrations`, `sessions` e `cache`.
+   Não há como desfazer; confira duas vezes o projeto selecionado — o de
+   desenvolvimento (`sa-east-1`) fica na mesma conta.
+3. **Limpe o bucket R2**, se houver ficha assinada de teste: painel da
+   Cloudflare → R2 → `herois-do-tatame` → selecione os objetos → Delete.
+4. **Manual Deploy → Deploy latest commit** no Render. O `start.sh` roda as
+   migrations do zero e os seeders criam o admin e o professor.
+5. Confira: `/up` responde; o professor entra e cai em **Alunos** (vazio); o
+   admin entra e cai em **Usuários**, vendo só o professor.
+
+Se o objetivo for apenas apagar matrículas de teste **sem** mexer em usuários,
+use em vez disso:
+
+```sql
+TRUNCATE students, responsibles;
+```
+
+## 7. Hibernação
 
 No plano gratuito o Render derruba o serviço após cerca de 15 minutos sem
 acesso, e volta em torno de 50 segundos. O Neon suspende o banco após cerca de

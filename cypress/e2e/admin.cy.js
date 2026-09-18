@@ -26,6 +26,7 @@ describe('Administrador', () => {
   it('o professor não vê o admin', () => {
     entrarComo('professor');
     cy.url().should('include', '/admin/dashboard');
+    cy.fecharAviso();
     cy.get('[data-cy="link-users"]').click();
     cy.contains('[data-cy="user-row"]', 'admin').should('not.exist');
     cy.get('[data-cy="toggle-removed"]').check();

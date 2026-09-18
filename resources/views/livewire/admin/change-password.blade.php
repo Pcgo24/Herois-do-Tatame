@@ -6,7 +6,7 @@
     <div class="cartao p-8">
 
         @if ($saved)
-            <div class="mb-6 rounded-lg border border-green-300 bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-400 dark:border-green-800 px-4 py-3 text-sm" data-cy="password-saved">
+            <div class="mb-6 rounded-lg border border-green-300 bg-green-50 text-green-800 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/25 px-4 py-3 text-sm" data-cy="password-saved">
                 Senha alterada com sucesso.
             </div>
         @endif

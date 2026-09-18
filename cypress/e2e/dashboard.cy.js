@@ -6,7 +6,24 @@ const entrar = () => {
   cy.get('[data-cy="input-password"]').type('heroisdotatame');
   cy.get('[data-cy="login-btn"]').click();
   cy.url().should('include', '/admin/dashboard');
+  cy.fecharAviso();
 };
+
+describe('Filtro por status do termo', () => {
+  beforeEach(entrar);
+
+  it('mostra só os alunos com o status escolhido', () => {
+    cy.get('[data-cy="filter-termo"]').select('assinado');
+    // should() com callback refaz a checagem até o Livewire terminar de re-renderizar.
+    cy.get('[data-cy="badge-termo"]').should(($badges) => {
+      expect($badges.length).to.be.greaterThan(0);
+      $badges.each((_, badge) => expect(badge.textContent.trim()).to.equal('Assinado'));
+    });
+
+    cy.get('[data-cy="filter-termo"]').select('');
+    cy.get('[data-cy="badge-termo"]').contains('Pendente').should('exist');
+  });
+});
 
 describe('Cancelamento de matrícula', () => {
   beforeEach(entrar);

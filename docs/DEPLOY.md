@@ -119,8 +119,9 @@ Ao subir, o contêiner executa nesta ordem: gera a configuração do nginx na po
 que o Render escolheu, roda as migrations, cria o primeiro usuário se a tabela
 estiver vazia, e cacheia configuração, rotas e views.
 
-> O `StudentSeeder` (os três alunos de demonstração) se recusa a rodar quando
-> `APP_ENV=production`, então produção nunca recebe dados fictícios.
+> `StudentSeeder` (três alunos de demonstração) e `DemoSeeder` (quatro
+> professores e 150 alunos) se recusam a rodar quando `APP_ENV=production`,
+> então produção nunca recebe dados fictícios.
 
 ### As variáveis `PROFESSOR_*` e `ADMIN_*` valem uma vez só
 

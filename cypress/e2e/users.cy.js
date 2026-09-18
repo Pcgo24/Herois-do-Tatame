@@ -7,6 +7,7 @@ const entrar = (usuario = 'professor', senha = 'heroisdotatame') => {
   cy.get('[data-cy="input-password"]').type(senha);
   cy.get('[data-cy="login-btn"]').click();
   cy.url().should('include', '/admin/dashboard');
+  cy.fecharAviso();
 };
 
 // Depois do logout, um cy.visit com cookies antigos faz o Cypress reaplicar

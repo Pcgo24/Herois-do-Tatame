@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Student;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -18,6 +19,52 @@ class Dashboard extends Component
     public string $uploadTargetId = '';
 
     public bool $showCancelled = false;
+
+    public bool $onlyAttention = false;
+
+    // '' mostra todos; senão, um dos valores de students.termo_status.
+    public string $termoFilter = '';
+
+    // Pop-up de vencimentos: abre uma vez por sessão, na primeira visita ao
+    // dashboard em que há matrícula vencida ou a vencer em 30 dias.
+    public const SESSION_AVISO = 'aviso_vencimentos_visto';
+
+    public bool $avisoAberto = false;
+
+    public Collection $avisoVencidas;
+
+    public Collection $avisoVencendo;
+
+    public function mount(): void
+    {
+        $this->avisoVencidas = collect();
+        $this->avisoVencendo = collect();
+
+        if (session()->has(self::SESSION_AVISO)) {
+            return;
+        }
+
+        $atencao = Student::query()->get()->filter(fn (Student $s) => $s->situacaoMatricula() !== 'ok');
+
+        // Vencidas: as mais recentes primeiro (provavelmente ainda frequentam).
+        // A vencer: as mais próximas do vencimento primeiro.
+        $this->avisoVencidas = $atencao->filter(fn (Student $s) => $s->situacaoMatricula() === 'vencida')
+            ->sortByDesc(fn (Student $s) => $s->diasParaVencer())->values();
+        $this->avisoVencendo = $atencao->filter(fn (Student $s) => $s->situacaoMatricula() === 'vencendo')
+            ->sortBy(fn (Student $s) => $s->diasParaVencer())->values();
+        $this->avisoAberto = $atencao->isNotEmpty();
+    }
+
+    public function dismissAviso(): void
+    {
+        session()->put(self::SESSION_AVISO, true);
+        $this->avisoAberto = false;
+    }
+
+    public function renovarMatricula(string $studentId): void
+    {
+        Student::findOrFail($studentId)->renovarMatricula();
+    }
 
     public function updateTermoStatus(string $studentId, string $status): void
     {
@@ -99,9 +146,15 @@ class Dashboard extends Component
         return view('livewire.admin.dashboard', [
             'students' => Student::query()
                 ->when($this->showCancelled, fn ($q) => $q->withTrashed())
+                ->when($this->termoFilter !== '', fn ($q) => $q->where('termo_status', $this->termoFilter))
                 ->with('responsible')
                 ->orderBy('created_at')
-                ->get(),
+                ->get()
+                ->when($this->onlyAttention, fn ($alunos) => $alunos->filter(
+                    fn (Student $s) => ! $s->trashed() && $s->situacaoMatricula() !== 'ok'
+                ))
+                ->sortBy(fn (Student $s) => $s->trashed() ? PHP_INT_MAX : $s->diasParaVencer())
+                ->values(),
         ])->layout('layouts.admin');
     }
 }

@@ -36,6 +36,7 @@ describe('Login do professor', () => {
     cy.get('[data-cy="input-password"]').type('heroisdotatame');
     cy.get('[data-cy="login-btn"]').click();
     cy.url().should('include', '/admin/dashboard');
+    cy.fecharAviso();
     cy.get('html').should('not.have.class', 'dark');
     cy.get('[data-cy="theme-toggle"]').click();
     cy.get('html').should('have.class', 'dark');

@@ -13,7 +13,9 @@ class StudentSeeder extends Seeder
      * Alunos de demonstração, com a ficha completa para o PDF sair sem lacunas.
      *
      * Um deles declara não possuir pai registrado, para exercitar o caminho da
-     * filiação condicional na ficha e no dashboard.
+     * filiação condicional na ficha e no dashboard. As datas de matrícula cobrem
+     * as três situações (em dia, vencendo, vencida) e são explícitas porque o
+     * DatabaseSeeder roda sem eventos de modelo.
      */
     public function run(): void
     {
@@ -48,6 +50,7 @@ class StudentSeeder extends Seeder
                     'phone' => null,
                     'email' => null,
                     'modalidade' => 'Boxe',
+                    'matricula_em' => Carbon::today()->subYear()->addDays(12)->format('Y-m-d'), // vence em 12 dias
                     'termo_status' => 'assinado',
                 ],
             ],
@@ -75,6 +78,7 @@ class StudentSeeder extends Seeder
                     'phone' => '42998774411',
                     'email' => 'anaclara.ferreira@example.com',
                     'modalidade' => 'Muay Thai',
+                    'matricula_em' => Carbon::today()->subYear()->subDays(5)->format('Y-m-d'), // vencida há 5 dias
                     'termo_status' => 'entregue',
                 ],
             ],
@@ -104,6 +108,7 @@ class StudentSeeder extends Seeder
                     'phone' => null,
                     'email' => null,
                     'modalidade' => 'Jiu Jitsu',
+                    'matricula_em' => Carbon::today()->subMonths(2)->format('Y-m-d'), // em dia
                     'termo_status' => 'pendente',
                 ],
             ],

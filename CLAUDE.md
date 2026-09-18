@@ -26,6 +26,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Testes
 ```bash
+./vendor/bin/sail artisan migrate:fresh --seed   # banco de dev com dados de demonstração
 ./vendor/bin/sail artisan test --filter TestName
 touch database/testing.sqlite   # apenas na primeira vez
 ./vendor/bin/sail artisan serve --env=testing --port=8001
@@ -110,8 +111,27 @@ As fichas assinadas usam `config('fichas.disk')` (env `FICHAS_DISK`): `local` em
 desenvolvimento e nos testes, `r2` em produção — o disco do Render é descartado
 a cada implantação. O disco `r2` está em `config/filesystems.php`.
 
-`StudentSeeder` cria três alunos de demonstração e se recusa a rodar quando
-`APP_ENV=production`.
+`StudentSeeder` (três alunos, um em cada situação de vencimento) e `DemoSeeder`
+(`prof_jiujitsu`/`prof_muaythai`/`prof_taekwondo`/`prof_boxe` + 150 alunos com
+`matricula_em` espalhado por 15 meses) são só para desenvolvimento e se recusam
+a rodar quando `APP_ENV=production`. O `DatabaseSeeder` usa `WithoutModelEvents`,
+então seeders precisam gravar `matricula_em` explicitamente — o hook `creating`
+do `Student` não roda ali.
+
+### Vencimento da matrícula
+A matrícula vale um ano a partir de `students.matricula_em` (preenchido com
+`today()` no `creating`; a migration copiou `created_at` para quem já existia).
+`Student` expõe `vence_em`, `diasParaVencer()`, `situacaoMatricula()` (`ok` |
+`vencendo` ≤ 30 dias | `vencida`), `textoVencimento()` ("faltam 9 meses",
+"vencida há 3 dias") e `renovarMatricula()` (recomeça de hoje). O dashboard
+ordena a lista pelo vencimento, tem os filtros `termoFilter` (status do termo)
+e `onlyAttention`, o botão Renovar
+no modal (só para ativos: `findOrFail` sem `withTrashed`) e o aviso
+`avisoAberto`/`dismissAviso()`, que abre uma vez por sessão (flag
+`Dashboard::SESSION_AVISO`) listando vencidas e a vencer.
+
+No Cypress, `cy.fecharAviso()` (`cypress/support/e2e.js`) fecha esse aviso
+após o login, porque ele cobre a tela e bloqueia cliques.
 
 ### Cancelamento de matrícula
 `Student` e `Responsible` usam `SoftDeletes`. "Cancelar matrícula" no modal do

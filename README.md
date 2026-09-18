@@ -80,6 +80,19 @@ professores e troca a própria senha, mas não vê os alunos e não aparece na
 lista de usuários. É a conta de quem entrega o sistema, para redefinir a senha
 do professor sem tocar no banco.
 
+## Vencimento e renovação da matrícula
+
+A matrícula vale **um ano** a partir da data de cadastro (`matricula_em`). A
+lista do dashboard mostra em cada aluno quanto falta — "faltam 9 meses",
+"faltam 30 dias", "vencida há 3 dias" — em cinza, amarelo (30 dias ou menos)
+ou vermelho (vencida), ordenada pelas que vencem primeiro, com os filtros
+**Status do termo** e **Só vencidas ou a vencer**. No modal do aluno, **Renovar matrícula** recomeça o
+ano a partir de hoje.
+
+Na primeira visita ao dashboard de cada sessão, se houver matrícula vencida ou
+a vencer em 30 dias, abre um aviso com a lista; clicar no nome abre o aluno
+direto no botão de renovar. **Entendi** fecha o aviso até o próximo login.
+
 ## Cancelamento de matrícula
 
 No modal de cada aluno, **Cancelar matrícula** tira o aluno da lista sem apagar
@@ -111,11 +124,16 @@ passa a "assinado" automaticamente.
 Render (Docker) + Neon (PostgreSQL) + Cloudflare R2 para as fichas assinadas.
 O passo a passo está em [docs/DEPLOY.md](docs/DEPLOY.md).
 
-Para popular um banco vazio com o professor e três alunos de demonstração:
+Para popular um banco vazio de desenvolvimento:
 
     ./vendor/bin/sail artisan migrate:fresh --seed
 
-Os alunos de demonstração não são criados quando `APP_ENV=production`.
+Isso cria o admin, o professor `professor`, três alunos fixos (`StudentSeeder`,
+um em cada situação de vencimento) e a massa do `DemoSeeder`: quatro
+professores — `prof_jiujitsu`, `prof_muaythai`, `prof_taekwondo`, `prof_boxe`,
+senha `heroisdotatame` — e 150 alunos com a matrícula espalhada pelos últimos
+15 meses. Os dois seeders de demonstração se recusam a rodar quando
+`APP_ENV=production`.
 
 ## Testes
 

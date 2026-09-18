@@ -86,6 +86,13 @@ class EnrollmentTest extends TestCase
         $this->assertDatabaseHas('students', ['cpf' => '98765432100']);
     }
 
+    public function test_a_new_enrollment_starts_counting_today(): void
+    {
+        $this->fillForm()->call('submit')->assertHasNoErrors();
+
+        $this->assertSame(today()->toDateString(), Student::where('cpf', '98765432100')->first()->matricula_em->toDateString());
+    }
+
     public function test_student_is_linked_to_responsible(): void
     {
         $this->fillForm()->call('submit');

@@ -5,11 +5,17 @@
         select(student) { this.s = student; this.open = true; },
         close() { this.open = false; },
         statusLabel(v) { return v ? v.charAt(0).toUpperCase() + v.slice(1) : ''; },
+        vencimentoClass(v) {
+            return ({
+                vencida: 'bg-red-50 text-red-700 border-red-300 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/25',
+                vencendo: 'bg-yellow-50 text-yellow-800 border-yellow-300 dark:bg-yellow-500/10 dark:text-yellow-200 dark:border-yellow-500/25',
+            })[v] || 'border-tatame-line dark:border-noite-line text-tatame-muted dark:text-noite-muted';
+        },
         badgeClass(v) {
             return ({
-                entregue: 'bg-yellow-50 text-yellow-800 border-yellow-300 dark:bg-yellow-950 dark:text-yellow-400 dark:border-yellow-800',
-                assinado: 'bg-green-50 text-green-800 border-green-300 dark:bg-green-950 dark:text-green-400 dark:border-green-800',
-            })[v] || 'bg-red-50 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-400 dark:border-red-800';
+                entregue: 'bg-yellow-50 text-yellow-800 border-yellow-300 dark:bg-yellow-500/10 dark:text-yellow-200 dark:border-yellow-500/25',
+                assinado: 'bg-green-50 text-green-800 border-green-300 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/25',
+            })[v] || 'bg-red-50 text-red-700 border-red-300 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/25';
         },
     }"
 >
@@ -17,9 +23,14 @@
         use App\Support\Formatters;
 
         $statusBadge = fn (string $status) => match ($status) {
-            'entregue' => 'bg-yellow-50 text-yellow-800 border-yellow-300 dark:bg-yellow-950 dark:text-yellow-400 dark:border-yellow-800',
-            'assinado' => 'bg-green-50 text-green-800 border-green-300 dark:bg-green-950 dark:text-green-400 dark:border-green-800',
-            default    => 'bg-red-50 text-red-700 border-red-300 dark:bg-red-950 dark:text-red-400 dark:border-red-800',
+            'entregue' => 'bg-yellow-50 text-yellow-800 border-yellow-300 dark:bg-yellow-500/10 dark:text-yellow-200 dark:border-yellow-500/25',
+            'assinado' => 'bg-green-50 text-green-800 border-green-300 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/25',
+            default    => 'bg-red-50 text-red-700 border-red-300 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/25',
+        };
+        $vencimentoBadge = fn (string $situacao) => match ($situacao) {
+            'vencida'  => 'bg-red-50 text-red-700 border-red-300 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/25',
+            'vencendo' => 'bg-yellow-50 text-yellow-800 border-yellow-300 dark:bg-yellow-500/10 dark:text-yellow-200 dark:border-yellow-500/25',
+            default    => 'border-tatame-line dark:border-noite-line text-tatame-muted dark:text-noite-muted',
         };
         $modalData = fn ($s) => [
             'id'           => $s->id,
@@ -38,6 +49,10 @@
             'termo_arquivo'      => (bool) $s->termo_arquivo,
             'termo_arquivo_nome' => $s->termo_arquivo_nome,
             'cancelled'          => $s->trashed(),
+            'matricula_em'       => Formatters::date($s->matricula_em),
+            'vence_em'           => Formatters::date($s->vence_em),
+            'situacao'           => $s->situacaoMatricula(),
+            'vencimento'         => $s->textoVencimento(),
             'resp'         => [
                 'name'         => $s->responsible->name,
                 'phone'        => Formatters::phone($s->responsible->phone_number),
@@ -60,10 +75,29 @@
                 {{ $ativos }} {{ $ativos === 1 ? 'aluno matriculado' : 'alunos matriculados' }}
             </p>
         </div>
-        <label class="flex items-center gap-2 cursor-pointer text-sm text-tatame-muted dark:text-noite-muted">
-            <input type="checkbox" wire:model.live="showCancelled" data-cy="toggle-cancelled" class="w-4 h-4 accent-faixa-azul cursor-pointer">
-            Mostrar matrículas canceladas
-        </label>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <label class="flex items-center gap-2 text-sm text-tatame-muted dark:text-noite-muted">
+                Status do termo
+                <select
+                    wire:model.live="termoFilter"
+                    data-cy="filter-termo"
+                    class="rounded-md border border-tatame-line dark:border-noite-line bg-tatame-surface dark:bg-noite-surface px-2 py-1.5 text-xs text-tatame-ink dark:text-noite-ink focus:outline-none focus:ring-1 focus:ring-neutral-600"
+                >
+                    <option value="">Todos</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="entregue">Entregue</option>
+                    <option value="assinado">Assinado</option>
+                </select>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-tatame-muted dark:text-noite-muted">
+                <input type="checkbox" wire:model.live="onlyAttention" data-cy="toggle-attention" class="w-4 h-4 accent-faixa-azul cursor-pointer">
+                Só vencidas ou a vencer
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-tatame-muted dark:text-noite-muted">
+                <input type="checkbox" wire:model.live="showCancelled" data-cy="toggle-cancelled" class="w-4 h-4 accent-faixa-azul cursor-pointer">
+                Mostrar matrículas canceladas
+            </label>
+        </div>
     </div>
 
     @if($students->isEmpty())
@@ -78,6 +112,7 @@
                         <th class="px-6 py-4 text-left">Responsável</th>
                         <th class="px-6 py-4 text-left">Contato</th>
                         <th class="px-6 py-4 text-left">Aluno</th>
+                        <th class="px-6 py-4 text-left">Matrícula</th>
                         <th class="px-6 py-4 text-left">Status do Termo</th>
                         <th class="px-6 py-4 text-left">Ficha</th>
                     </tr>
@@ -99,11 +134,20 @@
                             <td class="px-6 py-4 text-tatame-ink dark:text-noite-ink">{{ $student->name }}</td>
                             <td class="px-6 py-4">
                                 @if ($student->trashed())
+                                    <span class="text-xs text-tatame-muted dark:text-noite-muted">—</span>
+                                @else
+                                    <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-semibold border {{ $vencimentoBadge($student->situacaoMatricula()) }}" data-cy="badge-vencimento" data-situacao="{{ $student->situacaoMatricula() }}">
+                                        {{ $student->textoVencimento() }}
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                @if ($student->trashed())
                                     <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border border-tatame-line dark:border-noite-line text-tatame-muted dark:text-noite-muted" data-cy="badge-cancelled">
                                         Cancelada
                                     </span>
                                 @else
-                                    <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border {{ $statusBadge($student->termo_status) }}">
+                                    <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border {{ $statusBadge($student->termo_status) }}" data-cy="badge-termo">
                                         {{ ucfirst($student->termo_status) }}
                                     </span>
                                 @endif
@@ -127,6 +171,59 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    @endif
+
+    {{-- Aviso de vencimentos: uma vez por sessão, lista quem precisa renovar --}}
+    @if ($avisoAberto)
+        <div
+            x-data="{ aberto: true }"
+            x-show="aberto"
+            @keydown.escape.window="aberto = false; $wire.dismissAviso()"
+            class="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6"
+            data-cy="aviso-vencimentos"
+        >
+            <div class="absolute inset-0 bg-black/85" @click="aberto = false; $wire.dismissAviso()"></div>
+
+            <div class="relative w-full max-w-lg max-h-[85vh] flex flex-col rounded-2xl border border-tatame-line dark:border-noite-line bg-tatame-surface dark:bg-noite-surface shadow-2xl shadow-black/25 dark:shadow-black/60">
+                <div class="px-6 py-5 border-b border-tatame-line dark:border-noite-line">
+                    <p class="text-xs uppercase tracking-widest text-tatame-muted dark:text-noite-muted">Matrículas</p>
+                    <h2 class="mt-1 text-xl font-bold text-tatame-ink dark:text-noite-ink">Matrículas que precisam de atenção</h2>
+                    <p class="mt-1 text-sm text-tatame-muted dark:text-noite-muted">Clique no nome para abrir o aluno e renovar.</p>
+                </div>
+
+                <div class="overflow-y-auto px-6 py-4 space-y-5">
+                    @foreach ([['Vencidas', $avisoVencidas, 'vencida'], ['Vencem em até 30 dias', $avisoVencendo, 'vencendo']] as [$titulo, $lista, $situacao])
+                        @if ($lista->isNotEmpty())
+                            <section>
+                                <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold">
+                                    <span class="inline-block rounded-full border px-2 py-0.5 text-xs {{ $vencimentoBadge($situacao) }}">{{ $lista->count() }}</span>
+                                    {{ $titulo }}
+                                </h3>
+                                <ul class="divide-y divide-tatame-line dark:divide-noite-line">
+                                    @foreach ($lista as $s)
+                                        <li>
+                                            <button
+                                                type="button"
+                                                @click="aberto = false; $wire.dismissAviso(); select(@js($modalData($s)))"
+                                                data-cy="aviso-aluno"
+                                                class="w-full flex flex-wrap items-center justify-between gap-2 py-2 text-left text-sm hover:bg-tatame-raised dark:hover:bg-noite-raised rounded-md px-2 -mx-2 transition"
+                                            >
+                                                <span class="text-tatame-ink dark:text-noite-ink">{{ $s->name }} <span class="text-tatame-muted dark:text-noite-muted">— {{ $s->modalidade }}</span></span>
+                                                <span class="text-xs text-tatame-muted dark:text-noite-muted">{{ $s->textoVencimento() }}</span>
+                                            </button>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </section>
+                        @endif
+                    @endforeach
+                </div>
+
+                <div class="px-6 py-4 border-t border-tatame-line dark:border-noite-line flex justify-end">
+                    <button type="button" @click="aberto = false; $wire.dismissAviso()" data-cy="aviso-fechar" class="botao-primario px-6 py-2 text-sm">Entendi</button>
+                </div>
+            </div>
         </div>
     @endif
 
@@ -186,6 +283,28 @@
                         class="botao-primario px-5 py-2 text-sm"
                     >
                         Reativar matrícula
+                    </button>
+                </div>
+
+                {{-- Matrícula: validade e renovação --}}
+                <div x-show="! s.cancelled" class="rounded-xl border border-tatame-line dark:border-noite-line bg-tatame-raised/60 dark:bg-noite-raised/50 p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                        <span class="text-tatame-muted dark:text-noite-muted">Matrícula em <span class="font-mono text-tatame-ink dark:text-noite-ink" x-text="s.matricula_em"></span></span>
+                        <span class="text-tatame-muted dark:text-noite-muted">Vence em <span class="font-mono text-tatame-ink dark:text-noite-ink" x-text="s.vence_em"></span></span>
+                        <span
+                            class="inline-block rounded-full border px-2.5 py-1 text-xs font-semibold"
+                            :class="vencimentoClass(s.situacao)"
+                            x-text="s.vencimento"
+                            data-cy="modal-vencimento"
+                        ></span>
+                    </div>
+                    <button
+                        type="button"
+                        @click="if (confirm('Renovar a matrícula de ' + s.name + ' por mais um ano a partir de hoje?')) $wire.renovarMatricula(s.id).then(() => close())"
+                        data-cy="renew-enrollment"
+                        class="botao-primario px-5 py-2 text-sm"
+                    >
+                        Renovar matrícula
                     </button>
                 </div>
 

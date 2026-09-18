@@ -15,7 +15,7 @@
     </div>
 
     @error('remove')
-        <div class="mb-6 rounded-lg border border-red-300 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400 dark:border-red-800 px-4 py-3 text-sm" data-cy="error-remove">
+        <div class="mb-6 rounded-lg border border-red-300 bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/25 px-4 py-3 text-sm" data-cy="error-remove">
             {{ $message }}
         </div>
     @enderror
@@ -39,7 +39,7 @@
                                 <span class="ml-2 text-xs font-normal text-tatame-muted dark:text-noite-muted">(você)</span>
                             @endif
                             @if ($user->trashed())
-                                <span class="ml-2 text-xs font-semibold rounded-full border border-red-300 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400 dark:border-red-800 px-2 py-0.5">Removido</span>
+                                <span class="ml-2 text-xs font-semibold rounded-full border border-red-300 bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/25 px-2 py-0.5">Removido</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 font-mono text-tatame-muted dark:text-noite-muted">{{ $user->username }}</td>

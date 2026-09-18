@@ -47,10 +47,23 @@ describe("Landing Page - Heróis do Tatame", () => {
             // Verifica dados específicos da tabela. O dia é o cabeçalho da
             // linha (th scope="row"), não uma célula comum.
             cy.contains("th", "Segunda-feira").should("be.visible");
-            cy.contains("td", "18:00 - 19:30").should("be.visible");
+            cy.contains("td", "09:00, 13:00 e 14:00").should("be.visible");
+            cy.contains("th", "Sexta-feira").should("be.visible");
             // Cada modalidade é um chip com a cor da sua faixa.
             cy.contains("td span", "Jiu Jitsu").should("be.visible");
             cy.contains("td span", "Boxe").should("be.visible");
+            // Não há treino no sábado.
+            cy.contains("th", "Sábado").should("not.exist");
+        });
+
+        it("Deve mostrar onde ficam os treinos com link para o mapa", () => {
+            cy.get('[data-cy="local-treinos"]').scrollIntoView().should("be.visible");
+            cy.get('[data-cy="local-treinos"]').should("contain", "Quadrinha Municipal de Esportes");
+            cy.get('[data-cy="local-treinos"]').should("contain", "Rua Mal. Cândido Rondon, 294");
+            cy.get('[data-cy="local-mapa"]')
+                .should("have.attr", "href")
+                .and("include", "google.com/maps");
+            cy.get('[data-cy="local-mapa"]').should("have.attr", "target", "_blank");
         });
     });
 

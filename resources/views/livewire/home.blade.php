@@ -8,7 +8,7 @@
             'nome' => 'Jiu Jitsu',
             'cor' => '#1D6FB8',
             'texto' => 'Chão, imobilizações e defesa pessoal. Ensina paciência: o jogo é resolvido com técnica, não com força.',
-            'foto' => 'https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+            'foto' => 'https://images.unsplash.com/photo-1747331796135-0e2354a712e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
         ],
         [
             'nome' => 'Muay Thai',
@@ -32,13 +32,24 @@
 
     $cores = collect($modalidades)->pluck('cor', 'nome');
 
+    // Cada modalidade tem seu dia; o horário lista as turmas daquele dia.
     $horarios = [
-        ['dia' => 'Segunda-feira', 'hora' => '18:00 - 19:30', 'aulas' => ['Jiu Jitsu', 'Boxe']],
-        ['dia' => 'Terça-feira',   'hora' => '18:30 - 20:00', 'aulas' => ['Muay Thai', 'Taekwondo']],
-        ['dia' => 'Quarta-feira',  'hora' => '18:00 - 19:30', 'aulas' => ['Jiu Jitsu', 'Boxe']],
-        ['dia' => 'Quinta-feira',  'hora' => '18:30 - 20:00', 'aulas' => ['Muay Thai', 'Taekwondo']],
-        ['dia' => 'Sábado',        'hora' => '09:00 - 11:00', 'aulas' => ['Treino livre e recreação']],
+        ['dia' => 'Segunda-feira', 'hora' => '09:00, 13:00 e 14:00', 'aulas' => ['Muay Thai']],
+        ['dia' => 'Terça-feira',   'hora' => '09:30 e 14:00',        'aulas' => ['Taekwondo']],
+        ['dia' => 'Quarta-feira',  'hora' => '09:00, 13:00 e 14:00', 'aulas' => ['Boxe']],
+        ['dia' => 'Quinta-feira',  'hora' => '09:30 e 14:00',        'aulas' => ['Taekwondo']],
+        ['dia' => 'Sexta-feira',   'hora' => '09:00 e 13:00',        'aulas' => ['Jiu Jitsu']],
     ];
+
+    $local = [
+        'nome' => 'Quadrinha Municipal de Esportes',
+        'referencia' => 'ao lado do Lago Municipal João Maria Penteado',
+        'endereco' => 'Rua Mal. Cândido Rondon, 294',
+        'bairro' => 'Vila da Luz',
+        'cidade' => 'Prudentópolis - PR',
+        'cep' => '84400-000',
+    ];
+    $mapaUrl = 'https://www.google.com/maps/search/?api=1&query='.urlencode("{$local['endereco']}, {$local['bairro']}, {$local['cidade']}, {$local['cep']}");
 @endphp
 
 {{-- Hero --}}
@@ -167,7 +178,8 @@
         <div class="max-w-2xl mb-12">
             <h2 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight mb-4">Quadro de Horários</h2>
             <p class="text-lg text-tatame-muted dark:text-noite-muted leading-relaxed">
-                Os treinos acontecem no fim da tarde durante a semana e na manhã de sábado.
+                Os treinos acontecem de segunda a sexta, de manhã e no início da tarde. Cada
+                modalidade tem seu dia; escolha a turma que encaixa na rotina do aluno.
             </p>
         </div>
 
@@ -206,6 +218,41 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        {{-- Onde treinamos --}}
+        <div
+            class="mt-8 rounded-xl border border-tatame-line dark:border-noite-line bg-tatame-raised/60 dark:bg-noite-raised/50 px-6 py-6 md:px-8 flex flex-col md:flex-row md:items-center justify-between gap-6"
+            data-cy="local-treinos"
+        >
+            <div class="flex items-start gap-4">
+                <span class="mt-1 shrink-0 w-10 h-10 rounded-full bg-faixa-azul/10 text-faixa-azul flex items-center justify-center" aria-hidden="true">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-6-5.686-6-11a6 6 0 1112 0c0 5.314-6 11-6 11z" />
+                        <circle cx="12" cy="10" r="2.5" />
+                    </svg>
+                </span>
+                <div>
+                    <p class="text-xs uppercase tracking-widest text-tatame-muted dark:text-noite-muted mb-1">Onde treinamos</p>
+                    <p class="font-display font-bold text-lg leading-tight">{{ $local['nome'] }}</p>
+                    <p class="text-tatame-muted dark:text-noite-muted leading-relaxed">
+                        {{ $local['endereco'] }}, {{ $local['bairro'] }} — {{ $local['cidade'] }}, CEP {{ $local['cep'] }}<br>
+                        <span class="text-sm">{{ ucfirst($local['referencia']) }}.</span>
+                    </p>
+                </div>
+            </div>
+            <a
+                href="{{ $mapaUrl }}"
+                target="_blank"
+                rel="noopener"
+                data-cy="local-mapa"
+                class="inline-flex items-center justify-center gap-2 shrink-0 border border-tatame-line dark:border-noite-line hover:bg-tatame-surface dark:hover:bg-noite-surface px-5 py-3 rounded-md font-semibold transition"
+            >
+                Abrir no Google Maps
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 7l-10 10M7 7h10v10" />
+                </svg>
+            </a>
         </div>
     </div>
 </section>
@@ -255,6 +302,11 @@
 
                 <div>
                     <h3 class="font-display font-bold mb-4">Contato</h3>
+                    <p class="text-tatame-muted dark:text-noite-muted mb-3 leading-relaxed">
+                        {{ $local['nome'] }}<br>
+                        {{ $local['endereco'] }}, {{ $local['bairro'] }}<br>
+                        {{ $local['cidade'] }}
+                    </p>
                     <p class="text-tatame-muted dark:text-noite-muted mb-1">Mestre Alisson Antunes</p>
                     <a href="tel:+554288615081" class="font-display font-bold text-lg hover:text-faixa-azul dark:hover:text-faixa-amarela transition">
                         (42) 8861-5081

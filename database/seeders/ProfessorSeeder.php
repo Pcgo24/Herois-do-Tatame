@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ProfessorSeeder extends Seeder
 {
@@ -21,7 +22,7 @@ class ProfessorSeeder extends Seeder
             return;
         }
 
-        $username = (string) config('professor.username');
+        $username = Str::lower(trim((string) config('professor.username')));
 
         User::create([
             'name' => config('professor.name'),

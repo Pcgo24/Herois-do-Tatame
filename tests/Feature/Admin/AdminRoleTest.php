@@ -187,6 +187,20 @@ class AdminRoleTest extends TestCase
         $this->assertTrue(Hash::check('senha-admin-1', $admin->password));
     }
 
+    // O login normaliza o usuário digitado para minúsculas; o seeder tem de
+    // gravar da mesma forma, senão uma variável com maiúscula nunca loga.
+    public function test_seeders_normalize_the_username_like_the_login_does(): void
+    {
+        config()->set('admin.username', '  Paulo_Admin ');
+        config()->set('professor.username', 'Alisson_Antunes');
+
+        $this->seed(AdminSeeder::class);
+        $this->seed(ProfessorSeeder::class);
+
+        $this->assertNotNull(User::where('username', 'paulo_admin')->first());
+        $this->assertNotNull(User::where('username', 'alisson_antunes')->first());
+    }
+
     public function test_admin_seeder_does_nothing_when_an_admin_exists(): void
     {
         $this->admin();

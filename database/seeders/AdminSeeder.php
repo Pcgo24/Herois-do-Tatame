@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminSeeder extends Seeder
 {
@@ -16,7 +17,7 @@ class AdminSeeder extends Seeder
             return;
         }
 
-        $username = (string) config('admin.username');
+        $username = Str::lower(trim((string) config('admin.username')));
 
         User::create([
             'name' => config('admin.name'),
